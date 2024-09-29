@@ -333,6 +333,7 @@ svg {
 table {
   caption-side: bottom;
   border-collapse: collapse;
+
 }
 
 caption {
@@ -2040,6 +2041,7 @@ progress {
   color: #697a8d;
   vertical-align: middle;
   border-color: #d9dee3;
+
 }
 
 .table> :not(caption)>*>* {

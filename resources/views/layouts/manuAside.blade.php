@@ -74,7 +74,7 @@
             <ul class="menu-sub">
                 <li class="menu-item {{ Request::is('company*') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
-                        <div data-i18n="Without menu">เพิ่ม บริษัท</div>
+                        <div data-i18n="Without menu">รายชื่อบริษัท</div>
                     </a>
                 </li>
 

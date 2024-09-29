@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Company;
+use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
@@ -24,7 +25,8 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        return view('company.index');
+        $query = DB::table('companies')->paginate(100);/* ->appends($request->all()) */
+        return view('company.index', compact('query'));
     }
 
     /**
@@ -77,7 +79,8 @@ class CompanyController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $query =  Company::find($id);
+        return view('company.edit', compact('query'));
     }
 
     /**
@@ -85,7 +88,27 @@ class CompanyController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+
+        $request->validate([
+            'code_company' => ['required', 'string', 'max:255', 'unique:companies,code_company,' . $id],
+            'company' => ['required', 'string', 'max:255', 'unique:companies,company,' . $id],
+            'branch' => ['required', 'string', 'max:255'],
+            'tax_id' => ['required', 'string', 'max:255'],
+            'id_sheet' => ['required', 'string', 'max:255'],
+        ]);
+
+        $data = Company::find($id);
+
+        $data->code_company = $request['code_company'];
+        $data->company = $request['company'];
+        $data->branch = $request['branch'];
+        $data->tax_id = $request['tax_id'];
+        $data->id_sheet = $request['id_sheet'];
+
+        $data->save();
+
+        return redirect('company')->with('message', "update สำเร็จ");
     }
 
     /**

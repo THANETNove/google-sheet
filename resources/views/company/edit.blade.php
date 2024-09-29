@@ -6,16 +6,17 @@
             <div class="col-lg-12 mb-4 order-0">
                 <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">เพิ่มข้อมูลบริษัท</h5>
+                        <h5 class="mb-0">เเก้ไขข้อมูลบริษัท</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('company-store') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('company-update', $query->id) }}" enctype="multipart/form-data">
                             @csrf
+                            @method('PUT')
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-fullname">รหัสบริษัท</label>
                                 <input type="text" class="form-control @error('code_company') is-invalid @enderror"
                                     id="basic-default-fullname" name="code_company" placeholder="รหัสบริษัท"
-                                    value="{{ old('code_company') }}">
+                                    value="{{ $query->code_company }}">
                                 @error('code_company')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -26,7 +27,7 @@
                                 <label class="form-label" for="basic-default-company">ชื่อบริษัท</label>
                                 <input type="text" class="form-control  @error('company') is-invalid @enderror"
                                     id="basic-default-company" name="company" placeholder="ACME Inc."
-                                    value="{{ old('company') }}">
+                                    value="{{ $query->company }}">
                                 @error('company')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -37,7 +38,7 @@
                                 <label class="form-label" for="basic-default-fullname">สาขา</label>
                                 <input type="text" class="form-control  @error('branch') is-invalid @enderror"
                                     id="basic-default-fullname" name="branch" placeholder="สาขา"
-                                    value="{{ old('branch') }}">
+                                    value="{{ $query->branch }}">
                                 @error('branch')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -48,7 +49,7 @@
                                 <label class="form-label" for="basic-default-company">เลขผู้เสียภาษี</label>
                                 <input type="text" class="form-control  @error('tax_id') is-invalid @enderror"
                                     id="basic-default-company" name="tax_id" placeholder="เลขผู้เสียภาษี"
-                                    value="{{ old('tax_id') }}">
+                                    value="{{ $query->tax_id }}">
                                 @error('tax_id')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -59,7 +60,7 @@
                                 <label class="form-label" for="basic-default-company">id Sheet</label>
                                 <input type="text" class="form-control @error('id_sheet') is-invalid @enderror"
                                     id="basic-default-company" name="id_sheet" placeholder="id Sheet"
-                                    value="{{ old('id_sheet') }}">
+                                    value="{{ $query->id_sheet }}">
                                 @error('id_sheet')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
