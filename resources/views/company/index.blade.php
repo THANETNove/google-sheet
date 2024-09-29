@@ -14,7 +14,7 @@
 
                     <h5 class="card-header">รายชื่อ บริษัท</h5>
                     <div class="table-responsive text-nowrap">
-                        <table class="table" style="min-height: 100hv">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -43,7 +43,7 @@
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item" href="{{ url('company-edit', $que->id) }}"><i
                                                             class="bx bx-edit-alt me-2"></i> Edit</a>
-                                                    <a class="dropdown-item" href="javascript:void(0);"><i
+                                                    <a class="dropdown-item" href="{{ url('company-delete') }}"><i
                                                             class="bx bx-trash me-2"></i> Delete</a>
                                                 </div>
                                             </div>
