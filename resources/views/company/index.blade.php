@@ -43,8 +43,11 @@
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item" href="{{ url('company-edit', $que->id) }}"><i
                                                             class="bx bx-edit-alt me-2"></i> Edit</a>
-                                                    <a class="dropdown-item" href="{{ url('company-delete') }}"><i
-                                                            class="bx bx-trash me-2"></i> Delete</a>
+                                                    <a class="dropdown-item" href="{{ url('company-delete', $que->id) }}"
+                                                        onclick="return confirm('คุณต้องการลบข้อมูลนี้หรือไม่?');"><i
+                                                            class="bx
+                                                        bx-trash me-2"></i>
+                                                        Delete</a>
                                                 </div>
                                             </div>
                                         </td>

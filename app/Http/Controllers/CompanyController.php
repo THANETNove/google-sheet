@@ -116,6 +116,8 @@ class CompanyController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = Company::find($id);
+        $data->delete();
+        return redirect('company')->with('message', "ลบข้อมูลสำเร็จ");
     }
 }

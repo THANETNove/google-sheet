@@ -17,6 +17,7 @@ Route::get('/company-create', [CompanyController::class, 'create'])->name('compa
 Route::post('/company-store', [CompanyController::class, 'store'])->name('company-store');
 Route::get('/company-edit/{id}', [CompanyController::class, 'edit'])->name('company-edit');
 Route::put('/company-update/{id}', [CompanyController::class, 'update'])->name('company-update');
+Route::get('/company-delete/{id}', [CompanyController::class, 'destroy'])->name('company-delete');
 
 
 
