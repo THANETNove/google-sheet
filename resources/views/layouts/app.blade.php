@@ -13,7 +13,7 @@
     <!-- Fonts -->
 
 
-    @include('layouts.head');
+    @include('layouts.head')
 </head>
 
 <body>
@@ -84,7 +84,7 @@
 
 
 
-    @include('layouts.footer');
+    @include('layouts.footer')
 </body>
 
 </html>
