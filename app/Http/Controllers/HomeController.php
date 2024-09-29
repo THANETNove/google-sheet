@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Company;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+
+        $query = DB::table('companies')->get();
+        return view('home', compact('query'));
+    }
+
+    public function importData($id)
+    {
+        $query =  Company::find($id);
+        return view('company.import_data', compact('query'));
     }
 }

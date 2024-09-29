@@ -23,6 +23,7 @@
 
 <!-- Vendors CSS -->
 <link rel="stylesheet" href="{{ URL::asset('/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 
 <!-- Page CSS -->

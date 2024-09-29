@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('branch')->nullable();
             $table->string('tax_id')->nullable();
             $table->string('id_sheet')->nullable();
+            $table->string('id_apps_script')->nullable();
             $table->timestamps();
         });
     }

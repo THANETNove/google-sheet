@@ -25,9 +25,10 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $query = DB::table('companies')->paginate(100);/* ->appends($request->all()) */
+        $query = DB::table('companies')->get();/* ->appends($request->all()) */
         return view('company.index', compact('query'));
     }
+   
 
     /**
      * Show the form for creating a new resource.
@@ -96,6 +97,7 @@ class CompanyController extends Controller
             'branch' => ['required', 'string', 'max:255'],
             'tax_id' => ['required', 'string', 'max:255'],
             'id_sheet' => ['required', 'string', 'max:255'],
+            'id_apps_script' => ['required', 'string', 'max:255'],
         ]);
 
         $data = Company::find($id);
@@ -105,6 +107,7 @@ class CompanyController extends Controller
         $data->branch = $request['branch'];
         $data->tax_id = $request['tax_id'];
         $data->id_sheet = $request['id_sheet'];
+        $data->id_apps_script = $request['id_apps_script'];
 
         $data->save();
 

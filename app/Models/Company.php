@@ -15,5 +15,6 @@ class Company extends Model
         'branch',
         'tax_id',
         'id_sheet',
+        'id_apps_script',
     ];
 }
