@@ -9,31 +9,62 @@
                         <h5 class="mb-0">เพิ่มบริษัท</h5>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form method="POST" action="{{ route('company-store') }}" enctype="multipart/form-data">
+                            @csrf
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-fullname">รหัสบริษัท</label>
-                                <input type="text" class="form-control" id="basic-default-fullname" name="code_company"
-                                    placeholder="รหัสบริษัท">
+                                <input type="text" class="form-control @error('code_company') is-invalid @enderror"
+                                    id="basic-default-fullname" name="code_company" placeholder="รหัสบริษัท"
+                                    value="{{ old('code_company') }}">
+                                @error('code_company')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">ชื่อบริษัท</label>
-                                <input type="text" class="form-control" id="basic-default-company" name="company"
-                                    placeholder="ACME Inc.">
+                                <input type="text" class="form-control  @error('company') is-invalid @enderror"
+                                    id="basic-default-company" name="company" placeholder="ACME Inc."
+                                    value="{{ old('company') }}">
+                                @error('company')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-fullname">สาขา</label>
-                                <input type="text" class="form-control" id="basic-default-fullname" name="branch"
-                                    placeholder="สาขา">
+                                <input type="text" class="form-control  @error('branch') is-invalid @enderror"
+                                    id="basic-default-fullname" name="branch" placeholder="สาขา"
+                                    value="{{ old('branch') }}">
+                                @error('branch')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">เลขผู้เสียภาษี</label>
-                                <input type="text" class="form-control" id="basic-default-company" name="tax_id"
-                                    placeholder="เลขผู้เสียภาษี">
+                                <input type="text" class="form-control  @error('tax_id') is-invalid @enderror"
+                                    id="basic-default-company" name="tax_id" placeholder="เลขผู้เสียภาษี"
+                                    value="{{ old('tax_id') }}">
+                                @error('tax_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">id Sheet</label>
-                                <input type="text" class="form-control" id="basic-default-company" name="id_sheet"
-                                    placeholder="id Sheet">
+                                <input type="text" class="form-control @error('id_sheet') is-invalid @enderror"
+                                    id="basic-default-company" name="id_sheet" placeholder="id Sheet"
+                                    value="{{ old('id_sheet') }}">
+                                @error('id_sheet')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
 
                             <button type="submit" class="btn btn-primary mt-3">Send</button>

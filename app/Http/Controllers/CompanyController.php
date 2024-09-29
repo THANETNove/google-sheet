@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Company;
 
 class CompanyController extends Controller
 {
@@ -38,8 +40,29 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+
+            'code_company' => ['required', 'string', 'max:255', 'unique:companies'],
+            'company' => ['required', 'string', 'max:255', 'unique:companies'],
+            'branch' => ['required', 'string', 'max:255'],
+            'tax_id' => ['required', 'string', 'max:255'],
+            'id_sheet' => ['required', 'string', 'max:255'],
+
+        ]);
+
+        $data = new Company;
+
+        $data->code_company = $request['code_company'];
+        $data->company = $request['company'];
+        $data->branch = $request['branch'];
+        $data->tax_id = $request['tax_id'];
+        $data->id_sheet = $request['id_sheet'];
+
+        $data->save();
+
+        return redirect('company')->with('message', "บันทึกสำเร็จ");
     }
+
 
     /**
      * Display the specified resource.
