@@ -56,35 +56,38 @@
         const action = 'getUsers';
         const sheets = ['General Ledger', 'General Ledger Sub', 'Account_Code'];
         const id_sheet = queryData.id_sheet;
+        const id_apps_script = queryData.id_apps_script;
         let responseData = {}; // ใช้ let เพื่อให้สามารถเปลี่ยนค่าได้
 
-        console.log('PHP query:', queryData.code_company); // แสดงข้อมูลจาก $query
-
+        console.log('PHP query:', queryData); // แสดงข้อมูลจาก $query
+        console.log('id_sheet:', id_sheet);
+        console.log('id_apps_script:', id_apps_script);
         // สร้าง array ของ Promise จากการเรียก axios
-        const axiosPromises = sheets.map(sheet => {
-            const sanitizedSheet = sheet.replace(/\s+/g, '_'); // แทนที่ช่องว่างด้วย '_'
+
+
+        if (id_sheet || id_apps_script) {
+            /*  const url =
+                 `https://script.google.com/macros/s/${id_apps_script}/exec?action=getUsers&id_sheet=${id_sheet}`; */
 
             const url =
-                `https://script.google.com/macros/s/${queryData.id_apps_script}/exec?action=${action}&sheet=${sheet}&id_sheet=${id_sheet}`;
-            return axios.get(url)
+                `https://script.google.com/macros/s/AKfycby4n-SqnsusWwlxpPp5Z-FhZ7uH-kOp5DChrBA-yxulWLKAbUShnNeuSA1KJf4Iv2UT/exec?action=getUsers&id_sheet=1NwqH-EqZsGTGCmB79m491aNd8l_Ib7kQHAUDFbhNrk8`;
+
+            axios.get(url)
                 .then(response => {
-                    console.log(`${sheet}:`, response.data);
-                    responseData[sanitizedSheet] = response.data;
+                    console.log(`response status:`, response.status);
+                    console.log(`response data:`, response.data);
+                    responseData = response.data;
+                    endImport();
                 })
                 .catch(error => {
-                    console.error(`Error in ${sheet}:`, error);
-                });
-        });
+                    console.error(`Error in request:`, error.response ? error.response.data : error.message);
 
-        // ใช้ Promise.all เพื่อตรวจสอบว่าทุก axios เสร็จแล้ว
-        Promise.all(axiosPromises)
-            .then(() => {
-                endImport(); // เรียก endImport เมื่อทุกคำสั่งเสร็จสิ้น
-            })
-            .catch(error => {
-                console.error('Error in one of the requests:', error);
-                endImport(); // แม้มีข้อผิดพลาดก็เรียก endImport เพื่อคืนสถานะ
-            });
+                });
+        }
+
+
+
+
 
         // ฟังก์ชันเพื่อซ่อน spinner และแสดงปุ่ม
         function endImport() {
@@ -99,8 +102,7 @@
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
             document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
-            const importBtn = document.getElementById('importBtn');
-            importBtn.disabled = true; // ปิดการใช้งานปุ่ม
+
 
             // ส่งข้อมูลไปยัง Laravel API
             console.log("responseData", responseData);
@@ -114,6 +116,8 @@
             // ใช้ Promise.all() หากมีคำขอเพิ่มเติมในอนาคต
             Promise.all([promise])
                 .then(() => {
+                    const importBtn = document.getElementById('importBtn');
+                    importBtn.disabled = true; // ปิดการใช้งานปุ่ม
                     Swal.fire({
                         icon: 'success',
                         title: 'นำเข้าข้อมูลสำเร็จ!',

@@ -72,7 +72,7 @@
                                 <label class="form-label" for="basic-default-company">Id Apps Script Sheet</label>
                                 <input type="text" class="form-control @error('id_apps_script') is-invalid @enderror"
                                     id="basic-default-company" name="id_apps_script" placeholder="id Sheet"
-                                    value="{{ old('id_apps_script') }}">
+                                    value="{{ $query->id_apps_script }}">
                                 @error('id_sheet')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

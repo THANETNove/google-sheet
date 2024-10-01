@@ -71,13 +71,14 @@ class CompanyController extends Controller
 
     public function saveCompanyData(Request $request)
     {
+
         // ตรวจสอบว่ามีข้อมูลใน sheets หรือไม่
-        if (!isset($request->sheets[0]['General_Ledger'])) {
+        if (!isset($request->sheets[0]['GeneralLedger'])) {
             return response()->json(['success' => false, 'message' => 'No data found for General Ledger'], 400);
         }
 
         // ดึงข้อมูลจาก request
-        $dataGeneralLedger = $request->sheets[0]['General_Ledger'];
+        $dataGeneralLedger = $request->sheets[0]['GeneralLedger'];
 
         // บันทึก General Ledger เป็น row
         foreach ($dataGeneralLedger as $item) {
@@ -112,8 +113,8 @@ class CompanyController extends Controller
         }
 
         // ตรวจสอบว่ามีข้อมูลใน General Ledger Sub หรือไม่
-        if (isset($request->sheets[0]['General_Ledger_Sub'])) {
-            $dataGeneralLedgerSub = $request->sheets[0]['General_Ledger_Sub'];
+        if (isset($request->sheets[0]['GeneralLedgerSub'])) {
+            $dataGeneralLedgerSub = $request->sheets[0]['GeneralLedgerSub'];
 
             // บันทึก General Ledger Sub เป็น row
             foreach ($dataGeneralLedgerSub as $subItem) {
