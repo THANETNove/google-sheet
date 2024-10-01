@@ -13,6 +13,39 @@
 
                     <h5 class="card-header">รายชื่อ บริษัท</h5>
 
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>{{ $query->code_company }}</p>
+                                <p>{{ $query->company }}</p>
+                                <p>{{ $query->branch }}</p>
+                                <p>{{ $query->tax_id }}</p>
+                                <p>{{ $query->id_sheet }}</p>
+                                <p>{{ $query->id_apps_script }}</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div>
+                                    <button id="importBtn" type="button" class="btn btn-primary" style="display: none;"
+                                        onclick="importDB()">
+                                        <i class='bx bx-import'></i>&nbsp; นำข้อมมูลเข้า
+                                    </button>
+
+                                    <!-- Spinner ที่ซ่อนอยู่ตอนเริ่มต้น -->
+                                    <div id="spinner" class="spinner-border text-info" role="status"
+                                        style="display:block;">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+
+                                    <!-- Progress Bar -->
+                                    <div class="progress" style="display: none;" id="progressContainer">
+                                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -21,22 +54,78 @@
     <script>
         // นำค่าตัวแปร $query จาก PHP มาใช้ใน JavaScript
         const queryData = @json($query);
-
         const action = 'getUsers';
         const sheets = ['General Ledger', 'General Ledger Sub', 'Account_Code'];
         const id_sheet = queryData.id_sheet;
+        let responseData = []; // ใช้ let เพื่อให้สามารถเปลี่ยนค่าได้
 
-        console.log('PHP query:', queryData.id_apps_script); // แสดงข้อมูลจาก $query
+        console.log('PHP query:', queryData.code_company); // แสดงข้อมูลจาก $query
 
-        sheets.forEach(sheet => {
+        // สร้าง array ของ Promise จากการเรียก axios
+        const axiosPromises = sheets.map(sheet => {
             const url =
                 `https://script.google.com/macros/s/${queryData.id_apps_script}/exec?action=${action}&sheet=${sheet}&id_sheet=${id_sheet}`;
-            axios.get(url)
+            return axios.get(url)
                 .then(response => {
                     console.log(`${sheet}:`, response.data);
-                    // สามารถใช้ queryData ในการประมวลผลข้อมูลเพิ่มเติมได้ที่นี่
+                    responseData.push({
+                        sheet: sheet,
+                        data: response.data
+                    }); // เก็บข้อมูลใน responseData
                 })
-                .catch(error => console.error(`Error in ${sheet}:`, error));
+                .catch(error => {
+                    console.error(`Error in ${sheet}:`, error);
+                });
         });
+
+        // ใช้ Promise.all เพื่อตรวจสอบว่าทุก axios เสร็จแล้ว
+        Promise.all(axiosPromises)
+            .then(() => {
+                endImport(); // เรียก endImport เมื่อทุกคำสั่งเสร็จสิ้น
+            })
+            .catch(error => {
+                console.error('Error in one of the requests:', error);
+                endImport(); // แม้มีข้อผิดพลาดก็เรียก endImport เพื่อคืนสถานะ
+            });
+
+        // ฟังก์ชันเพื่อซ่อน spinner และแสดงปุ่ม
+        function endImport() {
+            document.getElementById('importBtn').style.display = 'block';
+            document.getElementById('spinner').style.display = 'none';
+
+        }
+
+        function importDB() {
+            // แสดง Progress Bar
+            document.getElementById('progressContainer').style.display = 'block';
+            const totalSheets = responseData.length;
+            document.getElementById('importBtn').style.display = 'none'; // ซ่อน Progress Bar
+            // ส่งข้อมูลไปยัง Laravel API
+            const promises = responseData.map((item, index) => {
+                return axios.post('save-company-data', {
+                    sheet_name: item.sheet, // ชื่อ sheet
+                    data: item.data, // ข้อมูลใน sheet
+                    code_company: queryData.code_company // รหัสบริษัท
+                }).then(() => {
+                    // อัปเดต progress bar
+
+                    const progressPercentage = ((index + 1) / totalSheets) * 100;
+                    document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+                    document.getElementById('progressBar').setAttribute('aria-valuenow',
+                        progressPercentage);
+                });
+            });
+
+            // รอให้ทุกคำสั่งเสร็จสิ้น
+            Promise.all(promises)
+                .then(() => {
+                    alert("Data imported successfully!");
+                    endImport(); // เรียก endImport เมื่อทุกคำสั่งเสร็จสิ้น
+                })
+                .catch(error => {
+                    console.error('Error importing data:', error);
+                    endImport(); // แม้มีข้อผิดพลาดก็เรียก endImport เพื่อคืนสถานะ
+                });
+        }
     </script>
 @endsection

@@ -28,7 +28,7 @@ class CompanyController extends Controller
         $query = DB::table('companies')->get();/* ->appends($request->all()) */
         return view('company.index', compact('query'));
     }
-   
+
 
     /**
      * Show the form for creating a new resource.
@@ -64,6 +64,11 @@ class CompanyController extends Controller
         $data->save();
 
         return redirect('company')->with('message', "บันทึกสำเร็จ");
+    }
+
+    public function saveCompanyData(Request $request)
+    {
+        dd($request->all());
     }
 
 

@@ -19,6 +19,7 @@ Route::post('/company-store', [CompanyController::class, 'store'])->name('compan
 Route::get('/company-edit/{id}', [CompanyController::class, 'edit'])->name('company-edit');
 Route::put('/company-update/{id}', [CompanyController::class, 'update'])->name('company-update');
 Route::get('/company-delete/{id}', [CompanyController::class, 'destroy'])->name('company-delete');
+Route::post('/save-company-data', [CompanyController::class, 'saveCompanyData'])->name('save-company-data');
 
 
 
