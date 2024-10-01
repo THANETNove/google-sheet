@@ -23,25 +23,23 @@
                                 <p>{{ $query->id_sheet }}</p>
                                 <p>{{ $query->id_apps_script }}</p>
                             </div>
-                            <div class="col-md-6 text-end">
-                                <div>
-                                    <button id="importBtn" type="button" class="btn btn-primary" style="display: none;"
-                                        onclick="importDB()">
-                                        <i class='bx bx-import'></i>&nbsp; นำข้อมมูลเข้า
-                                    </button>
+                            <div class="col-md-6 text-end  justify-content-end align-items-center">
+                                <button id="importBtn" type="button" class="btn btn-primary" style="display: none;"
+                                    onclick="importDB()">
+                                    <i class='bx bx-import'></i>&nbsp; นำข้อมูลเข้า
+                                </button>
 
-                                    <!-- Spinner ที่ซ่อนอยู่ตอนเริ่มต้น -->
-                                    <div id="spinner" class="spinner-border text-info" role="status"
-                                        style="display:block;">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
+                                <button id="spinner" class="btn btn-primary" type="button">
+                                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                    <span role="status">Loading...</span>
+                                </button>
+                                <button id="uploading" class="btn btn-primary" type="button" style="display: none;">
+                                    <span class="spinner-border text-success  spinner-border-sm" aria-hidden="true"></span>
+                                    <span role="status">Uploading...</span>
+                                </button>
 
-                                    <!-- Progress Bar -->
-                                    <div class="progress" style="display: none;" id="progressContainer">
-                                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"
-                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -89,15 +87,16 @@
 
         // ฟังก์ชันเพื่อซ่อน spinner และแสดงปุ่ม
         function endImport() {
-            document.getElementById('importBtn').style.display = 'block';
+            document.getElementById('importBtn').style.display = 'inline-block';
             document.getElementById('spinner').style.display = 'none';
-            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('uploading').style.display = 'none';
+
 
         }
 
         function importDB() {
             // แสดง Progress Bar
-            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('uploading').style.display = 'inline-block';
             document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
 
             // ส่งข้อมูลไปยัง Laravel API
@@ -112,7 +111,12 @@
             // ใช้ Promise.all() หากมีคำขอเพิ่มเติมในอนาคต
             Promise.all([promise])
                 .then(() => {
-                    alert("Data imported successfully!");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'นำเข้าข้อมูลสำเร็จ!',
+                        text: 'ข้อมูลได้ถูกนำเข้าฐานข้อมูลเรียบร้อยแล้ว',
+                        confirmButtonText: 'ตกลง'
+                    });
                     endImport(); // เรียก endImport เมื่อคำสั่งเสร็จสิ้น
                 })
                 .catch(error => {

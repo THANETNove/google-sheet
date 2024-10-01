@@ -119,3 +119,14 @@
   margin-top: 16px;
   margin-right: 16px;
 }
+
+#spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner-grow {
+  display: none;
+  /* เริ่มต้นด้วยการซ่อนสปินเนอร์ทั้งหมด */
+}
