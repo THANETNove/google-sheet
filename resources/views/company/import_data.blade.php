@@ -25,7 +25,7 @@
                             </div>
                             <div class="col-md-6 text-end  justify-content-end align-items-center">
                                 <button id="importBtn" type="button" class="btn btn-primary" style="display: none;"
-                                    onclick="importDB()">
+                                    onclick="importDB()" @if ($isAllDataPresent) disabled @endif>
                                     <i class='bx bx-import'></i>&nbsp; นำข้อมูลเข้า
                                 </button>
 
@@ -98,6 +98,8 @@
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
             document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
+            const importBtn = document.getElementById('importBtn');
+            importBtn.disabled = true; // ปิดการใช้งานปุ่ม
 
             // ส่งข้อมูลไปยัง Laravel API
             console.log("responseData", responseData);

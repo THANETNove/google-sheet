@@ -33,6 +33,17 @@ class HomeController extends Controller
     public function importData($id)
     {
         $query =  Company::find($id);
-        return view('company.import_data', compact('query'));
+
+        $queryAccount = DB::table('account__codes')->where('acc_code_company', $query->code_company)->count();
+        $queryGeneral = DB::table('general_ledgers')->where('gl_code_company', $query->code_company)->count();
+        $queryGeneralSub = DB::table('general_ledger_subs')->where('gls_code_company', $query->code_company)->count();
+        $isAccountDataPresent = $queryAccount > 0;
+        $isGeneralDataPresent = $queryGeneral > 0;
+        $isGeneralSubDataPresent = $queryGeneralSub > 0;
+
+        // เช็คว่าทั้ง 3 ตารางเป็น true หรือไม่
+        $isAllDataPresent = $isAccountDataPresent && $isGeneralDataPresent && $isGeneralSubDataPresent;
+    
+        return view('company.import_data', compact('query', 'isAllDataPresent'));
     }
 }
