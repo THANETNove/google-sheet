@@ -57,21 +57,20 @@
         const action = 'getUsers';
         const sheets = ['General Ledger', 'General Ledger Sub', 'Account_Code'];
         const id_sheet = queryData.id_sheet;
-        let responseData = []; // ใช้ let เพื่อให้สามารถเปลี่ยนค่าได้
+        let responseData = {}; // ใช้ let เพื่อให้สามารถเปลี่ยนค่าได้
 
         console.log('PHP query:', queryData.code_company); // แสดงข้อมูลจาก $query
 
         // สร้าง array ของ Promise จากการเรียก axios
         const axiosPromises = sheets.map(sheet => {
+            const sanitizedSheet = sheet.replace(/\s+/g, '_'); // แทนที่ช่องว่างด้วย '_'
+
             const url =
                 `https://script.google.com/macros/s/${queryData.id_apps_script}/exec?action=${action}&sheet=${sheet}&id_sheet=${id_sheet}`;
             return axios.get(url)
                 .then(response => {
                     console.log(`${sheet}:`, response.data);
-                    responseData.push({
-                        sheet: sheet,
-                        data: response.data
-                    }); // เก็บข้อมูลใน responseData
+                    responseData[sanitizedSheet] = response.data;
                 })
                 .catch(error => {
                     console.error(`Error in ${sheet}:`, error);
@@ -92,35 +91,29 @@
         function endImport() {
             document.getElementById('importBtn').style.display = 'block';
             document.getElementById('spinner').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'none';
 
         }
 
         function importDB() {
             // แสดง Progress Bar
             document.getElementById('progressContainer').style.display = 'block';
-            const totalSheets = responseData.length;
-            document.getElementById('importBtn').style.display = 'none'; // ซ่อน Progress Bar
-            // ส่งข้อมูลไปยัง Laravel API
-            const promises = responseData.map((item, index) => {
-                return axios.post('save-company-data', {
-                    sheet_name: item.sheet, // ชื่อ sheet
-                    data: item.data, // ข้อมูลใน sheet
-                    code_company: queryData.code_company // รหัสบริษัท
-                }).then(() => {
-                    // อัปเดต progress bar
+            document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
 
-                    const progressPercentage = ((index + 1) / totalSheets) * 100;
-                    document.getElementById('progressBar').style.width = `${progressPercentage}%`;
-                    document.getElementById('progressBar').setAttribute('aria-valuenow',
-                        progressPercentage);
-                });
+            // ส่งข้อมูลไปยัง Laravel API
+            console.log("responseData", responseData);
+
+            // ส่งข้อมูลทั้งหมดใน responseData ไปยัง Laravel API ในคำขอเดียว
+            const promise = axios.post('save-company-data', {
+                code_company: queryData.code_company, // รหัสบริษัท
+                sheets: [responseData] // ข้อมูลในทุก sheet
             });
 
-            // รอให้ทุกคำสั่งเสร็จสิ้น
-            Promise.all(promises)
+            // ใช้ Promise.all() หากมีคำขอเพิ่มเติมในอนาคต
+            Promise.all([promise])
                 .then(() => {
                     alert("Data imported successfully!");
-                    endImport(); // เรียก endImport เมื่อทุกคำสั่งเสร็จสิ้น
+                    endImport(); // เรียก endImport เมื่อคำสั่งเสร็จสิ้น
                 })
                 .catch(error => {
                     console.error('Error importing data:', error);
