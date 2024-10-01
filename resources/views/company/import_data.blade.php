@@ -23,7 +23,7 @@
                                 <p>{{ $query->id_sheet }}</p>
                                 <p>{{ $query->id_apps_script }}</p>
                             </div>
-                            <div class="col-md-6 text-end  justify-content-end align-items-center">
+                            <div class="col-md-6 text-end  justify-content-end align-items-center text-mt--2">
                                 <button id="importBtn" type="button" class="btn btn-primary" style="display: none;"
                                     onclick="importDB()" @if ($isAllDataPresent) disabled @endif>
                                     <i class='bx bx-import'></i>&nbsp; นำข้อมูลเข้า
