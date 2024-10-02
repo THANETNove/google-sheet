@@ -72,13 +72,50 @@ class CompanyController extends Controller
     public function saveCompanyData(Request $request)
     {
 
+
+        if ($request->status == "add_delete") {
+            $this->addDelete($request);
+        }
+        if ($request->status == "add_new") {
+            $this->addNew($request);
+        }
+    }
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function addDelete($request)
+    {
+
         // ตรวจสอบว่ามีข้อมูลใน sheets หรือไม่
         if (!isset($request->sheets[0]['GeneralLedger'])) {
             return response()->json(['success' => false, 'message' => 'No data found for General Ledger'], 400);
         }
 
+
+        // เช็คว่ามีข้อมูลใน GeneralLedger หรือไม่ก่อนทำการลบ
+        if (GeneralLedger::where('gl_code_company', $request->code_company)->exists()) {
+            GeneralLedger::where('gl_code_company', $request->code_company)->delete();
+        }
+
+        // เช็คว่ามีข้อมูลใน GeneralLedgerSub หรือไม่ก่อนทำการลบ
+        if (GeneralLedgerSub::where('gls_code_company', $request->code_company)->exists()) {
+            GeneralLedgerSub::where('gls_code_company', $request->code_company)->delete();
+        }
+
+        // เช็คว่ามีข้อมูลใน Account_Code หรือไม่ก่อนทำการลบ
+        if (Account_Code::where('acc_code_company', $request->code_company)->exists()) {
+            Account_Code::where('acc_code_company', $request->code_company)->delete();
+        }
+
+
+
         // ดึงข้อมูลจาก request
         $dataGeneralLedger = $request->sheets[0]['GeneralLedger'];
+
+
+
 
         // บันทึก General Ledger เป็น row
         foreach ($dataGeneralLedger as $item) {
@@ -150,9 +187,115 @@ class CompanyController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     */
+    public function addNew($request)
+    {
+
+
+        // ตรวจสอบว่ามีข้อมูลใน sheets หรือไม่
+        if (!isset($request->sheets[0]['GeneralLedger'])) {
+            return response()->json(['success' => false, 'message' => 'No data found for General Ledger'], 400);
+        }
+
+        // ดึงข้อมูลจาก request
+        $dataGeneralLedger = $request->sheets[0]['GeneralLedger'];
+
+
+
+
+        // บันทึก General Ledger เป็น row
+        foreach ($dataGeneralLedger as $item) {
+            // เช็คว่ามี GL_Code ในฐานข้อมูลหรือไม่
+            $existingEntry = GeneralLedger::where('gl_code', $item['GL_Code'])->first();
+
+            if (!$existingEntry) {
+                // ถ้าไม่มี GL_Code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
+                GeneralLedger::create([
+                    'gl_code_company' => $request->code_company,
+                    'gl_code' => $item['GL_Code'] ?? null,
+                    'gl_refer' => $item['GL_Refer'] ?? null,
+                    'gl_report_vat' => $item['GL_Report_VAT'] ?? null,
+                    'gl_date' => $item['GL_Date'] ?? null,
+                    'gl_document' => $item['GL_Document'] ?? null,
+                    'gl_date_check' => $item['GL_Date_Check'] ?? null,
+                    'gl_document_check' => $item['GL_Document_Check'] ?? null,
+                    'gl_company' => $item['GL_Company'] ?? null,
+                    'gl_taxid' => $item['GL_TaxID'] ?? null,
+                    'gl_branch' => $item['GL_Branch'] ?? null,
+                    'gl_code_acc' => $item['GL_Code_Acc'] ?? null,
+                    'gl_description' => $item['GL_Description'] ?? null,
+                    'gl_code_acc_pay' => $item['GL_Code_Acc_Pay'] ?? null,
+                    'gl_date_pay' => $item['GL_Date_Pay'] ?? null,
+                    'gl_vat' => $item['GL_Vat'] ?? null,
+                    'gl_rate' => $item['GL_Rate'] ?? null,
+                    'gl_taxmonth' => $item['GL_TaxMonth'] ?? null,
+                    'gl_amount_no_vat' => $item['GL_AmountNoVat'] ?? null,
+                    'gl_amount' => $item['GL_Amount'] ?? null,
+                    'gl_tax' => $item['GL_Tax'] ?? null,
+                    'gl_total' => $item['GL_Total'] ?? null,
+                    'gl_url' => $item['GL_URL'] ?? null,
+                    'gl_page' => $item['GL_Page'] ?? null,
+                    'gl_remark' => $item['GL_Remark'] ?? null,
+                    'gl_email' => $item['GL_Email'] ?? null,
+                ]);
+            }
+        }
+
+        // ตรวจสอบว่ามีข้อมูลใน General Ledger Sub หรือไม่
+        // ตรวจสอบว่ามีข้อมูลใน General Ledger Sub หรือไม่
+        if (isset($request->sheets[0]['GeneralLedgerSub'])) {
+            $dataGeneralLedgerSub = $request->sheets[0]['GeneralLedgerSub'];
+
+            // บันทึก General Ledger Sub เป็น row
+            foreach ($dataGeneralLedgerSub as $subItem) {
+                // เช็คว่ามี gls_code ในฐานข้อมูลหรือไม่
+                $existingSubEntry = GeneralLedgerSub::where('gls_code', $subItem['GLS_Code'])->first();
+
+                if (!$existingSubEntry) {
+                    // ถ้าไม่มี gls_code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
+                    GeneralLedgerSub::create([
+                        'gls_code_company' => $request->code_company,
+                        'gls_code' => $subItem['GLS_Code'] ?? null,
+                        'gls_id' => $subItem['GLS_ID'] ?? null,
+                        'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
+                        'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
+                        'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
+                        'gls_debit' => $subItem['GLS_Debit'] ?? null,
+                        'gls_credit' => $subItem['GLS_Credit'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+
+        // ตรวจสอบว่ามีข้อมูลใน Account Code หรือไม่
+        // ตรวจสอบว่ามีข้อมูลใน Account Code หรือไม่
+        if (isset($request->sheets[0]['Account_Code'])) {
+            $dataAccountCode = $request->sheets[0]['Account_Code'];
+
+            // บันทึก Account Code เป็น row
+            foreach ($dataAccountCode as $accountItem) {
+                // เช็คว่ามี acc_code ในฐานข้อมูลหรือไม่
+                $existingAccountEntry = Account_Code::where('acc_code', $accountItem['ACC_Code'])->first();
+
+                if (!$existingAccountEntry) {
+                    // ถ้าไม่มี acc_code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
+                    Account_Code::create([
+                        'acc_code_company' => $request->code_company,
+                        'acc_code' => $accountItem['ACC_Code'] ?? null,
+                        'acc_name' => $accountItem['ACC_Name'] ?? null,
+                        'acc_type' => $accountItem['ACC_Type'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+
+        return response()->json(['success' => true, 'message' => 'Data saved successfully']);
+    }
+
+
+
+
     public function show(string $id)
     {
         //

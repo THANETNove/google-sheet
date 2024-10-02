@@ -15,7 +15,7 @@
 
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-6  order-2 order-md-1">
+                            <div class="col-md-4  order-2 order-md-1">
                                 <p>{{ $query->code_company }}</p>
                                 <p>{{ $query->company }}</p>
                                 <p>{{ $query->branch }}</p>
@@ -23,23 +23,72 @@
                                 <p>{{ $query->id_sheet }}</p>
                                 <p>{{ $query->id_apps_script }}</p>
                             </div>
-                            <div
-                                class="col-md-6 text-end  justify-content-end align-items-center text-mt--2 order-1 order-md-2">
-                                <button id="importBtn" type="button" class="btn btn-primary" style="display: none;"
-                                    onclick="importDB()" @if ($isAllDataPresent) disabled @endif>
-                                    <i class='bx bx-import'></i>&nbsp; นำข้อมูลเข้า
-                                </button>
+                            <div class="col-md-8  text-mt--2 order-1 order-md-2">
+                                <div class="text-end  justify-content-end align-items-center">
+                                    <div class="row">
 
-                                <button id="spinner" class="btn btn-primary" type="button">
-                                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                                    <span role="status">Loading...</span>
-                                </button>
-                                <button id="uploading" class="btn btn-primary" type="button" style="display: none;">
-                                    <span class="spinner-border text-success  spinner-border-sm" aria-hidden="true"></span>
-                                    <span role="status">Uploading...</span>
-                                </button>
+                                        <div class="col-12 mb-3">
+                                            <button id="importBtn" type="button" class="btn btn-primary"
+                                                style="display: none;" onclick="confirmImport('add_delete')">
+                                                <i class='bx bx-import'></i>&nbsp; นำข้อมูลเข้าเเละลบข้อมูลเก่า
+                                            </button>
+                                        </div>
+                                        <div class="col-12">
+                                            <button id="importBtn2" type="button" class="btn btn-primary"
+                                                style="display: none;" onclick="confirmImport('add_new')">
+                                                <i class='bx bx-import'></i>&nbsp; นำข้อมูลเเค่อันใหม่เข้า
+                                            </button>
+                                        </div>
+
+                                    </div>
 
 
+                                    <button id="spinner" class="btn btn-primary" type="button">
+                                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                        <span role="status">Loading...</span>
+                                    </button>
+                                    <button id="uploading" class="btn btn-primary" type="button" style="display: none;">
+                                        <span class="spinner-border text-success  spinner-border-sm"
+                                            aria-hidden="true"></span>
+                                        <span role="status">Uploading...</span>
+                                    </button>
+                                </div>
+
+
+                                <div class="card">
+                                    <h5 class="card-header">Table Caption</h5>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Project</th>
+                                                    <th>Client</th>
+                                                    <th>Users</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        Angular Project
+                                                    </td>
+                                                    <td>Albert Cook</td>
+                                                    <td>Albert Cook</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+
+                                                        Bootstrap Project
+                                                    </td>
+                                                    <td>Jerry Milton</td>
+                                                    <td>Jerry Milton</td>
+
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -59,9 +108,9 @@
         const id_apps_script = queryData.id_apps_script;
         let responseData = {}; // ใช้ let เพื่อให้สามารถเปลี่ยนค่าได้
 
-        console.log('PHP query:', queryData); // แสดงข้อมูลจาก $query
+        /* console.log('PHP query:', queryData); // แสดงข้อมูลจาก $query
         console.log('id_sheet:', id_sheet);
-        console.log('id_apps_script:', id_apps_script);
+        console.log('id_apps_script:', id_apps_script); */
         // สร้าง array ของ Promise จากการเรียก axios
 
 
@@ -74,8 +123,8 @@
 
             axios.get(url)
                 .then(response => {
-                    console.log(`response status:`, response.status);
-                    console.log(`response data:`, response.data);
+                    /*  console.log(`response status:`, response.status);
+                     console.log(`response data:`, response.data); */
                     responseData = response.data;
                     endImport();
                 })
@@ -92,32 +141,59 @@
         // ฟังก์ชันเพื่อซ่อน spinner และแสดงปุ่ม
         function endImport() {
             document.getElementById('importBtn').style.display = 'inline-block';
+            document.getElementById('importBtn2').style.display = 'inline-block';
             document.getElementById('spinner').style.display = 'none';
             document.getElementById('uploading').style.display = 'none';
 
 
         }
 
-        function importDB() {
+
+
+        function confirmImport(type) {
+            let message = type === 'add_delete' ?
+                "คุณแน่ใจหรือไม่ว่าต้องการนำข้อมูลเข้าและลบข้อมูลเก่า?" :
+                "คุณแน่ใจหรือไม่ว่าต้องการนำเข้าเฉพาะข้อมูลใหม่?";
+
+            Swal.fire({
+                title: 'ยืนยันการนำข้อมูลเข้า',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ใช่, ดำเนินการต่อ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ถ้าผู้ใช้กดยืนยัน (OK) เรียกใช้ฟังก์ชัน importDB
+                    importDB(type);
+                }
+            });
+        }
+
+        function importDB(e) {
+
+
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
             document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
+            document.getElementById('importBtn2').style.display = 'none'; // ซ่อนปุ่ม
 
 
             // ส่งข้อมูลไปยัง Laravel API
-            console.log("responseData", responseData);
 
             // ส่งข้อมูลทั้งหมดใน responseData ไปยัง Laravel API ในคำขอเดียว
             const promise = axios.post('save-company-data', {
-                code_company: queryData.code_company, // รหัสบริษัท
+                code_company: queryData.id, // รหัสบริษัท
+                status: e, // รหัสบริษัท
                 sheets: [responseData] // ข้อมูลในทุก sheet
             });
 
             // ใช้ Promise.all() หากมีคำขอเพิ่มเติมในอนาคต
             Promise.all([promise])
                 .then(() => {
-                    const importBtn = document.getElementById('importBtn');
-                    importBtn.disabled = true; // ปิดการใช้งานปุ่ม
+
                     Swal.fire({
                         icon: 'success',
                         title: 'นำเข้าข้อมูลสำเร็จ!',
@@ -127,7 +203,7 @@
                     endImport(); // เรียก endImport เมื่อคำสั่งเสร็จสิ้น
                 })
                 .catch(error => {
-                    console.error('Error importing data:', error);
+
                     endImport(); // แม้มีข้อผิดพลาดก็เรียก endImport เพื่อคืนสถานะ
                 });
         }
