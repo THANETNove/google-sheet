@@ -43,7 +43,21 @@ class HomeController extends Controller
 
         // เช็คว่าทั้ง 3 ตารางเป็น true หรือไม่
         $isAllDataPresent = $isAccountDataPresent && $isGeneralDataPresent && $isGeneralSubDataPresent;
-    
+
         return view('company.import_data', compact('query', 'isAllDataPresent'));
+    }
+    public function countData($id)
+    {
+
+        $query =  Company::find($id);
+
+        $queryAccount = DB::table('account__codes')->where('acc_code_company', $query->id)->count();
+        $queryGeneral = DB::table('general_ledgers')->where('gl_code_company', $query->id)->count();
+        $queryGeneralSub = DB::table('general_ledger_subs')->where('gls_code_company', $query->id)->count();
+
+
+        // เช็คว่าทั้ง 3 ตารางเป็น true หรือไม่
+
+        return response()->json(["queryAccount" => $queryAccount, "queryGeneral" =>  $queryGeneral, "queryGeneralSub" => $queryGeneralSub]);
     }
 }

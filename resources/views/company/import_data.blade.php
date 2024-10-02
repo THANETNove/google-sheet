@@ -11,19 +11,18 @@
                         $query = isset($query) ? $query : [];
                     @endphp
 
-                    <h5 class="card-header">รายชื่อ บริษัท</h5>
+                    <h5 class="card-header">ข้อมูลบริษัท</h5>
 
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-4  order-2 order-md-1">
-                                <p>{{ $query->code_company }}</p>
-                                <p>{{ $query->company }}</p>
-                                <p>{{ $query->branch }}</p>
-                                <p>{{ $query->tax_id }}</p>
-                                <p>{{ $query->id_sheet }}</p>
-                                <p>{{ $query->id_apps_script }}</p>
+                            <div class="col-md-8  order-2 order-md-1">
+                                <p><span>รหัสบริษัท: &nbsp; </span>{{ $query->code_company }}</p>
+                                <p><span>ชื่อบริษัท: &nbsp; </span>{{ $query->company }}</p>
+                                <p><span>สาขา: &nbsp; </span>{{ $query->branch }}</p>
+                                <p><span>เลขผู้เสียภาษี: &nbsp; </span>{{ $query->tax_id }}</p>
+
                             </div>
-                            <div class="col-md-8  text-mt--2 order-1 order-md-2">
+                            <div class="col-md-4  text-mt--2 order-1 order-md-2">
                                 <div class="text-end  justify-content-end align-items-center">
                                     <div class="row">
 
@@ -52,48 +51,53 @@
                                             aria-hidden="true"></span>
                                         <span role="status">Uploading...</span>
                                     </button>
+
+
                                 </div>
-
-
-                                <div class="card">
-                                    <h5 class="card-header">Table Caption</h5>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Project</th>
-                                                    <th>Client</th>
-                                                    <th>Users</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        Angular Project
-                                                    </td>
-                                                    <td>Albert Cook</td>
-                                                    <td>Albert Cook</td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-
-                                                        Bootstrap Project
-                                                    </td>
-                                                    <td>Jerry Milton</td>
-                                                    <td>Jerry Milton</td>
-
-
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div class="mt-5">
+                                    <p> จำนวน General Ledger DB: &nbsp; &nbsp;<span id="gl_db"> </span></p>
+                                    <p>จำนวน General Ledger Sub DB: &nbsp; &nbsp;<span id="gl_db_sub"> </span>
+                                    </p>
+                                    <p>จำนวน Account_Code DB: &nbsp; &nbsp;<span id="ac_db"> </span></p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
 
+
+                    <div class="table-responsive mt-5 table-min-height">
+                        <h5 class="card-header">รายชื่อบริษใน Google Sheet </h5>
+                        <div class="col m-3">
+                            <input type="text" class="form-control" id="defaultFormControlInput"
+                                oninput="searchData(this.value)" placeholder="Search"
+                                aria-describedby="defaultFormControlHelp">
+                        </div>
+                        <table class="table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>GL_Code</th>
+                                    <th>GL_Company</th>
+                                    <th>GL_Amount</th>
+                                    <th>GL_Tax</th>
+                                    <th>GL_Total</th>
+                                    <th>GL_Date</th>
+                                    <th>GL_Report_VAT</th>
+                                    <th>GL_Document</th>
+                                    <th>GL_Date_Check</th>
+                                    <th>GL_Document_Check</th>
+                                    <th>GL_TaxID</th>
+                                    <th>GL_Code_Acc</th>
+                                    <th>GL_Description</th>
+                                    <th>GL_Code_Acc_Pay</th>
+                                    <th>GL_Date_Pay</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Rows will be added dynamically here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -112,21 +116,53 @@
         console.log('id_sheet:', id_sheet);
         console.log('id_apps_script:', id_apps_script); */
         // สร้าง array ของ Promise จากการเรียก axios
+        // เรียกใช้งานฟังก์ชันทันที
+        queryCountData();
+
+        function queryCountData() {
+            if (queryData.id) {
+                const urlCount = `/count-data/${queryData.id}`;
+
+                axios.get(urlCount)
+                    .then(response => {
+                        console.log("response", response.data); // แสดง response data ที่ได้
+
+                        // ตั้งค่า innerHTML สำหรับ General Ledger DB
+                        const glDb = document.getElementById('gl_db');
+                        glDb.innerHTML =
+                            `${(response.data.queryGeneral).toLocaleString()}`;
+
+                        // ตั้งค่า innerHTML สำหรับ General Ledger Sub DB
+                        const glDbSub = document.getElementById('gl_db_sub');
+                        glDbSub.innerHTML =
+                            `${(response.data.queryGeneralSub).toLocaleString()}`;
+
+                        // ตั้งค่า innerHTML สำหรับ Account_Code DB
+                        const acDb = document.getElementById('ac_db');
+                        acDb.innerHTML =
+                            `${(response.data.queryAccount).toLocaleString()}`;
+                    })
+                    .catch(error => {
+                        console.error(`Error in request:`, error.response ? error.response.data : error.message);
+                    });
+            }
+        }
+
+
 
 
         if (id_sheet || id_apps_script) {
-            /*  const url =
-                 `https://script.google.com/macros/s/${id_apps_script}/exec?action=getUsers&id_sheet=${id_sheet}`; */
-
             const url =
-                `https://script.google.com/macros/s/AKfycby4n-SqnsusWwlxpPp5Z-FhZ7uH-kOp5DChrBA-yxulWLKAbUShnNeuSA1KJf4Iv2UT/exec?action=getUsers&id_sheet=1NwqH-EqZsGTGCmB79m491aNd8l_Ib7kQHAUDFbhNrk8`;
+                `https://script.google.com/macros/s/${id_apps_script}/exec?action=getUsers&id_sheet=${id_sheet}`;
+
+
 
             axios.get(url)
                 .then(response => {
-                    /*  console.log(`response status:`, response.status);
-                     console.log(`response data:`, response.data); */
+
                     responseData = response.data;
                     endImport();
+                    displayData(responseData.GeneralLedger)
                 })
                 .catch(error => {
                     console.error(`Error in request:`, error.response ? error.response.data : error.message);
@@ -135,6 +171,66 @@
         }
 
 
+        function searchData(query) {
+            const rows = document.querySelectorAll('#tableBody tr'); // เลือกทุกแถวใน tbody
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                // วนลูปตรวจสอบข้อมูลในแต่ละคอลัมน์ของแถว
+                for (let i = 0; i < cells.length; i++) { // เปลี่ยนเริ่มต้นเป็น 0
+                    if (cells[i].textContent.toLowerCase().includes(query
+                            .toLowerCase())) { // ใช้ includes แทน indexOf
+                        found = true; // หากพบข้อมูลที่ตรงกัน
+                        break; // ไม่ต้องตรวจสอบคอลัมน์อื่นอีก
+                    }
+                }
+
+                // แสดงหรือซ่อนแถวตามผลการค้นหา
+                if (found) {
+                    row.style.display = ''; // แสดงแถว
+                } else {
+                    row.style.display = 'none'; // ซ่อนแถว
+                }
+            });
+        }
+
+        function displayData(data) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = ''; // ล้างข้อมูลเดิมในตารางก่อน
+
+            // สมมุติว่า responseData มีข้อมูลเป็น array ของ object
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                <td>
+                    <input type="checkbox" name="selectedItems[]" value="${item.GL_Code}" id="check_${index}">
+                </td>
+                <td>${item.GL_Code}</td>
+                <td>${item.GL_Company}</td>
+                <td>${item.GL_Amount}</td>
+                <td>${item.GL_Tax}</td>
+                <td>${item.GL_Total}</td>
+                <td>${item.GL_Date}</td>
+                <td>${item.GL_Report_VAT}</td>
+                
+                <td>${item.GL_Document}</td>
+                <td>${item.GL_Date_Check}</td>
+                <td>${item.GL_Document_Check}</td>
+            
+                <td>${item.GL_TaxID}</td>
+                <td>${item.GL_Code_Acc}</td>
+                <td>${item.GL_Description}</td>
+                <td>${item.GL_Code_Acc_Pay}</td>
+                <td>${item.GL_Date_Pay}</td>
+      
+            `;
+
+                tableBody.appendChild(row);
+            });
+        }
 
 
 
@@ -174,7 +270,7 @@
 
         function importDB(e) {
 
-
+            queryCountData();
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
             document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
