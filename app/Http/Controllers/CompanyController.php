@@ -94,7 +94,7 @@ class CompanyController extends Controller
         }
 
 
-    /*     // เช็คว่ามีข้อมูลใน GeneralLedger หรือไม่ก่อนทำการลบ
+        // เช็คว่ามีข้อมูลใน GeneralLedger หรือไม่ก่อนทำการลบ
         if (GeneralLedger::where('gl_code_company', $request->code_company)->exists()) {
             GeneralLedger::where('gl_code_company', $request->code_company)->delete();
         }
@@ -108,7 +108,7 @@ class CompanyController extends Controller
         if (Account_Code::where('acc_code_company', $request->code_company)->exists()) {
             Account_Code::where('acc_code_company', $request->code_company)->delete();
         }
- */
+
 
 
         // ดึงข้อมูลจาก request

@@ -16,11 +16,15 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8  order-2 order-md-1">
+
                                 <p><span>รหัสบริษัท: &nbsp; </span>{{ $query->code_company }}</p>
                                 <p><span>ชื่อบริษัท: &nbsp; </span>{{ $query->company }}</p>
                                 <p><span>สาขา: &nbsp; </span>{{ $query->branch }}</p>
                                 <p><span>เลขผู้เสียภาษี: &nbsp; </span>{{ $query->tax_id }}</p>
-
+                                <p> จำนวน General Ledger DB: &nbsp; &nbsp;<span id="gl_db"> </span></p>
+                                <p>จำนวน General Ledger Sub DB: &nbsp; &nbsp;<span id="gl_db_sub"> </span>
+                                </p>
+                                <p>จำนวน Account_Code DB: &nbsp; &nbsp;<span id="ac_db"> </span></p>
                             </div>
                             <div class="col-md-4  text-mt--2 order-1 order-md-2">
                                 <div class="text-end  justify-content-end align-items-center">
@@ -52,14 +56,8 @@
                                         <span role="status">Uploading...</span>
                                     </button>
 
+                                </div>
 
-                                </div>
-                                <div class="mt-5">
-                                    <p> จำนวน General Ledger DB: &nbsp; &nbsp;<span id="gl_db"> </span></p>
-                                    <p>จำนวน General Ledger Sub DB: &nbsp; &nbsp;<span id="gl_db_sub"> </span>
-                                    </p>
-                                    <p>จำนวน Account_Code DB: &nbsp; &nbsp;<span id="ac_db"> </span></p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -270,7 +268,7 @@
 
         function importDB(e) {
 
-            queryCountData();
+
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
             document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
@@ -289,7 +287,7 @@
             // ใช้ Promise.all() หากมีคำขอเพิ่มเติมในอนาคต
             Promise.all([promise])
                 .then(() => {
-
+                    queryCountData();
                     Swal.fire({
                         icon: 'success',
                         title: 'นำเข้าข้อมูลสำเร็จ!',
