@@ -11,20 +11,22 @@
                         $query = isset($query) ? $query : [];
                     @endphp
 
-                    <h5 class="card-header">ข้อมูลบริษัท</h5>
+                    <h5 class="card-header"></h5>
 
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8  order-2 order-md-1">
 
-                                <p><span>รหัสบริษัท: &nbsp; </span>{{ $query->code_company }}</p>
-                                <p><span>ชื่อบริษัท: &nbsp; </span>{{ $query->company }}</p>
-                                <p><span>สาขา: &nbsp; </span>{{ $query->branch }}</p>
-                                <p><span>เลขผู้เสียภาษี: &nbsp; </span>{{ $query->tax_id }}</p>
-                                <p> จำนวน General Ledger DB: &nbsp; &nbsp;<span id="gl_db"> </span></p>
-                                <p>จำนวน General Ledger Sub DB: &nbsp; &nbsp;<span id="gl_db_sub"> </span>
-                                </p>
-                                <p>จำนวน Account_Code DB: &nbsp; &nbsp;<span id="ac_db"> </span></p>
+                                <h4 class="mb-3">ข้อมูลบริษัท</h4>
+                                <div class="border p-3 rounded shadow-sm">
+                                    <p><strong>รหัสบริษัท:</strong> {{ $query->code_company }}</p>
+                                    <p><strong>ชื่อบริษัท:</strong> {{ $query->company }}</p>
+                                    <p><strong>สาขา:</strong> {{ $query->branch }}</p>
+                                    <p><strong>เลขผู้เสียภาษี:</strong> {{ $query->tax_id }}</p>
+                                    <p><strong>จำนวน General Ledger DB:</strong> <span id="gl_db"> </span></p>
+                                    <p><strong>จำนวน General Ledger Sub DB:</strong> <span id="gl_db_sub"> </span></p>
+                                    <p><strong>จำนวน Account_Code DB:</strong> <span id="ac_db"> </span></p>
+                                </div>
                             </div>
                             <div class="col-md-4  text-mt--2 order-1 order-md-2">
                                 <div class="text-end  justify-content-end align-items-center">
@@ -64,11 +66,27 @@
 
 
                     <div class="table-responsive mt-5 table-min-height">
-                        <h5 class="card-header">รายชื่อบริษใน Google Sheet </h5>
+                        <h5 class="card-header">ข้อมูลใน Google Sheet </h5>
+                        {{--   <button id="importBtn3" type="button" class="btn btn-primary" onclick="confirmImport('add_new')">
+                            <i class='bx bx-import'></i>&nbsp; นำข้อมูลที่เลือก
+                        </button>
                         <div class="col m-3">
                             <input type="text" class="form-control" id="defaultFormControlInput"
                                 oninput="searchData(this.value)" placeholder="Search"
                                 aria-describedby="defaultFormControlHelp">
+                        </div> --}}
+                        <div class="col m-3">
+                            <input type="text" class="form-control" id="defaultFormControlInput"
+                                oninput="searchData(this.value)" placeholder="Search"
+                                aria-describedby="defaultFormControlHelp">
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div class="m-3">
+                                <button id="importBtn3" type="button" class="btn btn-primary" style="display: none;"
+                                    onclick="confirmImport('add_choose')">
+                                    <i class='bx bx-import'></i>&nbsp; นำข้อมูลที่เลือก
+                                </button>
+                            </div>
                         </div>
                         <table class="table" id="dataTable">
                             <thead>
@@ -110,9 +128,6 @@
         const id_apps_script = queryData.id_apps_script;
         let responseData = {}; // ใช้ let เพื่อให้สามารถเปลี่ยนค่าได้
 
-        /* console.log('PHP query:', queryData); // แสดงข้อมูลจาก $query
-        console.log('id_sheet:', id_sheet);
-        console.log('id_apps_script:', id_apps_script); */
         // สร้าง array ของ Promise จากการเรียก axios
         // เรียกใช้งานฟังก์ชันทันที
         queryCountData();
@@ -123,8 +138,6 @@
 
                 axios.get(urlCount)
                     .then(response => {
-                        console.log("response", response.data); // แสดง response data ที่ได้
-
                         // ตั้งค่า innerHTML สำหรับ General Ledger DB
                         const glDb = document.getElementById('gl_db');
                         glDb.innerHTML =
@@ -159,6 +172,8 @@
                 .then(response => {
 
                     responseData = response.data;
+
+
                     endImport();
                     displayData(responseData.GeneralLedger)
                 })
@@ -236,6 +251,7 @@
         function endImport() {
             document.getElementById('importBtn').style.display = 'inline-block';
             document.getElementById('importBtn2').style.display = 'inline-block';
+            document.getElementById('importBtn3').style.display = 'inline-block';
             document.getElementById('spinner').style.display = 'none';
             document.getElementById('uploading').style.display = 'none';
 
@@ -269,10 +285,42 @@
         function importDB(e) {
 
 
+            console.log("e", e);
+
+
+            const selectedItems = Array.from(document.querySelectorAll('input[name="selectedItems[]"]:checked'))
+                .map(checkbox => checkbox.value);
+
+            console.log("selectedItems", selectedItems);
+            let selectedData = {
+                GeneralLedger: [],
+                GeneralLedgerSub: [],
+                Account_Code: []
+            };
+
+            if (e == "add_choose") {
+                const selectedDataGl = responseData.GeneralLedger.filter(item =>
+                    selectedItems.includes(item.GL_Code)
+                );
+                const selectedDataGlSub = responseData.GeneralLedgerSub.filter(item =>
+                    selectedItems.includes(item.GLS_GL_Code)
+                );
+                const selectedDataAcc = responseData.Account_Code.filter(item =>
+                    selectedItems.includes(item.acc_Code_Com)
+                );
+                selectedData = {
+                    GeneralLedger: selectedDataGl,
+                    GeneralLedgerSub: selectedDataGlSub,
+                    Account_Code: selectedDataAcc
+                };
+
+
+            }
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
             document.getElementById('importBtn').style.display = 'none'; // ซ่อนปุ่ม
             document.getElementById('importBtn2').style.display = 'none'; // ซ่อนปุ่ม
+            document.getElementById('importBtn3').style.display = 'none'; // ซ่อนปุ่ม
 
 
             // ส่งข้อมูลไปยัง Laravel API
@@ -281,12 +329,17 @@
             const promise = axios.post('save-company-data', {
                 code_company: queryData.id, // รหัสบริษัท
                 status: e, // รหัสบริษัท
-                sheets: [responseData] // ข้อมูลในทุก sheet
+                sheets: e != "add_choose" ? [responseData] : [selectedData] // ข้อมูลในทุก sheet
             });
 
             // ใช้ Promise.all() หากมีคำขอเพิ่มเติมในอนาคต
             Promise.all([promise])
                 .then(() => {
+
+                    var checkboxes = document.querySelectorAll('input[name="selectedItems[]"]:checked');
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = false; // เปลี่ยนค่าเป็น false
+                    });
                     queryCountData();
                     Swal.fire({
                         icon: 'success',

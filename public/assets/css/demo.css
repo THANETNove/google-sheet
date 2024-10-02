@@ -131,6 +131,18 @@
   /* เริ่มต้นด้วยการซ่อนสปินเนอร์ทั้งหมด */
 }
 
-.text-mt--2 {
-  margin-top: -44px;
+@media (max-width: 576px) {
+  .text-mt--2 {
+    margin-bottom: 32px;
+  }
 }
+
+@media (min-width: 576px) {
+  .text-mt--2 {
+    margin-top: -16px;
+  }
+}
+
+/* .text-mt--2 {
+  margin-top: -44px;
+} */
