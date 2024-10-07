@@ -91,28 +91,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="basic-default-company">email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    id="basic-default-company" name="email" placeholder="Email"
-                                    value="{{ $query->email }}" required>
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="basic-default-company">Password</label>
-                                <input type="text" class="form-control @error('password') is-invalid @enderror"
-                                    id="basic-default-company" name="password" placeholder="Password" required
-                                    value="{{ $query->password }}">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+
 
                             <button type="submit" class="btn btn-primary mt-3">Send</button>
                         </form>

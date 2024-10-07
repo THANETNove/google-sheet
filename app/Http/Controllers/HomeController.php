@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\Company;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -34,13 +34,15 @@ class HomeController extends Controller
     public function google_sheet()
     {
 
-        $query = DB::table('companies')->get();
+        $query = DB::table('users')
+            ->where('status', 0)
+            ->get();
         return view('update.index', compact('query'));
     }
 
     public function importData($id)
     {
-        $query =  Company::find($id);
+        $query =  User::find($id);
 
         $queryAccount = DB::table('account__codes')->where('acc_code_company', $query->code_company)->count();
         $queryGeneral = DB::table('general_ledgers')->where('gl_code_company', $query->code_company)->count();
@@ -57,7 +59,7 @@ class HomeController extends Controller
     public function countData($id)
     {
 
-        $query =  Company::find($id);
+        $query =  User::find($id);
 
         $queryAccount = DB::table('account__codes')->where('acc_code_company', $query->id)->count();
         $queryGeneral = DB::table('general_ledgers')->where('gl_code_company', $query->id)->count();

@@ -103,6 +103,7 @@ class CompanyController extends Controller
     public function addDelete($request)
     {
 
+
         // ตรวจสอบว่ามีข้อมูลใน sheets หรือไม่
         if (!isset($request->sheets[0]['GeneralLedger'])) {
             return response()->json(['success' => false, 'message' => 'No data found for General Ledger'], 400);
@@ -424,8 +425,6 @@ class CompanyController extends Controller
             'id_sheet' => ['required', 'string', 'max:255'],
             'id_apps_script' => ['required', 'string', 'max:255'],
             'accounting_period' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'max:255', 'unique:users,email,' . $id],
-            'password' => ['required', 'string', 'max:255'],
         ]);
 
         $data = User::find($id);
@@ -437,8 +436,6 @@ class CompanyController extends Controller
         $data->id_sheet = $request['id_sheet'];
         $data->id_apps_script = $request['id_apps_script'];
         $data->accounting_period = $request['accounting_period'];
-        $data->email = $request['email'];
-        $data->password =  Hash::make($request['password']);
 
 
         $data->save();

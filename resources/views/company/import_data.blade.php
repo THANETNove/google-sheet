@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-8  order-2 order-md-1">
 
-                                <h4 class="mb-3">บริษัท &nbsp; {{ $query->company }}</h4>
+                                <h4 class="mb-3">บริษัท {{ $query->company }} </h4>
                                 {{-- <div class="border p-3 rounded shadow-sm">
                                     <p><strong>รหัสบริษัท:</strong> {{ $query->code_company }}</p>
                                     <p><strong>ชื่อบริษัท:</strong> {{ $query->company }}</p>
@@ -130,34 +130,8 @@
 
         // สร้าง array ของ Promise จากการเรียก axios
         // เรียกใช้งานฟังก์ชันทันที
-        queryCountData();
 
-        function queryCountData() {
-            if (queryData.id) {
-                const urlCount = `/count-data/${queryData.id}`;
 
-                axios.get(urlCount)
-                    .then(response => {
-                        // ตั้งค่า innerHTML สำหรับ General Ledger DB
-                        const glDb = document.getElementById('gl_db');
-                        glDb.innerHTML =
-                            `${(response.data.queryGeneral).toLocaleString()}`;
-
-                        // ตั้งค่า innerHTML สำหรับ General Ledger Sub DB
-                        const glDbSub = document.getElementById('gl_db_sub');
-                        glDbSub.innerHTML =
-                            `${(response.data.queryGeneralSub).toLocaleString()}`;
-
-                        // ตั้งค่า innerHTML สำหรับ Account_Code DB
-                        const acDb = document.getElementById('ac_db');
-                        acDb.innerHTML =
-                            `${(response.data.queryAccount).toLocaleString()}`;
-                    })
-                    .catch(error => {
-                        console.error(`Error in request:`, error.response ? error.response.data : error.message);
-                    });
-            }
-        }
 
 
 
@@ -285,7 +259,7 @@
         function importDB(e) {
 
 
-            console.log("e", e);
+
 
 
             const selectedItems = Array.from(document.querySelectorAll('input[name="selectedItems[]"]:checked'))
@@ -326,7 +300,7 @@
             // ส่งข้อมูลไปยัง Laravel API
 
             // ส่งข้อมูลทั้งหมดใน responseData ไปยัง Laravel API ในคำขอเดียว
-            const promise = axios.post('save-company-data', {
+            const promise = axios.post('/save-company-data', {
                 code_company: queryData.id, // รหัสบริษัท
                 status: e, // รหัสบริษัท
                 sheets: e != "add_choose" ? [responseData] : [selectedData] // ข้อมูลในทุก sheet
@@ -336,11 +310,13 @@
             Promise.all([promise])
                 .then(() => {
 
+
+                    console.log("5666");
                     var checkboxes = document.querySelectorAll('input[name="selectedItems[]"]:checked');
                     checkboxes.forEach(function(checkbox) {
                         checkbox.checked = false; // เปลี่ยนค่าเป็น false
                     });
-                    queryCountData();
+
                     Swal.fire({
                         icon: 'success',
                         title: 'นำเข้าข้อมูลสำเร็จ!',
