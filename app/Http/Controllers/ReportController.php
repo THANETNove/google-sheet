@@ -14,9 +14,11 @@ class ReportController extends Controller
     {
 
 
-        $query = DB::table('companies')->get();
+        $query = DB::table('users')
+            ->where('status', 0)
+            ->get();
 
-        return view('report.index', compact('query'));
+        return view('report.general_journal.index', compact('query'));
     }
 
     /**
@@ -40,7 +42,12 @@ class ReportController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $query = DB::table('general_ledgers')
+            ->leftJoin('general_ledger_subs', 'general_ledgers.gl_code_company', 'general_ledger_subs.gls_code_company')
+            ->get();
+
+        dd("query", $query);
+        return view('report.general_journal.index', compact('query'));
     }
 
     /**

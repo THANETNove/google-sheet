@@ -1,7 +1,8 @@
 @extends('layouts.appHome')
 
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+    ASDASD
+    {{--   <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-lg-12 mb-4 order-0">
 
@@ -36,19 +37,25 @@
                                                 </button>
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item"
-                                                        href="{{ url('report/general_journal/company', $que->id) }}">
+                                                        href="{{ url('update/import-data', $que->id) }}">
                                                         <i class='bx bxs-data me-2'></i>
-                                                        </a>
+                                                        นำเข้าข้อมูล</a>
+
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
+
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+
+
         </div>
-    </div>
+
+    </div> --}}
 @endsection

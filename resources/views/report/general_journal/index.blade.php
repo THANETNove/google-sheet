@@ -15,7 +15,7 @@
                                     <th>รหัสบริษัท</th>
                                     <th>ชื่อบริษัท</th>
                                     <th>สาขาบริษัท</th>
-                                    <th>Actions</th>
+                                    <th>รายงาน</th>
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom-0">
@@ -29,19 +29,23 @@
                                         <td> <strong>{{ $que->company }}</strong></td>
                                         <td>{{ $que->branch }}</td>
                                         <td>
-                                            <div class="dropdown">
+                                            {{--      <div class="dropdown">
                                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
                                                     data-bs-toggle="dropdown">
                                                     <i class="bx bx-dots-vertical-rounded"></i>
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('update/import-data', $que->id) }}">
-                                                        <i class='bx bxs-data me-2'></i>
-                                                        นำเข้าข้อมูล</a>
+                                                    <a class="dropdown-item" href="{{ url('general-journal', $que->id) }}">
+
+                                                        <i class="bx bxs-report me-2"></i>
+                                                        รายงาน</a>
 
                                                 </div>
-                                            </div>
+                                            </div> --}}
+                                            <a href="{{ url('general-journal-view', $que->id) }}" type="button"
+                                                class="btn btn-primary">
+                                                <i class="bx bxs-report"></i>&nbsp; รายงาน
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

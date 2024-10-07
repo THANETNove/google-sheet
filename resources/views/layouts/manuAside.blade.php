@@ -89,38 +89,37 @@
             </a>
 
             <ul class="menu-sub">
-                <li
-                    class="menu-item {{ Request::is('report/general_journal') || Request::is('') ? 'active' : '' }} ">
+                <li class="menu-item {{ Request::is('report/general_journal') || Request::is('') ? 'active' : '' }} ">
                     <a href="{{ url('report/general_journal') }} " class="menu-link">
                         <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
                     </a>
                 </li>
-                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                <li class="menu-item {{ Request::is('report/ledger-book') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
                         <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
                     </a>
                 </li>
-                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
                         <div data-i18n="Without menu">รายงานภาษีซื้อ</div>
                     </a>
                 </li>
-                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
                         <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
                     </a>
                 </li>
-                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                <li class="menu-item {{ Request::is('repor') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
                         <div data-i18n="Without menu">งบดุลบัญชี</div>
                     </a>
                 </li>
-                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
                         <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>
                     </a>
                 </li>
-                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
                         <div data-i18n="Without menu">งบทดลองก่อนปิดบัญชี</div>
                     </a>
