@@ -29,6 +29,12 @@ class HomeController extends Controller
         $query = DB::table('companies')->get();
         return view('home', compact('query'));
     }
+    public function google_sheet()
+    {
+
+        $query = DB::table('companies')->get();
+        return view('update.index', compact('query'));
+    }
 
     public function importData($id)
     {

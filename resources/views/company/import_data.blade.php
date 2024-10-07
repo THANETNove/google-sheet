@@ -17,8 +17,8 @@
                         <div class="row">
                             <div class="col-md-8  order-2 order-md-1">
 
-                                <h4 class="mb-3">ข้อมูลบริษัท</h4>
-                                <div class="border p-3 rounded shadow-sm">
+                                <h4 class="mb-3">บริษัท &nbsp; {{ $query->company }}</h4>
+                                {{-- <div class="border p-3 rounded shadow-sm">
                                     <p><strong>รหัสบริษัท:</strong> {{ $query->code_company }}</p>
                                     <p><strong>ชื่อบริษัท:</strong> {{ $query->company }}</p>
                                     <p><strong>สาขา:</strong> {{ $query->branch }}</p>
@@ -26,7 +26,7 @@
                                     <p><strong>จำนวน General Ledger DB:</strong> <span id="gl_db"> </span></p>
                                     <p><strong>จำนวน General Ledger Sub DB:</strong> <span id="gl_db_sub"> </span></p>
                                     <p><strong>จำนวน Account_Code DB:</strong> <span id="ac_db"> </span></p>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-4  text-mt--2 order-1 order-md-2">
                                 <div class="text-end  justify-content-end align-items-center">

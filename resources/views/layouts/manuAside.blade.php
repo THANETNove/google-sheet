@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="index.html" class="app-brand-link">
+        <a href="#" class="app-brand-link">
             <span class="app-brand-logo demo">
                 <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -64,7 +64,8 @@
             </a>
         </li>
 
-        <!-- Layouts -->
+
+        <!-- บริษัท -->
         <li class="menu-item  {{ Request::is('company*') ? 'active open' : '' }} ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -75,6 +76,85 @@
                 <li class="menu-item {{ Request::is('company*') ? 'active' : '' }} ">
                     <a href="{{ url('company') }} " class="menu-link">
                         <div data-i18n="Without menu">รายชื่อบริษัท</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <!--รายงาน -->
+        <li class="menu-item  {{ Request::is('report*') ? 'active open' : '' }} ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class='menu-icon tf-icons  bx bxs-report'></i>
+                <div data-i18n="Layouts">รายงาน</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item {{ Request::is('report/general_journal') ? 'active' : '' }} ">
+                    <a href="{{ url('report/general_journal') }} " class="menu-link">
+                        <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                    <a href="{{ url('company') }} " class="menu-link">
+                        <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                    <a href="{{ url('company') }} " class="menu-link">
+                        <div data-i18n="Without menu">รายงานภาษีซื้อ</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                    <a href="{{ url('company') }} " class="menu-link">
+                        <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                    <a href="{{ url('company') }} " class="menu-link">
+                        <div data-i18n="Without menu">งบดุลบัญชี</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                    <a href="{{ url('company') }} " class="menu-link">
+                        <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('report*') ? 'active' : '' }} ">
+                    <a href="{{ url('company') }} " class="menu-link">
+                        <div data-i18n="Without menu">งบทดลองก่อนปิดบัญชี</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
+        <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                    <a href="{{ url('#') }} " class="menu-link">
+                        <div data-i18n="Without menu">รายงานภาษีขาย-ซื้อ</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                    <a href="{{ url('#') }} " class="menu-link">
+                        <div data-i18n="Without menu">ภาษีหัก ณ ที่จ่าย</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                    <a href="{{ url('#') }} " class="menu-link">
+                        <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
+                    </a>
+                </li>
+                <li
+                    class="menu-item {{ Request::is('update/google-sheet') || Request::is('update/import-data/*') ? 'active' : '' }}">
+                    <a href="{{ url('update/google-sheet') }}" class="menu-link">
+                        <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
                     </a>
                 </li>
 

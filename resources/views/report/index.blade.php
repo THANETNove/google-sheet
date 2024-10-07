@@ -1,4 +1,4 @@
-@extends('layouts.appHome')
+ad@extends('layouts.appHome')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -45,16 +45,11 @@
                                         </td>
                                     </tr>
                                 @endforeach
-
-
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
-
         </div>
-
     </div>
 @endsection

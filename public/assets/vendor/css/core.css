@@ -11159,6 +11159,7 @@ button.list-group-item-gray.active {
 
 .text-nowrap {
   white-space: nowrap !important;
+  height: 100vh;
 }
 
 /* rtl:begin:remove */
