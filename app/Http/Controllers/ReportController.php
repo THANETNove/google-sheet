@@ -4,73 +4,58 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 
 class ReportController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    public function getUsers()
     {
-
-
         $query = DB::table('users')
             ->where('status', 0)
             ->get();
 
+        return $query;
+    }
+
+    /**
+     * ! สมุดรายวันทั่วไป */
+    public function indexGeneralJournal()
+    {
+
+
+        $query = $this->getUsers();
         return view('report.general_journal.index', compact('query'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function showGeneralJournal(string $id)
     {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $user = DB::table('users')
+            ->where('id', $id)
+            ->get();
+        $accounting_period = $user[0]->accounting_period;
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
+        // แยกวันที่และเดือนออกจาก $accounting_period
+        list($day, $month) = explode('/', $accounting_period);
+
+        // สร้างวันที่เริ่มต้น
+        $startDate = Carbon::createFromDate(date('Y'), $month, $day);
+
+        // สร้างวันที่สิ้นสุด (เช่นสิ้นปีหรือสิ้นรอบถัดไป)
+        $endDate = $startDate->copy()->addYear()->subDay();
+
+
         $query = DB::table('general_ledgers')
-            ->leftJoin('general_ledger_subs', 'general_ledgers.gl_code_company', 'general_ledger_subs.gls_code_company')
+            ->where('general_ledgers.gl_code_company', $id)
+            ->whereBetween('general_ledgers.gl_date', [$startDate, $endDate])
+            ->leftJoin('general_ledger_subs', 'general_ledgers.gl_code', 'general_ledger_subs.gls_gl_code')
             ->get();
 
-        dd("query", $query);
-        return view('report.general_journal.index', compact('query'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('report.general_journal.view', compact('query'));
     }
 }

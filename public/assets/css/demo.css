@@ -143,6 +143,20 @@
   }
 }
 
-/* .text-mt--2 {
-  margin-top: -44px;
-} */
+#layout-menu2 {
+  position: fixed;
+  height: 100vh;
+
+
+
+}
+
+#layout-menu3 {
+  position: sticky;
+  /* ตั้งค่าให้เป็น sticky */
+  top: 0;
+  /* ติดอยู่ที่ด้านบน */
+  z-index: 1000;
+  /* ทำให้แน่ใจว่ามันอยู่เหนือองค์ประกอบอื่น */
+
+}

@@ -12,6 +12,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// admin สุด
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/update/google-sheet', [HomeController::class, 'google_sheet'])->name('update/google-sheet');
 Route::get('/update/import-data/{id}', [HomeController::class, 'importData'])->name('update/import-data');
@@ -23,9 +24,8 @@ Route::get('/company-edit/{id}', [CompanyController::class, 'edit'])->name('comp
 Route::put('/company-update/{id}', [CompanyController::class, 'update'])->name('company-update');
 Route::get('/company-delete/{id}', [CompanyController::class, 'destroy'])->name('company-delete');
 Route::post('/save-company-data', [CompanyController::class, 'saveCompanyData'])->name('save-company-data');
-
-Route::get('/report/general_journal', [ReportController::class, 'index'])->name('report/general_journal');
-Route::get('/general-journal-view/{id}', [ReportController::class, 'show'])->name('general-journal-view');
+Route::get('/report/general_journal', [ReportController::class, 'indexGeneralJournal'])->name('report/general_journal');
+Route::get('/general-journal-view/{id}', [ReportController::class, 'showGeneralJournal'])->name('general-journal-view');
 
 
 
