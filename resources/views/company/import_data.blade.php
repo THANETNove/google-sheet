@@ -310,8 +310,6 @@
             Promise.all([promise])
                 .then(() => {
 
-
-                    console.log("5666");
                     var checkboxes = document.querySelectorAll('input[name="selectedItems[]"]:checked');
                     checkboxes.forEach(function(checkbox) {
                         checkbox.checked = false; // เปลี่ยนค่าเป็น false
