@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Company;
+use App\Models\User;
 use App\Models\GeneralLedger;
 use App\Models\GeneralLedgerSub;
 use App\Models\Account_Code;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CompanyController extends Controller
 {
@@ -28,7 +29,9 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $query = DB::table('companies')->get();/* ->appends($request->all()) */
+        $query = DB::table('users')
+            ->where('status', 0)
+            ->get();
         return view('company.index', compact('query'));
     }
 
@@ -48,21 +51,30 @@ class CompanyController extends Controller
     {
         $request->validate([
 
-            'code_company' => ['required', 'string', 'max:255', 'unique:companies'],
-            'company' => ['required', 'string', 'max:255', 'unique:companies'],
+            'code_company' => ['required', 'string', 'max:255'],
+            'company' => ['required', 'string', 'max:255',],
             'branch' => ['required', 'string', 'max:255'],
             'tax_id' => ['required', 'string', 'max:255'],
             'id_sheet' => ['required', 'string', 'max:255'],
+            'id_apps_script' => ['required', 'string', 'max:255'],
+            'accounting_period' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'max:255'],
 
         ]);
 
-        $data = new Company;
+        $data = new User;
 
         $data->code_company = $request['code_company'];
         $data->company = $request['company'];
         $data->branch = $request['branch'];
         $data->tax_id = $request['tax_id'];
         $data->id_sheet = $request['id_sheet'];
+        $data->id_apps_script = $request['id_apps_script'];
+        $data->accounting_period = $request['accounting_period'];
+        $data->email = $request['email'];
+        $data->password =  Hash::make($request['password']);
+        $data->status =  "0";
 
         $data->save();
 
@@ -393,7 +405,7 @@ class CompanyController extends Controller
      */
     public function edit(string $id)
     {
-        $query =  Company::find($id);
+        $query =  User::find($id);
         return view('company.edit', compact('query'));
     }
 
@@ -405,15 +417,18 @@ class CompanyController extends Controller
 
 
         $request->validate([
-            'code_company' => ['required', 'string', 'max:255', 'unique:companies,code_company,' . $id],
-            'company' => ['required', 'string', 'max:255', 'unique:companies,company,' . $id],
+            'code_company' => ['required', 'string', 'max:255'],
+            'company' => ['required', 'string', 'max:255',],
             'branch' => ['required', 'string', 'max:255'],
             'tax_id' => ['required', 'string', 'max:255'],
             'id_sheet' => ['required', 'string', 'max:255'],
             'id_apps_script' => ['required', 'string', 'max:255'],
+            'accounting_period' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255', 'unique:users,email,' . $id],
+            'password' => ['required', 'string', 'max:255'],
         ]);
 
-        $data = Company::find($id);
+        $data = User::find($id);
 
         $data->code_company = $request['code_company'];
         $data->company = $request['company'];
@@ -421,6 +436,10 @@ class CompanyController extends Controller
         $data->tax_id = $request['tax_id'];
         $data->id_sheet = $request['id_sheet'];
         $data->id_apps_script = $request['id_apps_script'];
+        $data->accounting_period = $request['accounting_period'];
+        $data->email = $request['email'];
+        $data->password =  Hash::make($request['password']);
+
 
         $data->save();
 
@@ -432,7 +451,7 @@ class CompanyController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Company::find($id);
+        $data = User::find($id);
         $data->delete();
         return redirect('company')->with('message', "ลบข้อมูลสำเร็จ");
     }

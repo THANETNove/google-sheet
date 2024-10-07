@@ -26,7 +26,9 @@ class HomeController extends Controller
     public function index()
     {
 
-        $query = DB::table('companies')->get();
+        $query = DB::table('users')
+            ->where('status', 0)
+            ->get();
         return view('home', compact('query'));
     }
     public function google_sheet()

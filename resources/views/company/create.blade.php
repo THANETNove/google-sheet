@@ -56,6 +56,17 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
+                                <label class="form-label" for="basic-default-company">เลขผู้เสียภาษี</label>
+                                <input type="text" class="form-control  @error('tax_id') is-invalid @enderror"
+                                    id="basic-default-company" name="tax_id" placeholder="เลขผู้เสียภาษี"
+                                    value="{{ old('tax_id') }}">
+                                @error('tax_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">id Sheet</label>
                                 <input type="text" class="form-control @error('id_sheet') is-invalid @enderror"
                                     id="basic-default-company" name="id_sheet" placeholder="id Sheet"
@@ -67,11 +78,44 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="basic-default-company">Id Apps Script Sheet</label>
+                                <label class="form-label" for="basic-default-company">id Apps Script</label>
                                 <input type="text" class="form-control @error('id_apps_script') is-invalid @enderror"
-                                    id="basic-default-company" name="id_apps_script" placeholder="id Sheet"
+                                    id="basic-default-company" name="id_apps_script" placeholder="id apps script"
                                     value="{{ old('id_apps_script') }}">
-                                @error('id_sheet')
+                                @error('id_apps_script')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="basic-default-company">รอบบัญชี</label>
+                                <input type="text" class="form-control @error('accounting_period') is-invalid @enderror"
+                                    id="basic-default-company" name="accounting_period" placeholder="รอบบัญชี"
+                                    value="{{ old('accounting_period') }}">
+                                @error('accounting_period')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="basic-default-company">email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                    id="basic-default-company" name="email" placeholder="Email"
+                                    value="{{ old('email') }}" required>
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="basic-default-company">Password</label>
+                                <input type="text" class="form-control @error('password') is-invalid @enderror"
+                                    id="basic-default-company" name="password" placeholder="Password" required
+                                    value="{{ old('password') }}">
+                                @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
