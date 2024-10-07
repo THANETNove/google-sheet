@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -11,7 +12,11 @@ class ReportController extends Controller
      */
     public function index()
     {
-        //
+
+
+        $query = DB::table('companies')->get();
+
+        return view('report.index', compact('query'));
     }
 
     /**

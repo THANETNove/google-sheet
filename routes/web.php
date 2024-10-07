@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,8 @@ Route::get('/company-edit/{id}', [CompanyController::class, 'edit'])->name('comp
 Route::put('/company-update/{id}', [CompanyController::class, 'update'])->name('company-update');
 Route::get('/company-delete/{id}', [CompanyController::class, 'destroy'])->name('company-delete');
 Route::post('/import-data/save-company-data', [CompanyController::class, 'saveCompanyData'])->name('import-data/save-company-data');
+
+Route::get('/report/general_journal', [ReportController::class, 'index'])->name('report/general_journal');
 
 
 

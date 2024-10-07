@@ -20,7 +20,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'status'
+        'status',
+        'code_company',
+        'company',
+        'branch',
+        'tax_id',
+        'id_sheet',
+        'id_apps_script',
+        'accounting_period'
     ];
 
     /**

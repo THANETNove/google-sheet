@@ -1,4 +1,4 @@
-ad@extends('layouts.appHome')
+@extends('layouts.appHome')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -36,10 +36,9 @@ ad@extends('layouts.appHome')
                                                 </button>
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item"
-                                                        href="{{ url('update/import-data', $que->id) }}">
+                                                        href="{{ url('report/general_journal/company', $que->id) }}">
                                                         <i class='bx bxs-data me-2'></i>
-                                                        นำเข้าข้อมูล</a>
-
+                                                        </a>
                                                 </div>
                                             </div>
                                         </td>

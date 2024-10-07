@@ -89,7 +89,8 @@
             </a>
 
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('report/general_journal') ? 'active' : '' }} ">
+                <li
+                    class="menu-item {{ Request::is('report/general_journal') || Request::is('') ? 'active' : '' }} ">
                     <a href="{{ url('report/general_journal') }} " class="menu-link">
                         <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
                     </a>

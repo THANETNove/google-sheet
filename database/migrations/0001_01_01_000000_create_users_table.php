@@ -18,6 +18,13 @@ return new class extends Migration
             $table->string('status');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('code_company')->unique()->nullable();
+            $table->string('company')->unique()->nullable();
+            $table->string('branch')->nullable();
+            $table->string('tax_id')->nullable();
+            $table->string('id_sheet')->nullable();
+            $table->string('id_apps_script')->nullable();
+            $table->string('accounting_period')->nullable()->comment('รอบบัญชี');;
             $table->rememberToken();
             $table->timestamps();
         });
