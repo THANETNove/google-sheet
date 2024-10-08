@@ -6,34 +6,32 @@
             <div class="col-lg-12 mb-4 order-0">
 
                 <div class="card ">
-                    <h5 class="card-header">รายชื่อ บริษัท</h5>
                     <div class="table-responsive m-3">
-                        <table class="table table table-bordered">
+                        <table class="table">
                             <thead>
-                                <tr class="table-secondary" id="layout-menu4">
+                                <tr class="table-secondary">
                                     <th>วันที่</th>
                                     <th>เลขที่เอกสาร</th>
+                                    <th>บริษัท</th>
                                     <th>คำอธิบาย</th>
                                     <th>เดบิต</th>
                                     <th>เครดิต</th>
-                                    <th>สะสมงวดนี้</th>
-                                    <th>สะสมต้นงวด</th>
+
 
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom-0">
-                                @php
-                                    $i = 1;
-                                @endphp
+
                                 @foreach ($query as $que)
                                     <tr>
-                                        <th scope="row">{{ $i++ }}</th>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <th scope="row">{{ date('d-m-Y', strtotime($que->gl_date)) }}</th>
+                                        <td>{{ $que->gl_document }}</td>
+                                        <td>{{ $que->gl_company }}</td>
+                                        <td>{{ $que->gl_description }}</td>
+                                        <td>{{ $que->gls_account_name }}</td>
+                                        <td>{{ $que->gls_debit }}</td>
+                                        <td>{{ $que->gls_credit }}</td>
+
 
 
                                     </tr>

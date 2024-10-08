@@ -14,7 +14,9 @@ class GeneralLedgerSub extends Model
         'gls_id',
         'gls_gl_code',
         'gls_gl_document',
+        'gls_gl_date',
         'gls_account_code',
+        'gls_account_name',
         'gls_debit',
         'gls_credit',
     ];

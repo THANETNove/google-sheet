@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('gls_id')->nullable();
             $table->string('gls_gl_code')->nullable();
             $table->string('gls_gl_document')->nullable();
+            $table->string('gls_gl_date')->nullable();
             $table->string('gls_account_code')->nullable();
+            $table->string('gls_account_name')->nullable();
             $table->string('gls_debit')->nullable();
             $table->string('gls_credit')->nullable();
             $table->timestamps();

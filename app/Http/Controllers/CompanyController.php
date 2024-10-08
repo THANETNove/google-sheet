@@ -368,7 +368,9 @@ class CompanyController extends Controller
                     'gls_id' => $subItem['GLS_ID'] ?? null,
                     'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
                     'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
+                    'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
                     'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
+                    'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
                     'gls_debit' => $subItem['GLS_Debit'] ?? null,
                     'gls_credit' => $subItem['GLS_Credit'] ?? null,
                 ]);
