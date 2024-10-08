@@ -177,7 +177,9 @@ class CompanyController extends Controller
                     'gls_id' => $subItem['GLS_ID'] ?? null,
                     'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
                     'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
+                    'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
                     'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
+                    'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
                     'gls_debit' => $subItem['GLS_Debit'] ?? null,
                     'gls_credit' => $subItem['GLS_Credit'] ?? null,
                 ]);
@@ -274,7 +276,9 @@ class CompanyController extends Controller
                         'gls_id' => $subItem['GLS_ID'] ?? null,
                         'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
                         'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
+                        'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
                         'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
+                        'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
                         'gls_debit' => $subItem['GLS_Debit'] ?? null,
                         'gls_credit' => $subItem['GLS_Credit'] ?? null,
                     ]);
@@ -362,6 +366,8 @@ class CompanyController extends Controller
 
             // บันทึก General Ledger Sub เป็น row
             foreach ($dataGeneralLedgerSub as $subItem) {
+
+
                 GeneralLedgerSub::create([
                     'gls_code_company' => $request->code_company,
                     'gls_code' => $subItem['GLS_Code'] ?? null,
