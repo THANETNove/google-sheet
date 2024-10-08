@@ -50,6 +50,23 @@ class ReportController extends Controller
         $endDate = $startDate->copy()->addYear()->subDay();
 
 
+        /* $ledgers = DB::table('general_ledgers')
+            ->where('general_ledgers.gl_code_company', $id)
+            ->whereBetween('general_ledgers.gl_date', [$startDate, $endDate])
+            ->leftJoin('general_ledger_subs', 'general_ledgers.gl_code', 'general_ledger_subs.gls_gl_code')
+            ->select(
+                'general_ledgers.id',
+                'general_ledgers.gl_document',
+                'general_ledgers.gl_date',
+                'general_ledgers.gl_company',
+                'general_ledgers.gl_description',
+                'general_ledger_subs.gls_account_name',
+                'general_ledger_subs.gls_debit',
+                'general_ledger_subs.gls_credit',
+            )
+            ->orderBy('general_ledgers.id')
+            ->get(); */
+
         $query = DB::table('general_ledgers')
             ->where('general_ledgers.gl_code_company', $id)
             ->whereBetween('general_ledgers.gl_date', [$startDate, $endDate])
@@ -64,7 +81,11 @@ class ReportController extends Controller
                 'general_ledger_subs.gls_debit',
                 'general_ledger_subs.gls_credit',
             )
+            ->orderBy('general_ledgers.id')
+            ->orderBy('general_ledger_subs.gls_id')
             ->get();
+
+
 
 
 
