@@ -26,6 +26,7 @@ Route::get('/company-delete/{id}', [CompanyController::class, 'destroy'])->name(
 Route::post('/save-company-data', [CompanyController::class, 'saveCompanyData'])->name('save-company-data');
 Route::get('/report/general_journal', [ReportController::class, 'indexGeneralJournal'])->name('report/general_journal');
 Route::get('/general-journal-view/{id}', [ReportController::class, 'showGeneralJournal'])->name('general-journal-view');
+Route::get('export-pdf/{id}', [ReportController::class, 'exportPDF'])->name('export-pdf');
 
 
 

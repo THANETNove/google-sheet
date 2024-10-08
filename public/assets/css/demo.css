@@ -135,11 +135,24 @@
   .text-mt--2 {
     margin-bottom: 32px;
   }
+
+  .date {
+
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
 }
 
 @media (min-width: 576px) {
   .text-mt--2 {
     margin-top: -16px;
+  }
+
+  .date {
+
+    position: absolute;
+    right: 16px;
+    top: 16px;
   }
 }
 
@@ -159,4 +172,23 @@
   z-index: 1000;
   /* ทำให้แน่ใจว่ามันอยู่เหนือองค์ประกอบอื่น */
 
+}
+
+
+.container-company {
+  display: flex;
+  justify-content: space-between;
+  /* จัดให้อยู่ทั้งสองด้าน */
+  align-items: center;
+  /* จัดให้อยู่ในแนวเดียวกัน */
+  padding: 10px;
+  /* ระยะห่างรอบๆ */
+}
+
+.company {
+  margin-top: 16px;
+  flex: 1;
+  /* ให้ company มีพื้นที่มากที่สุด */
+  text-align: center;
+  /* จัดกึ่งกลาง */
 }
