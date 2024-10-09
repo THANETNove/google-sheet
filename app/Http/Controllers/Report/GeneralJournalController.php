@@ -64,7 +64,7 @@ class GeneralJournalController extends Controller
                 'general_ledger_subs.gls_debit',
                 'general_ledger_subs.gls_credit',
             )
-            ->orderBy('general_ledgers.id')
+            ->orderBy('general_ledgers.gl_date', 'ASC')
             ->orderBy('general_ledger_subs.gls_id')
             ->get();
         return [

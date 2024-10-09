@@ -33,6 +33,10 @@ Route::get('/report/general-journal-view/{id}', [GeneralJournalController::class
 Route::get('export-pdf/{id}', [GeneralJournalController::class, 'exportPDF'])->name('export-pdf');
 Route::get('export-excel/{id}', [GeneralJournalController::class, 'exportExcel'])->name('export-excel');
 
+//รายงานซื้อ
+Route::get('report/buy', [GeneralJournalController::class, 'index'])->name('report/buy');
+Route::get('report/buy-view', [GeneralJournalController::class, 'show'])->name('report/buy');
+
 
 
 
