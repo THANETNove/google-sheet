@@ -104,6 +104,7 @@ class GeneralJournalController extends Controller
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
         $data = $this->getDataGlAndGls($request->id, $startDate, $endDate);
+
         return view('report.general_journal.view', [
             'query' => $data['query'],
             'user' => $data['user'],
