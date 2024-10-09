@@ -27,6 +27,7 @@ Route::post('/save-company-data', [CompanyController::class, 'saveCompanyData'])
 Route::get('/report/general_journal', [ReportController::class, 'indexGeneralJournal'])->name('report/general_journal');
 Route::get('/general-journal-view/{id}', [ReportController::class, 'showGeneralJournal'])->name('general-journal-view');
 Route::get('export-pdf/{id}', [ReportController::class, 'exportPDF'])->name('export-pdf');
+Route::get('export-excel/{id}', [ReportController::class, 'exportExcel'])->name('export-excel');
 
 
 
