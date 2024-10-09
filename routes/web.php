@@ -27,9 +27,9 @@ Route::put('/company-update/{id}', [CompanyController::class, 'update'])->name('
 Route::get('/company-delete/{id}', [CompanyController::class, 'destroy'])->name('company-delete');
 Route::post('/save-company-data', [CompanyController::class, 'saveCompanyData'])->name('save-company-data');
 
-
+//รายงานทั่วไป
 Route::get('/report/general_journal', [GeneralJournalController::class, 'index'])->name('report/general_journal');
-Route::get('/general-journal-view/{id}', [GeneralJournalController::class, 'show'])->name('general-journal-view');
+Route::get('/report/general-journal-view/{id}', [GeneralJournalController::class, 'show'])->name('general-journal-view');
 Route::get('export-pdf/{id}', [GeneralJournalController::class, 'exportPDF'])->name('export-pdf');
 Route::get('export-excel/{id}', [GeneralJournalController::class, 'exportExcel'])->name('export-excel');
 

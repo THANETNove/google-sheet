@@ -83,7 +83,7 @@
                 </ul>
             </li>
             <!--รายงาน -->
-            <li class="menu-item  {{ Request::is('report*') ? 'active open' : '' }} ">
+            <li class="menu-item  {{ Request::is('report/*') ? 'active open' : '' }} ">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class='menu-icon tf-icons  bx bxs-report'></i>
                     <div data-i18n="Layouts">รายงาน</div>
@@ -91,7 +91,7 @@
 
                 <ul class="menu-sub">
                     <li
-                        class="menu-item {{ Request::is('report/general_journal') || Request::is('') ? 'active' : '' }} ">
+                        class="menu-item {{ Request::is('report/general_journal') || Request::is('report/general-journal-view/*') ? 'active' : '' }} ">
                         <a href="{{ url('report/general_journal') }} " class="menu-link">
                             <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
                         </a>

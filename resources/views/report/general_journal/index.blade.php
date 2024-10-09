@@ -42,7 +42,7 @@
 
                                                 </div>
                                             </div> --}}
-                                            <a href="{{ url('general-journal-view', $que->id) }}" type="button"
+                                            <a href="{{ url('report/general-journal-view', $que->id) }}" type="button"
                                                 class="btn btn-primary">
                                                 <i class="bx bxs-report"></i>&nbsp; รายงาน
                                             </a>

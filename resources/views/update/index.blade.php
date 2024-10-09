@@ -29,7 +29,7 @@
                                         <td> <strong>{{ $que->company }}</strong></td>
                                         <td>{{ $que->branch }}</td>
                                         <td>
-                                            <div class="dropdown">
+                                            {{--  <div class="dropdown">
                                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
                                                     data-bs-toggle="dropdown">
                                                     <i class="bx bx-dots-vertical-rounded"></i>
@@ -41,7 +41,11 @@
                                                         นำเข้าข้อมูล</a>
 
                                                 </div>
-                                            </div>
+                                            </div> --}}
+                                            <a href="{{ url('update/import-data', $que->id) }}" type="button"
+                                                class="btn btn-primary">
+                                                <i class='bx bxs-data me-2'></i> นำเข้าข้อมูล
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
