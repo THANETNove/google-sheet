@@ -101,8 +101,8 @@
                             <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
                         </a>
                     </li>
-                    <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
-                        <a href="{{ url('company') }} " class="menu-link">
+                    <li class="menu-item {{ Request::is('report/buy/*') ? 'active' : '' }} ">
+                        <a href="{{ url('report/buy') }} " class="menu-link">
                             <div data-i18n="Without menu">รายงานภาษีซื้อ</div>
                         </a>
                     </li>
