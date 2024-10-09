@@ -11,28 +11,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-
-    <!-- ฟอนต์ภาษาไทย -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Content-Language" content="th" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- Bootstrap 3.x only : DOMPDF support float, not flexbox -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <!-- thai font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
 
     <style>
-        @font-face {
-            font-family: 'THSarabunNew' !important;
-            src: url("{{ asset('fonts/THSarabunNew.ttf') }}") format('truetype') !important;
-            font-style: normal !important;
-            font-weight: normal !important;
-        }
-
         body {
             font-size: 8pt;
             margin: 0;
-            /*   font-family: 'THSarabunNew' !important; */
-            font-family: 'THSarabunNew';
-            /* ฟอนต์ภาษาไทย */
+            font-family: 'Sarabun', sans-serif;
+            line-height: 1;
         }
 
 
@@ -191,18 +185,6 @@
             padding: 10px;
             vertical-align: top;
         }
-
-        .table .summary-row td {
-            border-top: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-
-         /* ป้องกันการตัดหน้า */
-         .summary-row {
-            page-break-before: always;
-            page-break-inside: avoid;
-        }
-
     </style>
 
 
