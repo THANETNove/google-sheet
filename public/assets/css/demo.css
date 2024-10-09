@@ -192,3 +192,13 @@
   text-align: center;
   /* จัดกึ่งกลาง */
 }
+
+.table td,
+.table th {
+
+  vertical-align: top;
+}
+
+.text-end {
+  text-align: right !important;
+}

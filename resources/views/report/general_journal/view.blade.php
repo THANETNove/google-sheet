@@ -63,16 +63,17 @@
                                                     <td rowspan="{{ $rowspan }}">{{ $que->gl_company }}</td>
                                                 @endif
                                                 <td>{{ $que->gls_account_name }}</td>
-                                                <td>{{ number_format($que->gls_debit, 2) }}</td>
-                                                <td>{{ number_format($que->gls_credit, 2) }}</td>
+                                                <td class="text-end">{{ number_format($que->gls_debit, 2) }}</td>
+                                                <td class="text-end">{{ number_format($que->gls_credit, 2) }}</td>
                                             </tr>
                                         @endforeach
 
                                         <!-- เพิ่มแถวสำหรับผลรวมใต้ข้อมูล -->
                                         <tr>
                                             <td><strong>รวม</strong></td>
-                                            <td><strong>{{ number_format($totalDebit, 2) }}</strong></td>
-                                            <td> <strong>{{ number_format($totalCredit, 2) }}</strong></td>
+                                            <td class="text-end"><strong>{{ number_format($totalDebit, 2) }}</strong></td>
+                                            <td class="text-end"> <strong>{{ number_format($totalCredit, 2) }}</strong>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

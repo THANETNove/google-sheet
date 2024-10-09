@@ -134,7 +134,11 @@ class ReportController extends Controller
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
         ]);
-        $pdf->setPaper('a4');
+        $pdf->setPaper('a4', 'portrait') // ขนาดกระดาษ A4
+            ->setOption('margin-top', 15)
+            ->setOption('margin-bottom', 15)
+            ->setOption('margin-left', 10)
+            ->setOption('margin-right', 10);
         return $pdf->stream('exportPDF.pdf');
     }
 }

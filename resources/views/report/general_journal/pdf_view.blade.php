@@ -11,6 +11,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 
     <!-- ฟอนต์ภาษาไทย -->
@@ -20,17 +21,17 @@
 
     <style>
         @font-face {
-            font-family: 'THSarabunNew';
-            src: url("{{ asset('fonts/THSarabunNew.ttf') }}") format('truetype');
-            font-style: normal;
-            font-weight: normal;
+            font-family: 'THSarabunNew' !important;
+            src: url("{{ asset('fonts/THSarabunNew.ttf') }}") format('truetype') !important;
+            font-style: normal !important;
+            font-weight: normal !important;
         }
 
         body {
             font-size: 8pt;
             margin: 0;
             /*   font-family: 'THSarabunNew' !important; */
-            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            font-family: 'THSarabunNew';
             /* ฟอนต์ภาษาไทย */
         }
 
@@ -61,29 +62,48 @@
         }
 
         /* ตาราง */
-        .table {
+        /* .table {
             width: 100%;
             border-collapse: collapse;
-            /* ป้องกันไม่ให้เส้นขอบตารางทับซ้อนกัน */
+
             margin-bottom: 10pt;
-            /* ระยะห่างระหว่างตาราง */
         }
 
-        /* ซ่อนเส้นขอบแนวตั้ง */
+
         .table th,
         .table td {
             border: none;
             padding: 8px;
-            /* ลบเส้นขอบ */
+
         }
 
         .table th {
             border-bottom: 1px solid #ddd;
-            /* เส้นขอบแนวนอนด้านล่างของหัวตาราง */
             background-color: #f2f2f2;
-            /* สีพื้นหลังของหัวตาราง */
             text-align: center;
-            /* จัดกลางข้อความในหัวตาราง */
+        }
+ */
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10pt;
+        }
+
+        .table th,
+        .table td {
+            border: none;
+            padding: 8px;
+        }
+
+        .table th {
+            border-bottom: 1px solid #ddd;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        tr {
+            page-break-inside: avoid !important;
         }
 
         /* สไตล์แถวของตาราง */
@@ -153,6 +173,36 @@
             width: 50%;
             /* 6/12 ของความกว้างเต็ม */
         }
+
+        .text-end {
+            text-align: right !important;
+        }
+
+        .text-start {
+            text-align: left !important;
+        }
+
+        .text-initial {
+            text-align: right !important;
+        }
+
+        .table td,
+        .table th {
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        .table .summary-row td {
+            border-top: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+         /* ป้องกันการตัดหน้า */
+         .summary-row {
+            page-break-before: always;
+            page-break-inside: avoid;
+        }
+
     </style>
 
 
@@ -196,6 +246,7 @@
                                         $groupedQuery = $query->groupBy('id'); // Group the data by id
                                     @endphp
 
+
                                     @foreach ($groupedQuery as $id => $groupedData)
                                         @php
                                             $rowspan = count($groupedData) + 1; // Calculate the number of rows for the current id
@@ -204,7 +255,35 @@
                                             $totalCredit = $groupedData->sum('gls_credit');
                                         @endphp
 
-                                        @foreach ($groupedData as $index => $que)
+                                        <tr>
+                                            <td rowspan="{{ count($groupedData) + 1 }}">
+                                                {{ date('d-m-Y', strtotime($groupedData[0]->gl_date)) }}</td>
+                                            <td rowspan="{{ count($groupedData) + 1 }}">
+                                                {{ $groupedData[0]->gl_document }}</td>
+                                            <td rowspan="{{ count($groupedData) + 1 }}">
+                                                {{ $groupedData[0]->gl_company }}</td>
+                                        </tr>
+
+                                        @foreach ($groupedData as $que)
+                                            <tr>
+                                                <td class="text-start">{{ $que->gls_account_name }}</td>
+                                                <td class="text-end">{{ number_format($que->gls_debit, 2) }}</td>
+                                                <td class="text-end">{{ number_format($que->gls_credit, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+
+                                        <!-- แถวสำหรับรวม -->
+                                        <tr class="summary-row">
+                                            <td colspan="4" class="text-end"><strong>รวม</strong></td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($totalDebit, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong>
+                                            </td>
+                                        </tr>
+
+
+                                        {{--   @foreach ($groupedData as $index => $que)
                                             <tr>
                                                 @if ($index === 0)
                                                     <!-- Display rowspan for the first row of each group -->
@@ -213,21 +292,28 @@
                                                     <td rowspan="{{ $rowspan }}">{{ $que->gl_document }}</td>
                                                     <td rowspan="{{ $rowspan }}">{{ $que->gl_company }}</td>
                                                 @endif
-                                                <td>{{ $que->gls_account_name }}</td>
-                                                <td>{{ number_format($que->gls_debit, 2) }}</td>
-                                                <td>{{ number_format($que->gls_credit, 2) }}</td>
+                                                <td class="text-start">{{ $que->gls_account_name }}</td>
+                                                <td class="text-end">{{ number_format($que->gls_debit, 2) }}</td>
+                                                <td class="text-end">{{ number_format($que->gls_credit, 2) }}</td>
                                             </tr>
-                                        @endforeach
-
+                                        @endforeach --}}
+                                        {{-- 
                                         <!-- เพิ่มแถวสำหรับผลรวมใต้ข้อมูล -->
-                                        <tr>
-                                            <td><strong>รวม</strong></td>
-                                            <td><strong>{{ number_format($totalDebit, 2) }}</strong></td>
-                                            <td> <strong>{{ number_format($totalCredit, 2) }}</strong></td>
-                                        </tr>
+                                        <tr class="summary-row">
+                                            <td class="text-start"><strong>รวม</strong></td>
+                                            <td class="text-end">
+                                                <strong>{{ number_format($totalDebit, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong>
+                                            </td>
+                                        </tr> --}}
                                     @endforeach
+
                                 </tbody>
                             </table>
+
+
+
                         </div>
                     </div>
                 </div>
