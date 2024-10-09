@@ -14,18 +14,9 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GeneralJournalController extends Controller
 {
-    public function getDataGlAndGls($id)
+    private function getMonths()
     {
-        $user = DB::table('users')
-            ->where('id', $id)
-            ->get();
-        $accounting_period = $user[0]->accounting_period;
-
-        // แยกวันที่และเดือนออกจาก $accounting_period
-        list($day, $month) = explode('/', $accounting_period);
-
-
-        $months = [
+        return [
             '1' => 'มกราคม',
             '2' => 'กุมภาพันธ์',
             '3' => 'มีนาคม',
@@ -39,16 +30,16 @@ class GeneralJournalController extends Controller
             '11' => 'พฤศจิกายน',
             '12' => 'ธันวาคม',
         ];
+    }
 
-        // ตรวจสอบว่าเดือนที่ได้อยู่ในอาร์เรย์ไหม และแสดงเดือนภาษาไทย
-        $monthThai = isset($months[$month]) ? $months[$month] : 'เดือนไม่ถูกต้อง';
+    private function getDataGlAndGls($id, $startDate = null, $endDate = null)
+    {
+        $user = DB::table('users')->find($id);
 
-        // สร้างวันที่เริ่มต้น
-        $startDate = Carbon::createFromDate(date('Y'), $month, $day);
-        $currentYear = date('Y'); // ดึงปีปัจจุบัน
-        // สร้างวันที่สิ้นสุด (เช่นสิ้นปีหรือสิ้นรอบถัดไป)
-        $endDate = $startDate->copy()->addYear()->subDay();
-
+        $accounting_period = $user->accounting_period;
+        list($day, $month) = explode('/', $accounting_period);
+        $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
 
         $query = DB::table('general_ledgers')
             ->where('general_ledgers.gl_code_company', $id)
@@ -62,19 +53,18 @@ class GeneralJournalController extends Controller
                 'general_ledgers.gl_description',
                 'general_ledger_subs.gls_account_name',
                 'general_ledger_subs.gls_debit',
-                'general_ledger_subs.gls_credit',
+                'general_ledger_subs.gls_credit'
             )
-            ->orderBy('general_ledgers.gl_date', 'ASC')
-            ->orderBy('general_ledger_subs.gls_id')
-            ->get();
+            ->orderBy('general_ledgers.gl_date', 'ASC')->orderBy('general_ledger_subs.gls_id')->get();
+
         return [
             'query' => $query,
             'user' => $user,
             'startDate' => $startDate,
             'endDate' => $endDate,
             'day' => $day,
-            'monthThai' => $monthThai,
-            'currentYear' => $currentYear,
+            'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
+            'currentYear' => date('Y')
         ];
     }
 
@@ -106,6 +96,23 @@ class GeneralJournalController extends Controller
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
             'id' => $id
+        ]);
+    }
+    public function search(Request $request)
+    {
+
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+        $data = $this->getDataGlAndGls($request->id, $startDate, $endDate);
+        return view('report.general_journal.view', [
+            'query' => $data['query'],
+            'user' => $data['user'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate'],
+            'day' => $data['day'],
+            'monthThai' => $data['monthThai'],
+            'currentYear' => $data['currentYear'],
+            'id' => $request->id
         ]);
     }
 

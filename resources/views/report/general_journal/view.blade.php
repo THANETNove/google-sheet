@@ -10,30 +10,33 @@
 
                         <div class="container-company">
                             <div class="company">
-                                <p><strong>{{ $user[0]->company }}</strong></p>
+                                <p><strong>{{ $user->company }}</strong></p>
                                 <p><strong>-- สมุดรายวันทั่วไป --</strong></p>
                                 <p><strong> ตั้งแต่วันที่ {{ date('d-m-Y', strtotime($startDate)) }} จนถึงวันที่
                                         {{ date('d-m-Y', strtotime($endDate)) }}</strong></p>
                             </div>
 
                         </div>
-                        <form action="/search" method="GET" class="container-date">
+                        <form action="{{ route('search-date') }}" method="POST" class="container-date">
+                            @csrf
                             <div class="container-date">
                                 <div class="col-8">
                                     <small class="text-light fw-semibold d-block mb-1">วันที่</small>
                                     <div class="input-group input-group-merge speech-to-text">
-                                        <input class="form-control" type="date" id="start-date" name="start_date"
-                                            value="2024-01-01">
+                                        <input class="form-control" type="date" id="start-date" name="start_date">
                                     </div>
                                 </div>
 
                                 <div class="col-8">
                                     <small class="text-light fw-semibold d-block mb-1">ถึงวันที่</small>
                                     <div class="input-group input-group-merge speech-to-text">
-                                        <input class="form-control" type="date" id="start-date" name="start_date"
-                                            value="2024-01-01">
+                                        <input class="form-control" type="date" id="end-date" name="end_date">
                                     </div>
                                 </div>
+
+                                <input class="form-control" type="text" name="id" style="display: none"
+                                    value="{{ $id }}">
+
                                 <div>
                                     <button type="submit" class="btn btn-primary">ค้นหา</button>
                                 </div>
