@@ -23,7 +23,7 @@
 
     <style>
         body {
-            font-size: 8pt;
+            font-size: 9pt !important;
             margin: 0;
             font-family: 'Sarabun', sans-serif;
             line-height: 1;
@@ -93,7 +93,7 @@
         .table th {
             border-bottom: 1px solid #ddd;
             background-color: #f2f2f2;
-            text-align: center;
+            text-align: left;
         }
 
         tr {
@@ -108,7 +108,7 @@
 
         /* ให้ข้อความอยู่กลางในเซลล์ */
         .table td {
-            text-align: center;
+            text-align: left;
             /* จัดกลางข้อความในเซลล์ */
         }
 
@@ -185,6 +185,15 @@
             padding: 10px;
             vertical-align: top;
         }
+
+        .text-spacing {
+            margin-top: 10px;
+            /* เพิ่มความห่างด้านบน */
+            margin-bottom: 10px;
+            /* เพิ่มความห่างด้านล่าง */
+            line-height: 1.5;
+            /* เพิ่มระยะห่างระหว่างบรรทัด */
+        }
     </style>
 
 
@@ -211,6 +220,18 @@
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
                         </div>
                         <div class="table-responsive m-3">
+
+                            <style>
+                                .text-spacing {
+                                    margin-top: 10px;
+                                    /* เพิ่มความห่างด้านบน */
+                                    margin-bottom: 10px;
+                                    /* เพิ่มความห่างด้านล่าง */
+                                    line-height: 1.5;
+                                    /* เพิ่มระยะห่างระหว่างบรรทัด */
+                                }
+                            </style>
+
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
@@ -228,47 +249,58 @@
                                         $groupedQuery = $query->groupBy('id'); // Group the data by id
                                     @endphp
 
-
                                     @foreach ($groupedQuery as $id => $groupedData)
                                         @php
-                                            $rowspan = count($groupedData); // Calculate the number of rows for the current id
-                                            // คำนวณค่ารวมของ gls_debit และ gls_credit สำหรับแต่ละกลุ่ม
-                                            $totalDebit = $groupedData->sum('gls_debit');
-                                            $totalCredit = $groupedData->sum('gls_credit');
+                                            $totalDebit = $groupedData->sum('gls_debit'); // คำนวณค่ารวมของ gls_debit
+                                            $totalCredit = $groupedData->sum('gls_credit'); // คำนวณค่ารวมของ gls_credit
+
+                                            // รวมข้อมูลในแต่ละรายการของคำอธิบาย เดบิต และ เครดิต
+                                            $accountNames = implode(
+                                                '<br>',
+                                                $groupedData->pluck('gls_account_name')->toArray(),
+                                            );
+                                            $debits = implode(
+                                                '<br>',
+                                                $groupedData
+                                                    ->pluck('gls_debit')
+                                                    ->map(function ($value) {
+                                                        return number_format($value, 2);
+                                                    })
+                                                    ->toArray(),
+                                            );
+                                            $credits = implode(
+                                                '<br>',
+                                                $groupedData
+                                                    ->pluck('gls_credit')
+                                                    ->map(function ($value) {
+                                                        return number_format($value, 2);
+                                                    })
+                                                    ->toArray(),
+                                            );
                                         @endphp
 
-
-
-                                        @foreach ($groupedData as $index => $que)
-                                            <tr class="group-row">
-                                                @if ($index == 0)
-                                                    <!-- แสดงแค่แถวแรกของกลุ่มเดียวกัน -->
-                                                    <td rowspan="{{ $rowspan }}">
-                                                        {{ date('d-m-Y', strtotime($groupedData[0]->gl_date)) }}</td>
-                                                    <td rowspan="{{ $rowspan }}">{{ $groupedData[0]->gl_document }}
-                                                    </td>
-                                                    <td rowspan="{{ $rowspan }}">
-                                                        {{ $groupedData[0]->gl_company }}</td>
-                                                @endif
-                                                <td class="text-start">{{ $que->gls_account_name }}</td>
-                                                <td class="text-end">{{ number_format($que->gls_debit, 2) }}</td>
-                                                <td class="text-end">{{ number_format($que->gls_credit, 2) }}</td>
-                                            </tr>
-                                        @endforeach
-
-                                        <!-- แถวสำหรับรวม -->
-                                        <tr class="summary-row">
-                                            <td colspan="4" class="text-end"><strong>รวม</strong></td>
-                                            <td class="text-end">
-                                                <strong>{{ number_format($totalDebit, 2) }}</strong>
-                                            </td>
-                                            <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong>
-                                            </td>
+                                        <tr class="group-row avoid-break">
+                                            <td>{{ date('d-m-Y', strtotime($groupedData[0]->gl_date)) }}</td>
+                                            <td>{{ $groupedData[0]->gl_document }}</td>
+                                            <td>{{ $groupedData[0]->gl_company }}</td>
+                                            <td class="text-start text-spacing">{!! $accountNames !!}
+                                                <br>
+                                                <strong>รวม</strong>
+                                            </td> <!-- แสดงข้อมูลคำอธิบายแต่ละรายการในบรรทัดเดียวกัน -->
+                                            <td class="text-end text-spacing">{!! $debits !!}
+                                                <br>
+                                                <strong> {{ number_format($totalDebit, 2) }}</strong>
+                                            </td> <!-- แสดงเดบิตแต่ละรายการในบรรทัดเดียวกัน -->
+                                            <td class="text-end text-spacing">{!! $credits !!}
+                                                <br>
+                                                <strong>{{ number_format($totalCredit, 2) }}</strong>
+                                            </td> <!-- แสดงเครดิตแต่ละรายการในบรรทัดเดียวกัน -->
                                         </tr>
                                     @endforeach
-
                                 </tbody>
                             </table>
+
+
 
 
 
