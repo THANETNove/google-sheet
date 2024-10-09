@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Report;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use PDF;
@@ -10,24 +12,8 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Facades\Excel;
 
-
-
-
-
-class ReportController extends Controller
+class GeneralJournalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-    public function getUsers()
-    {
-        $query = DB::table('users')
-            ->where('status', 0)
-            ->get();
-
-        return $query;
-    }
     public function getDataGlAndGls($id)
     {
         $user = DB::table('users')
@@ -94,15 +80,18 @@ class ReportController extends Controller
 
     /**
      * ! สมุดรายวันทั่วไป */
-    public function indexGeneralJournal()
+    public function index()
     {
 
 
-        $query = $this->getUsers();
+        $query = DB::table('users')
+            ->where('status', 0)
+            ->get();
+
         return view('report.general_journal.index', compact('query'));
     }
 
-    public function showGeneralJournal(string $id)
+    public function show(string $id)
     {
         $data = $this->getDataGlAndGls($id); // รับค่ากลับมา
 

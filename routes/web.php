@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Report\GeneralJournalController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,10 +26,12 @@ Route::get('/company-edit/{id}', [CompanyController::class, 'edit'])->name('comp
 Route::put('/company-update/{id}', [CompanyController::class, 'update'])->name('company-update');
 Route::get('/company-delete/{id}', [CompanyController::class, 'destroy'])->name('company-delete');
 Route::post('/save-company-data', [CompanyController::class, 'saveCompanyData'])->name('save-company-data');
-Route::get('/report/general_journal', [ReportController::class, 'indexGeneralJournal'])->name('report/general_journal');
-Route::get('/general-journal-view/{id}', [ReportController::class, 'showGeneralJournal'])->name('general-journal-view');
-Route::get('export-pdf/{id}', [ReportController::class, 'exportPDF'])->name('export-pdf');
-Route::get('export-excel/{id}', [ReportController::class, 'exportExcel'])->name('export-excel');
+
+
+Route::get('/report/general_journal', [GeneralJournalController::class, 'index'])->name('report/general_journal');
+Route::get('/general-journal-view/{id}', [GeneralJournalController::class, 'show'])->name('general-journal-view');
+Route::get('export-pdf/{id}', [GeneralJournalController::class, 'exportPDF'])->name('export-pdf');
+Route::get('export-excel/{id}', [GeneralJournalController::class, 'exportExcel'])->name('export-excel');
 
 
 
