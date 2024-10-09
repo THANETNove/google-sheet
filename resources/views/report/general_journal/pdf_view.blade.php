@@ -17,7 +17,7 @@
 
                         <div class="container-company">
                             <div class="company">
-                                <p><strong>{{ $user[0]->company }}</strong></p>
+                                <p><strong>{{ $user->company }}</strong></p>
                                 <p><strong>-- สมุดรายวันทั่วไป --</strong></p>
                                 <p><strong> ตั้งแต่วันที่ {{ date('d-m-Y', strtotime($startDate)) }} จนถึงวันที่
                                         {{ date('d-m-Y', strtotime($endDate)) }}</strong></p>
