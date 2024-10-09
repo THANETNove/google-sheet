@@ -202,3 +202,63 @@
 .text-end {
   text-align: right !important;
 }
+
+/* .container-date {
+  margin: 0px 16px 16px 16px;
+  display: flex;
+
+}
+
+.container-date .col-8 {
+  margin: 0px 24px 0px 0px;
+
+
+}
+
+.container-date button {
+  margin: 24px 0px 0px 0px;
+
+
+} */
+.container-date {
+  margin: 0px 16px 16px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  /* ให้ input และปุ่มลองบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
+}
+
+.container-date .col-8 {
+  margin: 0px 24px 0px 0px;
+  flex: 1;
+  /* ขยายเต็มพื้นที่ */
+  min-width: 200px;
+  /* กำหนดขนาดขั้นต่ำ */
+}
+
+.container-date button {
+  margin: 24px 0px 0px 0px;
+}
+
+/* ปรับสำหรับจอขนาดเล็ก */
+@media (max-width: 768px) {
+  .container-date {
+    flex-direction: column;
+    /* จัดให้ input และปุ่มเรียงกันในแนวตั้ง */
+    align-items: self-start;
+    /* ทำให้ input และปุ่มยืดเต็มความกว้างในจอเล็ก */
+  }
+
+  .container-date .col-8 {
+    margin: 0px 0px 16px 0px;
+    /* เพิ่มระยะห่างด้านล่าง */
+  }
+
+  .container-date button {
+    width: 100%;
+    /* ปรับปุ่มให้เต็มความกว้าง */
+    margin-top: 10px;
+    /* เพิ่มระยะห่างด้านบน */
+  }
+}
