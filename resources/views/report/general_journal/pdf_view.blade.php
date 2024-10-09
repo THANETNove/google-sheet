@@ -231,23 +231,25 @@
 
                                     @foreach ($groupedQuery as $id => $groupedData)
                                         @php
-                                            $rowspan = count($groupedData) + 1; // Calculate the number of rows for the current id
+                                            $rowspan = count($groupedData); // Calculate the number of rows for the current id
                                             // คำนวณค่ารวมของ gls_debit และ gls_credit สำหรับแต่ละกลุ่ม
                                             $totalDebit = $groupedData->sum('gls_debit');
                                             $totalCredit = $groupedData->sum('gls_credit');
                                         @endphp
 
-                                        <tr>
-                                            <td rowspan="{{ count($groupedData) + 1 }}">
-                                                {{ date('d-m-Y', strtotime($groupedData[0]->gl_date)) }}</td>
-                                            <td rowspan="{{ count($groupedData) + 1 }}">
-                                                {{ $groupedData[0]->gl_document }}</td>
-                                            <td rowspan="{{ count($groupedData) + 1 }}">
-                                                {{ $groupedData[0]->gl_company }}</td>
-                                        </tr>
 
-                                        @foreach ($groupedData as $que)
-                                            <tr>
+
+                                        @foreach ($groupedData as $index => $que)
+                                            <tr class="group-row">
+                                                @if ($index == 0)
+                                                    <!-- แสดงแค่แถวแรกของกลุ่มเดียวกัน -->
+                                                    <td rowspan="{{ $rowspan }}">
+                                                        {{ date('d-m-Y', strtotime($groupedData[0]->gl_date)) }}</td>
+                                                    <td rowspan="{{ $rowspan }}">{{ $groupedData[0]->gl_document }}
+                                                    </td>
+                                                    <td rowspan="{{ $rowspan }}">
+                                                        {{ $groupedData[0]->gl_company }}</td>
+                                                @endif
                                                 <td class="text-start">{{ $que->gls_account_name }}</td>
                                                 <td class="text-end">{{ number_format($que->gls_debit, 2) }}</td>
                                                 <td class="text-end">{{ number_format($que->gls_credit, 2) }}</td>
@@ -263,32 +265,6 @@
                                             <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong>
                                             </td>
                                         </tr>
-
-
-                                        {{--   @foreach ($groupedData as $index => $que)
-                                            <tr>
-                                                @if ($index === 0)
-                                                    <!-- Display rowspan for the first row of each group -->
-                                                    <td rowspan="{{ $rowspan }}">
-                                                        {{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
-                                                    <td rowspan="{{ $rowspan }}">{{ $que->gl_document }}</td>
-                                                    <td rowspan="{{ $rowspan }}">{{ $que->gl_company }}</td>
-                                                @endif
-                                                <td class="text-start">{{ $que->gls_account_name }}</td>
-                                                <td class="text-end">{{ number_format($que->gls_debit, 2) }}</td>
-                                                <td class="text-end">{{ number_format($que->gls_credit, 2) }}</td>
-                                            </tr>
-                                        @endforeach --}}
-                                        {{-- 
-                                        <!-- เพิ่มแถวสำหรับผลรวมใต้ข้อมูล -->
-                                        <tr class="summary-row">
-                                            <td class="text-start"><strong>รวม</strong></td>
-                                            <td class="text-end">
-                                                <strong>{{ number_format($totalDebit, 2) }}</strong>
-                                            </td>
-                                            <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong>
-                                            </td>
-                                        </tr> --}}
                                     @endforeach
 
                                 </tbody>
