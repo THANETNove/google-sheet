@@ -29,7 +29,7 @@
                                         <td> <strong>{{ $que->company }}</strong></td>
                                         <td>{{ $que->branch }}</td>
                                         <td>
-                                            <a href="{{ url('report/general-journal-view', $que->id) }}" type="button"
+                                            <a href="{{ url('report/buy-view', $que->id) }}" type="button"
                                                 class="btn btn-primary">
                                                 <i class="bx bxs-report"></i>&nbsp; รายงาน
                                             </a>

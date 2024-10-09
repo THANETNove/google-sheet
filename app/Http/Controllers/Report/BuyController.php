@@ -15,19 +15,9 @@ use Maatwebsite\Excel\Facades\Excel;
 class BuyController extends Controller
 {
 
-    public function index()
-    {
 
 
-        $query = DB::table('users')
-            ->where('status', 0)
-            ->get();
-
-        return view('report.buy.index', compact('query'));
-    }
-
-
-    public function getDataGlAndGl($id)
+    public function getData($id)
     {
         $user = DB::table('users')
             ->where('id', $id)
@@ -77,11 +67,6 @@ class BuyController extends Controller
             ->orderBy('general_ledgers.gl_date', 'ASC')
             ->get();
 
-        $query = $query->map(function ($item) {
-            // ปรับโซนเวลาให้เป็นโซนเวลาของท้องถิ่น (ถ้าจำเป็น)
-            $item->gl_date = Carbon::parse($item->gl_date)->timezone('Asia/Bangkok')->format('Y-m-d H:i:s');
-            return $item;
-        });
         return [
             'query' => $query,
             'user' => $user,
@@ -91,5 +76,35 @@ class BuyController extends Controller
             'monthThai' => $monthThai,
             'currentYear' => $currentYear,
         ];
+    }
+
+
+    public function index()
+    {
+
+
+        $query = DB::table('users')
+            ->where('status', 0)
+            ->get();
+
+        return view('report.buy.index', compact('query'));
+    }
+
+    public function show(string $id)
+    {
+        $data = $this->getData($id); // รับค่ากลับมา
+
+
+
+        return view('report.buy.view', [
+            'query' => $data['query'],
+            'user' => $data['user'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate'],
+            'day' => $data['day'],
+            'monthThai' => $data['monthThai'],
+            'currentYear' => $data['currentYear'],
+            'id' => $id
+        ]);
     }
 }

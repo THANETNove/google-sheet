@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Report\GeneralJournalController;
+use App\Http\Controllers\Report\BuyController;
 
 
 Route::get('/', function () {
@@ -34,8 +35,8 @@ Route::get('export-pdf/{id}', [GeneralJournalController::class, 'exportPDF'])->n
 Route::get('export-excel/{id}', [GeneralJournalController::class, 'exportExcel'])->name('export-excel');
 
 //รายงานซื้อ
-Route::get('report/buy', [GeneralJournalController::class, 'index'])->name('report/buy');
-Route::get('report/buy-view', [GeneralJournalController::class, 'show'])->name('report/buy');
+Route::get('report/buy', [BuyController::class, 'index'])->name('report/buy');
+Route::get('report/buy-view/{id}', [BuyController::class, 'show'])->name('report/buy-view');
 
 
 
