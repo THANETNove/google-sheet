@@ -104,6 +104,25 @@ class BuyController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+        $data = $this->getData($request->id, $startDate, $endDate);
+
+        return view('report.buy.view', [
+            'query' => $data['query'],
+            'user' => $data['user'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate'],
+            'day' => $data['day'],
+            'monthThai' => $data['monthThai'],
+            'currentYear' => $data['currentYear'],
+            'id' => $request->id
+        ]);
+    }
+
 
     public function exportPDF($id)
     {
@@ -182,6 +201,6 @@ class BuyController extends Controller
         };
 
         // Download the Excel file
-        return Excel::download($export, 'general_ledger.xlsx');
+        return Excel::download($export, 'buy.xlsx');
     }
 }

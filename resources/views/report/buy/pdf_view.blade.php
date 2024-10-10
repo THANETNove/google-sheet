@@ -33,11 +33,11 @@
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th class="col-2">วันที่</th>
+                                        <th style="width: 70px">วันที่</th>
                                         <th class="col-1">เลขที่เอกสาร</th>
-                                        <th class="col-3">บริษัท</th>
-                                        <th class="col-3">หมายเลขผู้เสียภาษี</th>
-                                        <th class="col-2">คำอธิบาย</th>
+                                        <th class="col-4">บริษัท</th>
+                                        <th class="col-2">หมายเลขผู้เสียภาษี</th>
+                                        <th class="col-1">คำอธิบาย</th>
                                         <th class="col-1">จำนวน</th>
                                         <th class="col-1">ภาษี</th>
                                         <th class="col-1">รวม</th>

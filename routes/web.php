@@ -40,6 +40,7 @@ Route::get('report/buy', [BuyController::class, 'index'])->name('report/buy');
 Route::get('report/buy-view/{id}', [BuyController::class, 'show'])->name('report/buy-view');
 Route::get('buy-pdf/{id}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
 Route::get('buy-excel/{id}', [BuyController::class, 'exportExcel'])->name('buy-excel');
+Route::post('search-buy', [BuyController::class, 'search'])->name('search-buy');
 
 
 
