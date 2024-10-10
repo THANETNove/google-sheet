@@ -85,6 +85,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>ลำดับ</th>
                                     <th>GL_Code</th>
                                     <th>GL_Company</th>
                                     <th>GL_Amount</th>
@@ -185,39 +186,54 @@
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = ''; // ล้างข้อมูลเดิมในตารางก่อน
 
-            // สมมุติว่า responseData มีข้อมูลเป็น array ของ object
             data.forEach((item, index) => {
                 const row = document.createElement('tr');
 
-                row.innerHTML = `
-                <td>
-                    <input type="checkbox" name="selectedItems[]" value="${item.GL_Code}" id="check_${index}">
-                </td>
-                <td>${item.GL_Code}</td>
-                <td>${item.GL_Company}</td>
-                <td>${item.GL_Amount}</td>
-                <td>${item.GL_Tax}</td>
-                <td>${item.GL_Total}</td>
-                <td>${item.GL_Date}</td>
-                <td>${item.GL_Report_VAT}</td>
-                
-                <td>${item.GL_Document}</td>
-                <td>${item.GL_Date_Check}</td>
-                <td>${item.GL_Document_Check}</td>
-            
-                <td>${item.GL_TaxID}</td>
-                <td>${item.GL_Code_Acc}</td>
-                <td>${item.GL_Description}</td>
-                <td>${item.GL_Code_Acc_Pay}</td>
-                <td>${item.GL_Date_Pay}</td>
-      
-            `;
+                // สร้างเซลล์ GL_Code
+                const glCodeCell = document.createElement('td');
+                glCodeCell.textContent = item.GL_Code;
 
+                // ตรวจสอบความยาวของ GL_Code
+                if (item.GL_Code.length > 8) {
+                    glCodeCell.style.backgroundColor = '#ff3933'; // เปลี่ยนพื้นหลังเป็นสีแดง
+                    glCodeCell.style.color = '#FFFFFF'; // เปลี่ยนพื้นหลังเป็นสีแดง
+                }
+
+                // สร้างแถวในตาราง
+                row.innerHTML = `
+            <td>
+                <input type="checkbox" name="selectedItems[]" value="${item.GL_Code}" id="check_${index}">
+            </td>
+            <td>${index + 1}</td>
+        `;
+
+                // เพิ่มเซลล์ GL_Code และเซลล์อื่นๆ
+                row.appendChild(glCodeCell);
+                row.appendChild(createCell(item.GL_Company));
+                row.appendChild(createCell(item.GL_Amount));
+                row.appendChild(createCell(item.GL_Tax));
+                row.appendChild(createCell(item.GL_Total));
+                row.appendChild(createCell(item.GL_Date));
+                row.appendChild(createCell(item.GL_Report_VAT));
+                row.appendChild(createCell(item.GL_Document));
+                row.appendChild(createCell(item.GL_Date_Check));
+                row.appendChild(createCell(item.GL_Document_Check));
+                row.appendChild(createCell(item.GL_TaxID));
+                row.appendChild(createCell(item.GL_Code_Acc));
+                row.appendChild(createCell(item.GL_Description));
+                row.appendChild(createCell(item.GL_Code_Acc_Pay));
+                row.appendChild(createCell(item.GL_Date_Pay));
+
+                // เพิ่มแถวไปยัง tableBody
                 tableBody.appendChild(row);
             });
         }
 
-
+        function createCell(content) {
+            const cell = document.createElement('td');
+            cell.textContent = content;
+            return cell;
+        }
 
         // ฟังก์ชันเพื่อซ่อน spinner และแสดงปุ่ม
         function endImport() {
