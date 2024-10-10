@@ -155,35 +155,42 @@
 
     th:nth-child(1),
     td:nth-child(1) {
-        width: 13%;
+        width: 13% !important;
+        word-wrap: break-word !important;
+        white-space: normal !important;
         /* กำหนดความกว้างของคอลัมน์วันที่ */
     }
 
     th:nth-child(2),
     td:nth-child(2) {
-        width: 15%;
+        width: 15% !important;
+        word-wrap: break-word !important;
+        white-space: normal !important;
         /* กำหนดความกว้างของคอลัมน์เลขที่เอกสาร */
     }
 
     th:nth-child(3),
     td:nth-child(3) {
-        width: 20%;
+        width: 20% !important;
         /* กำหนดความกว้างของคอลัมน์บริษัท */
-        word-wrap: break-word;
+        word-wrap: break-word !important;
+        white-space: normal !important;
     }
 
     th:nth-child(4),
     td:nth-child(4) {
-        width: 15%;
+        width: 15% !important;
         /* กำหนดความกว้างของคอลัมน์หมายเลขผู้เสียภาษี */
-        word-wrap: break-word;
+        word-wrap: break-word !important;
+        white-space: normal !important;
     }
 
     th:nth-child(5),
     td:nth-child(5) {
-        width: 15%;
-        word-break: keep-all;
-        word-wrap: break-word;
+        width: 15% !important;
+        word-break: keep-all !important;
+        word-wrap: break-word !important;
+        white-space: normal !important;
     }
 
     th:nth-child(6),
