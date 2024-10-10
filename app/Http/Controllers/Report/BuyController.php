@@ -17,18 +17,9 @@ class BuyController extends Controller
 
 
 
-    public function getData($id)
+    private function getMonths()
     {
-        $user = DB::table('users')
-            ->where('id', $id)
-            ->get();
-        $accounting_period = $user[0]->accounting_period;
-
-        // แยกวันที่และเดือนออกจาก $accounting_period
-        list($day, $month) = explode('/', $accounting_period);
-
-
-        $months = [
+        return [
             '1' => 'มกราคม',
             '2' => 'กุมภาพันธ์',
             '3' => 'มีนาคม',
@@ -42,29 +33,34 @@ class BuyController extends Controller
             '11' => 'พฤศจิกายน',
             '12' => 'ธันวาคม',
         ];
+    }
 
-        // ตรวจสอบว่าเดือนที่ได้อยู่ในอาร์เรย์ไหม และแสดงเดือนภาษาไทย
-        $monthThai = isset($months[$month]) ? $months[$month] : 'เดือนไม่ถูกต้อง';
+    private function getData($id, $startDate = null, $endDate = null)
+    {
+        $user = DB::table('users')->find($id);
 
-        // สร้างวันที่เริ่มต้น
-        $startDate = Carbon::createFromDate(date('Y'), $month, $day);
-        $currentYear = date('Y'); // ดึงปีปัจจุบัน
-        // สร้างวันที่สิ้นสุด (เช่นสิ้นปีหรือสิ้นรอบถัดไป)
-        $endDate = $startDate->copy()->addYear()->subDay();
-
+        $accounting_period = $user->accounting_period;
+        list($day, $month) = explode('/', $accounting_period);
+        $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
 
         $query = DB::table('general_ledgers')
-            ->where('general_ledgers.gl_code_company', $id)
-            ->whereBetween('general_ledgers.gl_date', [$startDate, $endDate])
-
+            ->where('gl_code_company', $id)
+            ->where('gl_report_vat', "Buy")
+            ->whereBetween('gl_date', [$startDate, $endDate])
             ->select(
-                'general_ledgers.id',
-                'general_ledgers.gl_document',
-                'general_ledgers.gl_date',
-                'general_ledgers.gl_company',
-                'general_ledgers.gl_description',
+                'id',
+                'gl_document',
+                'gl_date',
+                'gl_company',
+                'gl_description',
+                'gl_taxid',
+                'gl_amount',
+                'gl_tax',
+                'gl_total'
+
             )
-            ->orderBy('general_ledgers.gl_date', 'ASC')
+            ->orderBy('gl_date', 'ASC')
             ->get();
 
         return [
@@ -73,8 +69,8 @@ class BuyController extends Controller
             'startDate' => $startDate,
             'endDate' => $endDate,
             'day' => $day,
-            'monthThai' => $monthThai,
-            'currentYear' => $currentYear,
+            'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
+            'currentYear' => date('Y')
         ];
     }
 
@@ -106,5 +102,86 @@ class BuyController extends Controller
             'currentYear' => $data['currentYear'],
             'id' => $id
         ]);
+    }
+
+
+    public function exportPDF($id)
+    {
+
+        $data = $this->getData($id); // รับค่ากลับมา
+        $pdf = PDF::loadView('report.buy.pdf_view', [
+            'query' => $data['query'],
+            'user' => $data['user'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate'],
+            'day' => $data['day'],
+            'monthThai' => $data['monthThai'],
+            'currentYear' => $data['currentYear'],
+        ]);
+        $pdf->setPaper('a4', 'portrait') // ขนาดกระดาษ A4
+            ->setOption('margin-top', 15)
+            ->setOption('margin-bottom', 15)
+            ->setOption('margin-left', 10)
+            ->setOption('margin-right', 10);
+        return $pdf->stream('exportPDF.pdf');
+    }
+
+
+    public function exportExcel($id)
+    {
+        $data = $this->getData($id);
+
+        // Map the query data to match the Excel export structure
+        $mappedData = $data['query']->map(function ($item) {
+            // แปลงวันที่ให้เป็นรูปแบบ dd-mm-yyyy
+            $formattedDate = Carbon::parse($item->gl_date)->format('d-m-Y');
+
+            return [
+                'id' => $item->id,
+                'gl_document' => $item->gl_document,
+                'gl_date' => $formattedDate,
+                'gl_company' => $item->gl_company,
+                'gl_taxid' => $item->gl_taxid,
+                'gl_description' => $item->gl_description,
+
+                'gl_amount' => $item->gl_amount,
+                'gl_tax' => $item->gl_tax,
+                'gl_total' => $item->gl_total,
+            ];
+        });
+
+
+        // Define an inline class for export
+        $export = new class($mappedData) implements FromArray, WithHeadings {
+            protected $data;
+
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+
+            public function array(): array
+            {
+                return $this->data->values()->toArray(); // Convert collection to array
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Document',
+                    'Date',
+                    'Company',
+                    'Description',
+                    'TaxID',
+                    'Amount',
+                    'Tax',
+                    'Total',
+                ];
+            }
+        };
+
+        // Download the Excel file
+        return Excel::download($export, 'general_ledger.xlsx');
     }
 }

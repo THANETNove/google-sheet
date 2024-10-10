@@ -1,7 +1,14 @@
-@extends('layouts.appHome')
+<!DOCTYPE html>
+<html lang="th">
 
-@section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+<head>
+    <title>สมุดรายวันทั่วไป</title>
+
+    @include('layouts.head_pdf')
+</head>
+
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y ">
         <div class="row">
             <div class="col-lg-12 mb-4 order-0">
 
@@ -11,24 +18,16 @@
                         <div class="container-company">
                             <div class="company">
                                 <p><strong>{{ $user->company }}</strong></p>
-
                                 <p><strong>-- สมุดบัญชีรายงานซื้อ --</strong></p>
-                                <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}<strong></p>
-                                <p><strong>ตั้งแต่วันที่ {{ date('d-m-Y', strtotime($startDate)) }} จนถึงวันที่
-                                        {{ date('d-m-Y', strtotime($endDate)) }}<strong></p>
+                                <p><strong> ตั้งแต่วันที่ {{ date('d-m-Y', strtotime($startDate)) }} จนถึงวันที่
+                                        {{ date('d-m-Y', strtotime($endDate)) }}</strong></p>
+
                             </div>
 
                         </div>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-
-
-                            <a href="{{ url('/buy-pdf', $id) }}" target="_blank" class="btn btn-primary">
-                                <i class='bx bxs-file-pdf'></i>&nbsp; PDF
-                            </a>
-                            <a href="{{ url('/buy-excel', $id) }}" class="btn btn-primary">
-                                <i class='bx bxs-file'></i>&nbsp; Excel
-                            </a>
+                            <p>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</p>
                         </div>
                         <div class="table-responsive m-3">
                             <table class="table">
@@ -63,9 +62,6 @@
                                             <td>{{ $que->gl_company }}</td>
                                             <td>{{ $que->gl_taxid }}</td>
                                             <td>{{ $que->gl_description }}</td>
-
-
-
                                             <td class="text-end">{{ number_format($que->gl_amount, 2) }}</td>
                                             <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
                                             <td class="text-end">{{ number_format($que->gl_total, 2) }}</td>
@@ -74,6 +70,10 @@
 
                                 </tbody>
                             </table>
+
+
+
+
                         </div>
                     </div>
                 </div>
@@ -81,17 +81,6 @@
             </div>
         </div>
     </div>
-    <!-- เพิ่มปุ่มเลื่อนกลับไปยังด้านบน -->
-    <button id="scrollToTop" class="btn btn-primary" style="position: fixed; bottom: 20px; right: 20px; display: none;">
-        <i class='bx bxs-arrow-to-top'></i>
-        &nbsp;
-        return to top
-    </button>
-    <script>
-        // ส่งค่า $user ไปยัง JavaScript
-        const user = @json($user);
+</body>
 
-        // สมมุติว่าคุณต้องการแสดงค่า company ของผู้ใช้คนแรก
-        document.getElementById('navbar-company').textContent = "บริษัท " + user[0].company; // แสดงค่าใน <strong> tag
-    </script>
-@endsection
+</html>

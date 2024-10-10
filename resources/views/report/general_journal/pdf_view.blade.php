@@ -26,20 +26,9 @@
                         </div>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
+                            <p>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</p>
                         </div>
                         <div class="table-responsive m-3">
-
-                            <style>
-                                .text-spacing {
-                                    margin-top: 10px;
-                                    /* เพิ่มความห่างด้านบน */
-                                    margin-bottom: 10px;
-                                    /* เพิ่มความห่างด้านล่าง */
-                                    line-height: 1.5;
-                                    /* เพิ่มระยะห่างระหว่างบรรทัด */
-                                }
-                            </style>
-
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">

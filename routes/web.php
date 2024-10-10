@@ -38,6 +38,8 @@ Route::post('/search-date', [GeneralJournalController::class, 'search'])->name('
 //รายงานซื้อ
 Route::get('report/buy', [BuyController::class, 'index'])->name('report/buy');
 Route::get('report/buy-view/{id}', [BuyController::class, 'show'])->name('report/buy-view');
+Route::get('buy-pdf/{id}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
+Route::get('buy-excel/{id}', [BuyController::class, 'exportExcel'])->name('buy-excel');
 
 
 
