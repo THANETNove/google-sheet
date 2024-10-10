@@ -107,8 +107,9 @@
                             <div data-i18n="Without menu">สมุดบัญชีรายงานซื้อ</div>
                         </a>
                     </li>
-                    <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
-                        <a href="{{ url('company') }} " class="menu-link">
+                    <li
+                        class="menu-item {{ Request::is('report/sell') || Request::is('report/sell-view/*') ? 'active' : '' }} ">
+                        <a href="{{ url('report/sell') }} " class="menu-link">
                             <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
                         </a>
                     </li>

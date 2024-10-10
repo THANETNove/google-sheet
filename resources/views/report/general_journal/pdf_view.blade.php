@@ -32,12 +32,12 @@
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th class="col-2">วันที่</th>
-                                        <th class="col-1">เลขที่เอกสาร</th>
-                                        <th class="col-5">บริษัท</th>
-                                        <th class="col-2">คำอธิบาย</th>
-                                        <th class="col-2">เดบิต</th>
-                                        <th class="col-2">เครดิต</th>
+                                        <th>วันที่</th>
+                                        <th>เลขที่เอกสาร</th>
+                                        <th>บริษัท</th>
+                                        <th>คำอธิบาย</th>
+                                        <th>เดบิต</th>
+                                        <th>เครดิต</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0">

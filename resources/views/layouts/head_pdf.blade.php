@@ -141,6 +141,62 @@
         /* 6/12 ของความกว้างเต็ม */
     }
 
+    table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th:nth-child(1),
+    td:nth-child(1) {
+        width: 13%;
+        /* กำหนดความกว้างของคอลัมน์วันที่ */
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+        width: 15%;
+        /* กำหนดความกว้างของคอลัมน์เลขที่เอกสาร */
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+        width: 20%;
+        /* กำหนดความกว้างของคอลัมน์บริษัท */
+        word-wrap: break-word;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+        width: 15%;
+        /* กำหนดความกว้างของคอลัมน์หมายเลขผู้เสียภาษี */
+        word-wrap: break-word;
+    }
+
+    th:nth-child(5),
+    td:nth-child(5) {
+        width: 15%;
+        word-break: keep-all;
+        word-wrap: break-word;
+    }
+
+    th:nth-child(6),
+    td:nth-child(6),
+    th:nth-child(7),
+    td:nth-child(7),
+    th:nth-child(8),
+    td:nth-child(8) {
+        width: 10%;
+        /* กำหนดความกว้างของคอลัมน์จำนวน ภาษี และรวม */
+        text-align: right;
+    }
+
     .text-end {
         text-align: right !important;
     }
