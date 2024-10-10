@@ -47,6 +47,7 @@ Route::get('report/sell', [SellController::class, 'index'])->name('report/sell')
 Route::get('report/sell-view/{id}', [SellController::class, 'show'])->name('report/sell-view');
 Route::post('search-sell', [SellController::class, 'search'])->name('search-sell');
 Route::get('sell-pdf/{id}', [SellController::class, 'exportPDF'])->name('sell-pdf');
+Route::get('sell-excel/{id}', [SellController::class, 'exportExcel'])->name('sell-excel');
 
 
 

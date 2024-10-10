@@ -150,4 +150,62 @@ class SellController extends Controller
             ->setOption('margin-right', 10);
         return $pdf->stream('exportPDF.pdf');
     }
+
+
+    public function exportExcel($id)
+    {
+        $data = $this->getData($id);
+
+        // Map the query data to match the Excel export structure
+        $mappedData = $data['query']->map(function ($item) {
+            // แปลงวันที่ให้เป็นรูปแบบ dd-mm-yyyy
+            $formattedDate = Carbon::parse($item->gl_date)->format('d-m-Y');
+
+            return [
+                'id' => $item->id,
+                'gl_document' => $item->gl_document,
+                'gl_date' => $formattedDate,
+                'gl_company' => $item->gl_company,
+                'gl_taxid' => $item->gl_taxid,
+                'gl_description' => $item->gl_description,
+                'gl_amount' => $item->gl_amount,
+                'gl_tax' => $item->gl_tax,
+                'gl_total' => $item->gl_total,
+            ];
+        });
+
+
+        // Define an inline class for export
+        $export = new class($mappedData) implements FromArray, WithHeadings {
+            protected $data;
+
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+
+            public function array(): array
+            {
+                return $this->data->values()->toArray(); // Convert collection to array
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Document',
+                    'Date',
+                    'Company',
+                    'Description',
+                    'TaxID',
+                    'Amount',
+                    'Tax',
+                    'Total',
+                ];
+            }
+        };
+
+        // Download the Excel file
+        return Excel::download($export, 'sell.xlsx');
+    }
 }

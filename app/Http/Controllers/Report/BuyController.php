@@ -166,7 +166,6 @@ class BuyController extends Controller
                 'gl_company' => $item->gl_company,
                 'gl_taxid' => $item->gl_taxid,
                 'gl_description' => $item->gl_description,
-
                 'gl_amount' => $item->gl_amount,
                 'gl_tax' => $item->gl_tax,
                 'gl_total' => $item->gl_total,
