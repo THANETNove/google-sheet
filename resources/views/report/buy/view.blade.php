@@ -94,6 +94,7 @@
         &nbsp;
         return to top
     </button>
+    @include('layouts.scrollToTop')
     <script>
         // ส่งค่า $user ไปยัง JavaScript
         const user = @json($user);

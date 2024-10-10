@@ -300,7 +300,7 @@
             // ส่งข้อมูลไปยัง Laravel API
 
             // ส่งข้อมูลทั้งหมดใน responseData ไปยัง Laravel API ในคำขอเดียว
-            const promise = axios.post('/save-company-data', {
+            const promise = axios.post('{{ route('save-company-data') }}', {
                 code_company: queryData.id, // รหัสบริษัท
                 status: e, // รหัสบริษัท
                 sheets: e != "add_choose" ? [responseData] : [selectedData] // ข้อมูลในทุก sheet
