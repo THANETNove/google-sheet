@@ -68,8 +68,6 @@ class GeneralJournalController extends Controller
         ];
     }
 
-    /**
-     * ! สมุดรายวันทั่วไป */
     public function index()
     {
 
