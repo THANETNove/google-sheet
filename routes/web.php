@@ -18,6 +18,7 @@ Auth::routes();
 
 // admin สุด
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('select-card/{id}', [HomeController::class, 'selectCard'])->name('select-card/');
 Route::get('/update/google-sheet', [HomeController::class, 'google_sheet'])->name('update/google-sheet');
 Route::get('/update/import-data/{id}', [HomeController::class, 'importData'])->name('update/import-data');
 Route::get('/count-data/{id}', [HomeController::class, 'countData'])->name('count-data');

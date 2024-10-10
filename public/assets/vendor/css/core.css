@@ -4215,7 +4215,6 @@ fieldset:disabled .btn {
   border: 0 solid #d9dee3;
   border-radius: 0.5rem;
   height: 100%;
-  min-height: 100vh;
 }
 
 .card>hr {

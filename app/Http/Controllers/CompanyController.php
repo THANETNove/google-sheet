@@ -78,7 +78,7 @@ class CompanyController extends Controller
 
         $data->save();
 
-        return redirect('company')->with('message', "บันทึกสำเร็จ");
+        return redirect('home')->with('message', "บันทึกสำเร็จ");
     }
 
     public function saveCompanyData(Request $request)
@@ -317,69 +317,119 @@ class CompanyController extends Controller
     public function addChoose($request)
     {
 
-
         // ตรวจสอบว่ามีข้อมูลใน sheets หรือไม่
         if (!isset($request->sheets[0]['GeneralLedger'])) {
             return response()->json(['success' => false, 'message' => 'No data found for General Ledger'], 400);
         }
 
-
         // ดึงข้อมูลจาก request
         $dataGeneralLedger = $request->sheets[0]['GeneralLedger'];
 
-
-        // บันทึก General Ledger เป็น row
+        // บันทึก General Ledger
         foreach ($dataGeneralLedger as $item) {
-            GeneralLedger::create([
-                'gl_code_company' => $request->code_company,
-                'gl_code' => $item['GL_Code'] ?? null,
-                'gl_refer' => $item['GL_Refer'] ?? null,
-                'gl_report_vat' => $item['GL_Report_VAT'] ?? null,
-                'gl_date' => $item['GL_Date'] ?? null,
-                'gl_document' => $item['GL_Document'] ?? null,
-                'gl_date_check' => $item['GL_Date_Check'] ?? null,
-                'gl_document_check' => $item['GL_Document_Check'] ?? null,
-                'gl_company' => $item['GL_Company'] ?? null,
-                'gl_taxid' => $item['GL_TaxID'] ?? null,
-                'gl_branch' => $item['GL_Branch'] ?? null,
-                'gl_code_acc' => $item['GL_Code_Acc'] ?? null,
-                'gl_description' => $item['GL_Description'] ?? null,
-                'gl_code_acc_pay' => $item['GL_Code_Acc_Pay'] ?? null,
-                'gl_date_pay' => $item['GL_Date_Pay'] ?? null,
-                'gl_vat' => $item['GL_Vat'] ?? null,
-                'gl_rate' => $item['GL_Rate'] ?? null,
-                'gl_taxmonth' => $item['GL_TaxMonth'] ?? null,
-                'gl_amount_no_vat' => $item['GL_AmountNoVat'] ?? null,
-                'gl_amount' => $item['GL_Amount'] ?? null,
-                'gl_tax' => $item['GL_Tax'] ?? null,
-                'gl_total' => $item['GL_Total'] ?? null,
-                'gl_url' => $item['GL_URL'] ?? null,
-                'gl_page' => $item['GL_Page'] ?? null,
-                'gl_remark' => $item['GL_Remark'] ?? null,
-                'gl_email' => $item['GL_Email'] ?? null,
-            ]);
+            // ตรวจสอบว่า GL_Code มีอยู่ในฐานข้อมูลหรือไม่
+            $generalLedger = GeneralLedger::where('gl_code', $item['GL_Code'])->first();
+
+            if ($generalLedger) {
+      
+                // ถ้ามีอยู่แล้วให้ทำการอัปเดต
+                $generalLedger->update([
+                    'gl_code_company' => $request->code_company,
+                    'gl_refer' => $item['GL_Refer'] ?? null,
+                    'gl_report_vat' => $item['GL_Report_VAT'] ?? null,
+                    'gl_date' => $item['GL_Date'] ?? null,
+                    'gl_document' => $item['GL_Document'] ?? null,
+                    'gl_date_check' => $item['GL_Date_Check'] ?? null,
+                    'gl_document_check' => $item['GL_Document_Check'] ?? null,
+                    'gl_company' => $item['GL_Company'] ?? null,
+                    'gl_taxid' => $item['GL_TaxID'] ?? null,
+                    'gl_branch' => $item['GL_Branch'] ?? null,
+                    'gl_code_acc' => $item['GL_Code_Acc'] ?? null,
+                    'gl_description' => $item['GL_Description'] ?? null,
+                    'gl_code_acc_pay' => $item['GL_Code_Acc_Pay'] ?? null,
+                    'gl_date_pay' => $item['GL_Date_Pay'] ?? null,
+                    'gl_vat' => $item['GL_Vat'] ?? null,
+                    'gl_rate' => $item['GL_Rate'] ?? null,
+                    'gl_taxmonth' => $item['GL_TaxMonth'] ?? null,
+                    'gl_amount_no_vat' => $item['GL_AmountNoVat'] ?? null,
+                    'gl_amount' => $item['GL_Amount'] ?? null,
+                    'gl_tax' => $item['GL_Tax'] ?? null,
+                    'gl_total' => $item['GL_Total'] ?? null,
+                    'gl_url' => $item['GL_URL'] ?? null,
+                    'gl_page' => $item['GL_Page'] ?? null,
+                    'gl_remark' => $item['GL_Remark'] ?? null,
+                    'gl_email' => $item['GL_Email'] ?? null,
+                ]);
+            } else {
+               
+                // ถ้าไม่มีก็ทำการเพิ่มข้อมูลใหม่
+                GeneralLedger::create([
+                    'gl_code_company' => $request->code_company,
+                    'gl_code' => $item['GL_Code'],
+                    'gl_refer' => $item['GL_Refer'] ?? null,
+                    'gl_report_vat' => $item['GL_Report_VAT'] ?? null,
+                    'gl_date' => $item['GL_Date'] ?? null,
+                    'gl_document' => $item['GL_Document'] ?? null,
+                    'gl_date_check' => $item['GL_Date_Check'] ?? null,
+                    'gl_document_check' => $item['GL_Document_Check'] ?? null,
+                    'gl_company' => $item['GL_Company'] ?? null,
+                    'gl_taxid' => $item['GL_TaxID'] ?? null,
+                    'gl_branch' => $item['GL_Branch'] ?? null,
+                    'gl_code_acc' => $item['GL_Code_Acc'] ?? null,
+                    'gl_description' => $item['GL_Description'] ?? null,
+                    'gl_code_acc_pay' => $item['GL_Code_Acc_Pay'] ?? null,
+                    'gl_date_pay' => $item['GL_Date_Pay'] ?? null,
+                    'gl_vat' => $item['GL_Vat'] ?? null,
+                    'gl_rate' => $item['GL_Rate'] ?? null,
+                    'gl_taxmonth' => $item['GL_TaxMonth'] ?? null,
+                    'gl_amount_no_vat' => $item['GL_AmountNoVat'] ?? null,
+                    'gl_amount' => $item['GL_Amount'] ?? null,
+                    'gl_tax' => $item['GL_Tax'] ?? null,
+                    'gl_total' => $item['GL_Total'] ?? null,
+                    'gl_url' => $item['GL_URL'] ?? null,
+                    'gl_page' => $item['GL_Page'] ?? null,
+                    'gl_remark' => $item['GL_Remark'] ?? null,
+                    'gl_email' => $item['GL_Email'] ?? null,
+                ]);
+            }
         }
 
         // ตรวจสอบว่ามีข้อมูลใน General Ledger Sub หรือไม่
         if (isset($request->sheets[0]['GeneralLedgerSub'])) {
             $dataGeneralLedgerSub = $request->sheets[0]['GeneralLedgerSub'];
 
-            // บันทึก General Ledger Sub เป็น row
+            // บันทึกหรืออัปเดต General Ledger Sub
             foreach ($dataGeneralLedgerSub as $subItem) {
+                $generalLedgerSub = GeneralLedgerSub::where('gls_code', $subItem['GLS_Code'])->first();
 
-
-                GeneralLedgerSub::create([
-                    'gls_code_company' => $request->code_company,
-                    'gls_code' => $subItem['GLS_Code'] ?? null,
-                    'gls_id' => $subItem['GLS_ID'] ?? null,
-                    'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
-                    'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
-                    'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
-                    'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
-                    'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
-                    'gls_debit' => $subItem['GLS_Debit'] ?? null,
-                    'gls_credit' => $subItem['GLS_Credit'] ?? null,
-                ]);
+                if ($generalLedgerSub) {
+                    // ถ้ามีอยู่แล้วให้ทำการอัปเดต
+                    $generalLedgerSub->update([
+                        'gls_code_company' => $request->code_company,
+                        'gls_id' => $subItem['GLS_ID'] ?? null,
+                        'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
+                        'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
+                        'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
+                        'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
+                        'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
+                        'gls_debit' => $subItem['GLS_Debit'] ?? null,
+                        'gls_credit' => $subItem['GLS_Credit'] ?? null,
+                    ]);
+                } else {
+                    // ถ้าไม่มีก็ทำการเพิ่มข้อมูลใหม่
+                    GeneralLedgerSub::create([
+                        'gls_code_company' => $request->code_company,
+                        'gls_code' => $subItem['GLS_Code'],
+                        'gls_id' => $subItem['GLS_ID'] ?? null,
+                        'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
+                        'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
+                        'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
+                        'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
+                        'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
+                        'gls_debit' => $subItem['GLS_Debit'] ?? null,
+                        'gls_credit' => $subItem['GLS_Credit'] ?? null,
+                    ]);
+                }
             }
         }
 
@@ -387,20 +437,31 @@ class CompanyController extends Controller
         if (isset($request->sheets[0]['Account_Code'])) {
             $dataAccountCode = $request->sheets[0]['Account_Code'];
 
-            // บันทึก Account Code เป็น row
+            // บันทึกหรืออัปเดต Account Code
             foreach ($dataAccountCode as $accountItem) {
-                Account_Code::create([
-                    'acc_code_company' => $request->code_company,
-                    'acc_code' => $accountItem['ACC_Code'] ?? null,
-                    'acc_name' => $accountItem['ACC_Name'] ?? null,
-                    'acc_type' => $accountItem['ACC_Type'] ?? null,
-                ]);
+                $accountCode = Account_Code::where('acc_code', $accountItem['ACC_Code'])->first();
+
+                if ($accountCode) {
+                    // ถ้ามีอยู่แล้วให้ทำการอัปเดต
+                    $accountCode->update([
+                        'acc_code_company' => $request->code_company,
+                        'acc_name' => $accountItem['ACC_Name'] ?? null,
+                        'acc_type' => $accountItem['ACC_Type'] ?? null,
+                    ]);
+                } else {
+                    // ถ้าไม่มีก็ทำการเพิ่มข้อมูลใหม่
+                    Account_Code::create([
+                        'acc_code_company' => $request->code_company,
+                        'acc_code' => $accountItem['ACC_Code'],
+                        'acc_name' => $accountItem['ACC_Name'] ?? null,
+                        'acc_type' => $accountItem['ACC_Type'] ?? null,
+                    ]);
+                }
             }
         }
 
         return response()->json(['success' => true, 'message' => 'Data saved successfully']);
     }
-
 
 
 
@@ -448,7 +509,7 @@ class CompanyController extends Controller
 
         $data->save();
 
-        return redirect('company')->with('message', "update สำเร็จ");
+        return redirect('home')->with('message', "update สำเร็จ");
     }
 
     /**

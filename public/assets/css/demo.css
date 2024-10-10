@@ -262,3 +262,7 @@
     /* เพิ่มระยะห่างด้านบน */
   }
 }
+
+.card-text {
+  color: var(--bs-body-color) !important;
+}

@@ -58,16 +58,16 @@
 
         <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item   {{ Request::is('home') ? 'active' : '' }} ">
+            <li class="menu-item   {{ Request::is('home') || Request::is('company*') ? 'active' : '' }} ">
                 <a href="{{ url('home') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                    <div data-i18n="Analytics">Dashboard</div>
+                    <div data-i18n="Analytics">Dashboard </div>
                 </a>
             </li>
 
 
             <!-- บริษัท -->
-            <li class="menu-item  {{ Request::is('company*') ? 'active open' : '' }} ">
+            {{--  <li class="menu-item  {{ Request::is('company*') ? 'active open' : '' }} ">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
                     <div data-i18n="Layouts">บริษัท</div>
@@ -82,17 +82,20 @@
 
                 </ul>
             </li>
+ --}}
+
             <!--รายงาน -->
             <li class="menu-item  {{ Request::is('report/*') ? 'active open' : '' }} ">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class='menu-icon tf-icons  bx bxs-report'></i>
+                    {{--  <i class='menu-icon tf-icons  bx bxs-report'></i> --}}
+                    <i class='menu-icon tf-icons bx bxs-buildings'></i>
                     <div data-i18n="Layouts">รายงาน</div>
                 </a>
 
                 <ul class="menu-sub">
-                    <li
-                        class="menu-item {{ Request::is('report/general_journal') || Request::is('report/general-journal-view/*') ? 'active' : '' }} ">
-                        <a href="{{ url('report/general_journal') }} " class="menu-link">
+                    <li class="menu-item {{ Request::is('report/general-journal-view/*') ? 'active' : '' }} ">
+                        <a href="@if (session()->has('company_id')) {{ url('report/general-journal-view', session()->get('company_id')) }} @else # @endif"
+                            class="menu-link">
                             <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
                         </a>
                     </li>
@@ -101,15 +104,15 @@
                             <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
                         </a>
                     </li>
-                    <li
-                        class="menu-item {{ Request::is('report/buy') || Request::is('report/buy-view/*') ? 'active' : '' }} ">
-                        <a href="{{ url('report/buy') }} " class="menu-link">
+                    <li class="menu-item {{ Request::is('report/buy-view/*') ? 'active' : '' }} ">
+                        <a href="@if (session()->has('company_id')) {{ url('eport/buy-view', session()->get('company_id')) }} @else # @endif"
+                            class="menu-link">
                             <div data-i18n="Without menu">สมุดบัญชีรายงานซื้อ</div>
                         </a>
                     </li>
-                    <li
-                        class="menu-item {{ Request::is('report/sell') || Request::is('report/sell-view/*') ? 'active' : '' }} ">
-                        <a href="{{ url('report/sell') }} " class="menu-link">
+                    <li class="menu-item {{ Request::is('report/sell-view/*') ? 'active' : '' }} ">
+                        <a href="@if (session()->has('company_id')) {{ url('eport/sell-view', session()->get('company_id')) }} @else # @endif"
+                            class="menu-link">
                             <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
                         </a>
                     </li>
@@ -155,54 +158,15 @@
                             <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
                         </a>
                     </li>
-                    <li
-                        class="menu-item {{ Request::is('update/google-sheet') || Request::is('update/import-data/*') ? 'active' : '' }}">
-                        <a href="{{ url('update/google-sheet') }}" class="menu-link">
+                    <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
+                        <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
+                            class="menu-link">
                             <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
                         </a>
                     </li>
 
                 </ul>
             </li>
-
-            <li class="menu-header small text-uppercase">
-                <span class="menu-header-text">Pages</span>
-            </li>
-            <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                    <div data-i18n="Account Settings">Account Settings</div>
-                </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="pages-account-settings-account.html" class="menu-link">
-                            <div data-i18n="Account">Account</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="pages-account-settings-notifications.html" class="menu-link">
-                            <div data-i18n="Notifications">Notifications</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="pages-account-settings-connections.html" class="menu-link">
-                            <div data-i18n="Connections">Connections</div>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
-            <!-- Cards -->
-            <li class="menu-item">
-                <a href="cards-basic.html" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-collection"></i>
-                    <div data-i18n="Basic">Cards</div>
-                </a>
-            </li>
-
-
 
 
         </ul>

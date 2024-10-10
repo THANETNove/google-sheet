@@ -18,15 +18,8 @@
                             <div class="col-md-8  order-2 order-md-1">
 
                                 <h4 class="mb-3">บริษัท {{ $query->company }} </h4>
-                                {{-- <div class="border p-3 rounded shadow-sm">
-                                    <p><strong>รหัสบริษัท:</strong> {{ $query->code_company }}</p>
-                                    <p><strong>ชื่อบริษัท:</strong> {{ $query->company }}</p>
-                                    <p><strong>สาขา:</strong> {{ $query->branch }}</p>
-                                    <p><strong>เลขผู้เสียภาษี:</strong> {{ $query->tax_id }}</p>
-                                    <p><strong>จำนวน General Ledger DB:</strong> <span id="gl_db"> </span></p>
-                                    <p><strong>จำนวน General Ledger Sub DB:</strong> <span id="gl_db_sub"> </span></p>
-                                    <p><strong>จำนวน Account_Code DB:</strong> <span id="ac_db"> </span></p>
-                                </div> --}}
+                                <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+
                             </div>
                             <div class="col-md-4  text-mt--2 order-1 order-md-2">
                                 <div class="text-end  justify-content-end align-items-center">
@@ -152,7 +145,12 @@
                     displayData(responseData.GeneralLedger)
                 })
                 .catch(error => {
+
                     console.error(`Error in request:`, error.response ? error.response.data : error.message);
+                    const errorMessageElement = document.getElementById('error-message');
+                    errorMessageElement.textContent = error.response ? error.response.data.message : error
+                        .message; // ใช้ข้อความจาก server หรือข้อความ error ทั่วไป
+                    errorMessageElement.style.display = 'block'; // แสดง element
 
                 });
         }
@@ -289,6 +287,7 @@
                 };
 
 
+                console.log("selectedData", selectedData);
             }
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
@@ -298,6 +297,7 @@
 
 
             // ส่งข้อมูลไปยัง Laravel API
+
 
             // ส่งข้อมูลทั้งหมดใน responseData ไปยัง Laravel API ในคำขอเดียว
             const promise = axios.post('{{ route('save-company-data') }}', {
