@@ -14,6 +14,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GeneralJournalController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+
+
     private function getMonths()
     {
         return [

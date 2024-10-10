@@ -15,6 +15,10 @@ use Maatwebsite\Excel\Facades\Excel;
 class BuyController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
 
     private function getMonths()
