@@ -166,7 +166,7 @@
     <button id="scrollToTop" class="btn btn-primary" style="position: fixed; bottom: 20px; right: 20px; display: none;">
         <i class='bx bxs-arrow-to-top'></i>
         &nbsp;
-        return to top
+        Top
     </button>
 
     @include('layouts.scrollToTop')
