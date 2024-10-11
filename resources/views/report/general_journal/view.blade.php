@@ -97,7 +97,7 @@
                                                         rel="noopener noreferrer">
                                                         {{ $ledger->gl_document }}
                                                         <span class="id-message">
-                                                            นำข้อมูลเข้าแค่อันใหม่
+                                                            หน้า {{ $ledger->gl_page }}
                                                         </span>
                                                     </a>
                                                 @else
