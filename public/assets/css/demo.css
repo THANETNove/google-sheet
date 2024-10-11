@@ -358,6 +358,27 @@
   opacity: 1;
 }
 
+.icon-aside {
+  width: 84px;
+  height: auto;
+}
+
+.text-gl-aside {
+  font-size: 32px;
+}
+
+.icon-aside-head {
+  width: 32px;
+  /* กำหนดขนาดความกว้าง */
+  height: 32px;
+  /* กำหนดขนาดความสูง */
+}
+
+.gl-navbar {
+  font-size: 20px;
+  font-weight: 700;
+}
+
 /* 
 th:nth-child(4),
 td:nth-child(4) {
