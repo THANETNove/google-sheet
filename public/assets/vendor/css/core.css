@@ -349,6 +349,12 @@ th {
   text-align: -webkit-match-parent;
 }
 
+td {
+  font-weight: 400;
+  text-align: inherit;
+  text-align: -webkit-match-parent;
+}
+
 thead,
 tbody,
 tfoot,
@@ -6404,6 +6410,7 @@ fieldset:disabled .btn {
 b,
 strong {
   font-weight: 700;
+  color: #000000;
 }
 
 a:not([href]) {

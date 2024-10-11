@@ -135,6 +135,8 @@
 
                     responseData = response.data;
 
+                    console.log("response.data", response.data);
+
 
                     endImport();
                     displayData(responseData.GeneralLedger)

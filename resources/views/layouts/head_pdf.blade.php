@@ -155,7 +155,7 @@
 
     th:nth-child(1),
     td:nth-child(1) {
-        width: 13% !important;
+        width: 150px !important;
         word-wrap: break-word !important;
         white-space: normal !important;
         /* กำหนดความกว้างของคอลัมน์วันที่ */

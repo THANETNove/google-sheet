@@ -67,18 +67,20 @@
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th class="col-2">วันที่</th>
-                                        <th class="col-1">เลขที่เอกสาร</th>
-                                        <th class="col-4">บริษัท</th>
-                                        <th class="col-3">คำอธิบาย</th>
-                                        <th class="col-2">เดบิต</th>
-                                        <th class="col-2">เครดิต</th>
+                                        <th class="child-1">#</th>
+                                        <th class="child-2">วันที่</th>
+                                        <th class="child-2">เลขที่เอกสาร</th>
+                                        <th class="child-3">บริษัท</th>
+                                        <th class="child-3">คำอธิบาย</th>
+                                        <th class="child-2">เดบิต</th>
+                                        <th class="child-2">เครดิต</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0">
                                     @php
                                         $previousId = null;
                                         $groupedQuery = $query->groupBy('id'); // Group the data by id
+                                        $i = 1;
                                     @endphp
 
                                     @foreach ($groupedQuery as $id => $groupedData)
@@ -93,22 +95,22 @@
                                             <tr>
                                                 @if ($index === 0)
                                                     <!-- Display rowspan for the first row of each group -->
-                                                    <td rowspan="{{ $rowspan }}">
-                                                        {{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
-                                                    <td rowspan="{{ $rowspan }}">{{ $que->gl_document }}</td>
-                                                    <td rowspan="{{ $rowspan }}">{{ $que->gl_company }}</td>
+                                                    <td rowspan="{{ $rowspan }}">{!! $i++ !!}</td>
+                                                    <td rowspan="{{ $rowspan }}">{!! date('d-m-Y', strtotime($que->gl_date)) !!}</td>
+                                                    <td rowspan="{{ $rowspan }}">{!! $que->gl_document !!}</td>
+                                                    <td rowspan="{{ $rowspan }}">{!! $que->gl_company !!}</td>
                                                 @endif
                                                 <td>{{ $que->gls_account_name }}</td>
-                                                <td class="text-end">{{ number_format($que->gls_debit, 2) }}</td>
-                                                <td class="text-end">{{ number_format($que->gls_credit, 2) }}</td>
+                                                <td class="text-end">{!! number_format($que->gls_debit, 2) !!}</td>
+                                                <td class="text-end">{!! number_format($que->gls_credit, 2) !!}</td>
                                             </tr>
                                         @endforeach
 
                                         <!-- เพิ่มแถวสำหรับผลรวมใต้ข้อมูล -->
                                         <tr>
                                             <td><strong>รวม</strong></td>
-                                            <td class="text-end"><strong>{{ number_format($totalDebit, 2) }}</strong></td>
-                                            <td class="text-end"> <strong>{{ number_format($totalCredit, 2) }}</strong>
+                                            <td class="text-end"><strong>{!! number_format($totalDebit, 2) !!}</strong></td>
+                                            <td class="text-end"> <strong>{!! number_format($totalCredit, 2) !!}</strong>
                                             </td>
                                         </tr>
                                     @endforeach
