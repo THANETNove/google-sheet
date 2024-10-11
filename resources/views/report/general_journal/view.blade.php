@@ -80,7 +80,7 @@
                                         <th>เครดิต</th>
                                     </tr>
                                 </thead>
-                                <tbody class="table-border-bottom-0">
+                                  <tbody class="table-border-bottom-0">
                                     @foreach ($query as $ledger)
                                         @php
                                             $totalDebit = 0;
@@ -132,6 +132,10 @@
                                         @endphp
                                     @endforeach
                                 </tbody>
+                  
+                                
+
+
                             </table>
 
 
