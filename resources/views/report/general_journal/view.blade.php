@@ -50,10 +50,16 @@
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
 
-                            <a href="{{ url('/export-pdf', $id) }}" target="_blank" class="btn btn-primary">
+                            {{--      <a href="{{ url('/export-pdf', $id, [$startDate, $endDate]) }}" target="_blank"
+                                class="btn btn-primary">
+                                <i class='bx bxs-file-pdf'></i>&nbsp; PDF
+                            </a> --}}
+                            <a href="{{ url('/export-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
+                                target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
-                            <a href="{{ url('/export-excel', $id) }}" class="btn btn-primary">
+                            <a href="{{ url('/export-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
+                                class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
                             </a>
                         </div>

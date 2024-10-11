@@ -122,10 +122,11 @@ class GeneralJournalController extends Controller
         ]);
     }
 
-    public function exportPDF($id)
+    public function exportPDF($id, $start_date, $end_date)
     {
 
-        $data = $this->getDataGlAndGls($id); // รับค่ากลับมา
+
+        $data = $this->getDataGlAndGls($id, $start_date, $end_date); // รับค่ากลับมา
         $pdf = PDF::loadView('report.general_journal.pdf_view', [
             'query' => $data['query'],
             'user' => $data['user'],
@@ -143,9 +144,9 @@ class GeneralJournalController extends Controller
         return $pdf->stream('exportPDF.pdf');
     }
 
-    public function exportExcel($id)
+    public function exportExcel($id, $start_date, $end_date)
     {
-        $data = $this->getDataGlAndGls($id);
+        $data = $this->getDataGlAndGls($id, $start_date, $end_date);
 
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {

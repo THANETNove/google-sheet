@@ -33,8 +33,8 @@ Route::post('/save-company-data', [CompanyController::class, 'saveCompanyData'])
 //รายงานทั่วไป
 Route::get('/report/general_journal', [GeneralJournalController::class, 'index'])->name('report/general_journal');
 Route::get('/report/general-journal-view/{id}', [GeneralJournalController::class, 'show'])->name('general-journal-view');
-Route::get('/export-pdf/{id}', [GeneralJournalController::class, 'exportPDF'])->name('export-pdf');
-Route::get('/export-excel/{id}', [GeneralJournalController::class, 'exportExcel'])->name('export-excel');
+Route::get('/export-pdf/{id}/{start_date}/{end_date}', [GeneralJournalController::class, 'exportPDF'])->name('export-pdf');
+Route::get('/export-excel/{id}/{start_date}/{end_date}', [GeneralJournalController::class, 'exportExcel'])->name('export-excel');
 Route::post('/search-date', [GeneralJournalController::class, 'search'])->name('search-date');
 
 //รายงานซื้อ
