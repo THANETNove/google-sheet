@@ -29,7 +29,7 @@
                             <p>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</p>
                         </div>
                         <div class="table-responsive m-3">
-                            <table class="table">
+                            {{--  <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th class="child-1">#</th>
@@ -43,67 +43,84 @@
 
                                 <tbody class="table-border-bottom-0">
                                     @php
-                                        $previousId = null;
                                         $groupedQuery = $query->groupBy('id'); // Group the data by id
                                         $i = 1;
                                     @endphp
 
                                     @foreach ($groupedQuery as $id => $groupedData)
                                         @php
-                                            $rowspan = count($groupedData); // Calculate the number of rows for the current id
-
-                                            // คำนวณค่ารวมของ gls_debit และ gls_credit สำหรับแต่ละกลุ่ม
                                             $totalDebit = $groupedData->sum('gls_debit');
                                             $totalCredit = $groupedData->sum('gls_credit');
 
-                                            // รวม gls_account_name ทั้งหมด
-                                            $accountNames = $groupedData
-                                                ->pluck('gls_account_name')
-                                                ->unique()
-                                                ->toArray();
-                                            $accountNamesStr = implode(
-                                                '<br>',
-                                                array_map(function ($name) {
-                                                    return '&nbsp;-&nbsp;' . $name; // เพิ่ม - ก่อนหน้าชื่อบัญชี
-                                                }, $accountNames),
-                                            ); // รวมชื่อบัญชีเป็น string
+                                            // Combine gls_account_name with their respective debit and credit
+                                            $accountDetails = $groupedData
+                                                ->map(function ($que) {
+                                                    return $que->gls_account_name .
+                                                        '&nbsp;&nbsp;' .
+                                                        number_format($que->gls_debit, 2) .
+                                                        '&nbsp;&nbsp;' .
+                                                        number_format($que->gls_credit, 2);
+                                                })
+                                                ->implode('<br>');
+
                                         @endphp
 
-                                        @foreach ($groupedData as $index => $que)
-                                            <tr>
-                                                @if ($index === 0)
-                                                    <!-- Display rowspan for the first row of each group -->
-                                                    <td rowspan="{{ $rowspan }}">{!! $i++ !!}</td>
-                                                    <td rowspan="{{ $rowspan }}">{!! date('d-m-Y', strtotime($que->gl_date)) !!}</td>
-                                                    <td rowspan="{{ $rowspan }}">{!! $que->gl_document !!}</td>
-                                                    <td rowspan="{!! $rowspan !!}">
-                                                        {!! $que->gl_company !!}
-                                                        &nbsp;-&nbsp;{{ $que->gl_description }}<br>{!! $accountNamesStr !!}
-                                                    </td>
-                                                @endif
+                                        <!-- Use only one <tr> for each group -->
+                                        <tr style="border-bottom: 2px solid #000;"> <!-- Black border line -->
+                                            <td>{!! $i++ !!}</td>
+                                            <td>{!! date('d-m-Y', strtotime($groupedData->first()->gl_date)) !!}</td>
+                                            <td>{!! $groupedData->first()->gl_document !!}</td>
+                                            <td>
+                                                {!! $groupedData->first()->gl_company !!}
+                                                &nbsp;-&nbsp;{{ $groupedData->first()->gl_description }}
+                                                <br>
+                                                {!! $accountDetails !!}
+                                                <!-- Display account names with debit and credit in one cell -->
+                                            </td>
 
-
-                                                <td class="text-end">{!! number_format($que->gls_debit, 2) !!}</td>
-                                                <td class="text-end">{!! number_format($que->gls_credit, 2) !!}</td>
-                                            </tr>
-                                        @endforeach
-
-                                        <!-- เพิ่มแถวสำหรับผลรวมใต้ข้อมูล -->
-
-
-                                        <tr
-                                            style="background-color: {{ $totalDebit != $totalCredit ? '#ff000026' : 'transparent' }};">
-                                            <td colspan="3"></td>
-                                            <td class="text-end"><strong>รวม</strong></td>
-                                            <td class="text-end"><strong>{!! number_format($totalDebit, 2) !!}</strong></td>
+                                            <td colspan="4" class="text-end"><strong>{!! number_format($totalDebit, 2) !!}</strong>
+                                            </td>
                                             <td class="text-end"><strong>{!! number_format($totalCredit, 2) !!}</strong></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
 
+                            </table> --}}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">GL Code</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Document</th>
+                                        <th scope="col">Company</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php $i = 1; @endphp
 
+                                    <!-- Loop through each group -->
+                                    @foreach ($query as $gl_code => $group)
+                                        <!-- Display the GL code as a header for each group -->
+                                        <tr>
+                                            <td colspan="5">
+                                                <strong>GL Code: {{ $gl_code }}</strong>
+                                            </td>
+                                        </tr>
 
-
+                                        <!-- Loop through the rows in each group -->
+                                        @foreach ($group as $que)
+                                            <tr>
+                                                <td>{{ $i++ }}</td>
+                                                <td>{{ $que->gl_code }}</td>
+                                                <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
+                                                <td>{{ $que->gl_document }}</td>
+                                                <td>{{ $que->gl_company }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
 
                         </div>
                     </div>

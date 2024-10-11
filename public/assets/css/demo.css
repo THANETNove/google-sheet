@@ -321,6 +321,17 @@
   white-space: normal !important;
 }
 
+
+
+
+
+.no-border-tb {
+  border: none !important;
+  /* ปิดการแสดงผลของเส้น */
+}
+
+
+
 /* 
 th:nth-child(4),
 td:nth-child(4) {

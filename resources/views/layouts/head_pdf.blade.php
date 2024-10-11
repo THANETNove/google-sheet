@@ -11,16 +11,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
     integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 <!-- thai font -->
-<link
-    href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
-    rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
 
 <style>
     body {
         font-size: 9pt !important;
-        margin: 0;
         font-family: 'Sarabun', sans-serif;
-        line-height: 1;
+
+        font-weight: 400;
+        font-style: normal !important;
     }
 
 
@@ -52,62 +52,225 @@
 
 
     .table {
+        --bs-table-bg: transparent;
+        --bs-table-accent-bg: transparent;
+        --bs-table-striped-color: #697a8d;
+        --bs-table-striped-bg: #f9fafb;
+        --bs-table-active-color: #697a8d;
+        --bs-table-active-bg: rgba(67, 89, 113, 0.1);
+        --bs-table-hover-color: #697a8d;
+        --bs-table-hover-bg: rgba(67, 89, 113, 0.06);
         width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 10pt;
+        margin-bottom: 1rem;
+        color: #697a8d;
+        vertical-align: middle;
+        border-color: #d9dee3;
+
     }
 
-    .table th,
-    .table td {
-        border: none;
-        padding: 8px;
+    .table> :not(caption)>*>* {
+        padding: 0.625rem 16px;
+        background-color: var(--bs-table-bg);
+        border-bottom-width: 1px;
+        box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
     }
 
-    .table th {
-        border-bottom: 1px solid #ddd;
-        background-color: #f2f2f2;
-        text-align: left;
+    .table>tbody {
+        vertical-align: inherit;
     }
 
-    tr {
-        page-break-inside: avoid !important;
+    .table>thead {
+        vertical-align: bottom;
     }
 
-    /* สไตล์แถวของตาราง */
-    .table tbody tr:hover {
-        background-color: #e9ecef;
-        /* เปลี่ยนสีเมื่อชี้เมาส์ไปที่แถว */
+    .table> :not(:first-child) {
+        border-top: 2px solid #d9dee3;
     }
 
-    /* ให้ข้อความอยู่กลางในเซลล์ */
-    .table td {
-        text-align: left;
-        /* จัดกลางข้อความในเซลล์ */
+    .caption-top {
+        caption-side: top;
     }
 
-    /* ระยะห่างระหว่างตาราง */
+    .table-sm> :not(caption)>*>* {
+        padding: 0.3125rem 0.625rem;
+    }
+
+    .table-bordered> :not(caption)>* {
+        border-width: 1px 0;
+    }
+
+    .table-bordered> :not(caption)>*>* {
+        border-width: 0 1px;
+    }
+
+    .table-borderless> :not(caption)>*>* {
+        border-bottom-width: 0;
+    }
+
+    .table-borderless> :not(:first-child) {
+        border-top-width: 0;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(odd)>* {
+        --bs-table-accent-bg: var(--bs-table-striped-bg);
+        color: var(--bs-table-striped-color);
+    }
+
+    .table-active {
+        --bs-table-accent-bg: var(--bs-table-active-bg);
+        color: var(--bs-table-active-color);
+    }
+
+    .table-hover>tbody>tr:hover>* {
+        --bs-table-accent-bg: var(--bs-table-hover-bg);
+        color: var(--bs-table-hover-color);
+    }
+
+    .table-primary {
+        --bs-table-bg: #e1e2ff;
+        --bs-table-striped-bg: #dcdefb;
+        --bs-table-striped-color: #435971;
+        --bs-table-active-bg: #d1d4f1;
+        --bs-table-active-color: #435971;
+        --bs-table-hover-bg: #d8daf6;
+        --bs-table-hover-color: #435971;
+        color: #435971;
+        border-color: #d1d4f1;
+    }
+
+    .table-secondary {
+        --bs-table-bg: #e7e9ed;
+        --bs-table-striped-bg: #e2e5e9;
+        --bs-table-striped-color: #435971;
+        --bs-table-active-bg: #d7dbe1;
+        --bs-table-active-color: #435971;
+        --bs-table-hover-bg: #dde0e6;
+        --bs-table-hover-color: #435971;
+        color: #435971;
+        border-color: #d7dbe1;
+    }
+
+    .table-success {
+        --bs-table-bg: #e3f8d7;
+        --bs-table-striped-bg: #def3d4;
+        --bs-table-striped-color: #435971;
+        --bs-table-active-bg: #d3e8cd;
+        --bs-table-active-color: #435971;
+        --bs-table-hover-bg: #d9eed1;
+        --bs-table-hover-color: #435971;
+        color: #435971;
+        border-color: #d3e8cd;
+    }
+
+    .table-info {
+        --bs-table-bg: #cdf3fb;
+        --bs-table-striped-bg: #c9eef7;
+        --bs-table-striped-color: #435971;
+        --bs-table-active-bg: #bfe4ed;
+        --bs-table-active-color: #435971;
+        --bs-table-hover-bg: #c5eaf3;
+        --bs-table-hover-color: #435971;
+        color: #435971;
+        border-color: #bfe4ed;
+    }
+
+    .table-warning {
+        --bs-table-bg: #ffeecc;
+        --bs-table-striped-bg: #f9eac9;
+        --bs-table-striped-color: #435971;
+        --bs-table-active-bg: #ecdfc3;
+        --bs-table-active-color: #435971;
+        --bs-table-hover-bg: #f4e5c7;
+        --bs-table-hover-color: #435971;
+        color: #435971;
+        border-color: #ecdfc3;
+    }
+
+    .table-danger {
+        --bs-table-bg: #ffd8d2;
+        --bs-table-striped-bg: #f9d4cf;
+        --bs-table-striped-color: #435971;
+        --bs-table-active-bg: #eccbc8;
+        --bs-table-active-color: #435971;
+        --bs-table-hover-bg: #f4d0cc;
+        --bs-table-hover-color: #435971;
+        color: #435971;
+        border-color: #eccbc8;
+    }
+
+    .table-light {
+        --bs-table-bg: #fcfdfd;
+        --bs-table-striped-bg: #f6f8f9;
+        --bs-table-striped-color: #435971;
+        --bs-table-active-bg: #eaedef;
+        --bs-table-active-color: #435971;
+        --bs-table-hover-bg: #f1f3f5;
+        --bs-table-hover-color: #435971;
+        color: #435971;
+        border-color: #eaedef;
+    }
+
+    .table-dark {
+        --bs-table-bg: #233446;
+        --bs-table-striped-bg: #2a3a4c;
+        --bs-table-striped-color: #fff;
+        --bs-table-active-bg: #394859;
+        --bs-table-active-color: #fff;
+        --bs-table-hover-bg: #304051;
+        --bs-table-hover-color: #fff;
+        color: #fff;
+        border-color: #394859;
+    }
+
     .table-responsive {
-        overflow: auto;
-        /* ยอมให้เลื่อน */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+
     }
 
-    .mt-32 {
-        margin-bottom: 32px;
-        /* ระยะห่างด้านล่าง */
+    .table-min-height {
+        min-height: 100vh;
     }
 
-    /* สไตล์แถวรวม */
-    .table tfoot {
-        font-weight: bold;
-        /* ทำให้ข้อความเป็นตัวหนา */
-        background-color: #f9f9f9;
-        /* สีพื้นหลังของแถวรวม */
+    @media (max-width: 575.98px) {
+        .table-responsive-sm {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
     }
 
-    /* เส้นขอบแนวนอนสำหรับแถวข้อมูล */
-    .table tr {
-        border-bottom: 1px solid #ddd;
-        /* เส้นขอบแนวนอนสำหรับแต่ละแถว */
+    @media (max-width: 767.98px) {
+        .table-responsive-md {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .table-responsive-lg {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+    @media (max-width: 1199.98px) {
+        .table-responsive-xl {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+    @media (max-width: 1399.98px) {
+        .table-responsive-xxl {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+
+    .table td,
+    .table th {
+        vertical-align: top;
     }
 
     /* กำหนดขนาดคอลัมน์โดยตรง */
@@ -141,17 +304,6 @@
         /* 6/12 ของความกว้างเต็ม */
     }
 
-    table {
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    th,
-    td {
-        padding: 10px;
-        text-align: left;
-        vertical-align: top;
-    }
 
 
     .child-1 {
@@ -187,18 +339,7 @@
         text-align: right !important;
     }
 
-    .table td,
-    .table th {
-        padding: 10px;
-        vertical-align: top;
-    }
-
-    .text-spacing {
-        margin-top: 10px;
-        /* เพิ่มความห่างด้านบน */
-        margin-bottom: 10px;
-        /* เพิ่มความห่างด้านล่าง */
-        line-height: 1.5;
-        /* เพิ่มระยะห่างระหว่างบรรทัด */
+    .mt-16 {
+        margin-top: 64px !important;
     }
 </style>

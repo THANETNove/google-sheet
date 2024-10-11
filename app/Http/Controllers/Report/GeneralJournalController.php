@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use App\Models\DataGeneralLedgerSub;
+
+
 use Carbon\Carbon;
 use PDF;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -48,24 +51,43 @@ class GeneralJournalController extends Controller
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
         $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
 
-        $query = DB::table('general_ledgers')
+        /* $query = DB::table('general_ledgers')
             ->where('general_ledgers.gl_code_company', $id)
             ->whereBetween('general_ledgers.gl_date', [$startDate, $endDate])
             ->leftJoin('general_ledger_subs', 'general_ledgers.gl_code', 'general_ledger_subs.gls_gl_code')
             ->select(
                 'general_ledgers.id',
+                'general_ledgers.gl_code',
                 'general_ledgers.gl_document',
                 'general_ledgers.gl_date',
                 'general_ledgers.gl_company',
                 'general_ledgers.gl_description',
-                'general_ledger_subs.gls_account_name',
+                     'general_ledger_subs.gls_account_name',
                 'general_ledger_subs.gls_debit',
                 'general_ledger_subs.gls_credit'
             )
-            ->orderBy('general_ledgers.gl_date', 'ASC')->orderBy('general_ledger_subs.gls_id')->get();
+            ->orderBy('general_ledgers.gl_date', 'ASC')
+            ->groupBy('general_ledgers.id')
+                ->orderBy('general_ledger_subs.gls_id')
+            ->get(); */
+
+        $generalLedgers = DataGeneralLedgerSub::where('gl_code_company', $id)
+            ->whereBetween('gl_date', [$startDate, $endDate])
+            ->get();
+
+        // For each general ledger, fetch the related subs
+        foreach ($generalLedgers as $ledger) {
+            $subs = $ledger->getSubsByGlCode($ledger->gl_code);  // Call the function from the model
+            $ledger->subs = $subs;  // Attach the subs to the ledger for easy use in the view
+        }
+
+
+
+
+        // Group by document
 
         return [
-            'query' => $query,
+            'query' => $generalLedgers,
             'user' => $user,
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -82,6 +104,8 @@ class GeneralJournalController extends Controller
         $query = DB::table('users')
             ->where('status', 0)
             ->get();
+
+
 
         return view('report.general_journal.index', compact('query'));
     }
