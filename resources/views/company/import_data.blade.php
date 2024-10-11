@@ -107,6 +107,15 @@
         </div>
     </div>
 
+    <!-- เพิ่มปุ่มเลื่อนกลับไปยังด้านบน -->
+    <button id="scrollToTop" class="btn btn-primary" style="position: fixed; bottom: 20px; right: 20px; display: none;">
+        <i class='bx bxs-arrow-to-top'></i>
+        &nbsp;
+        return to top
+    </button>
+
+    @include('layouts.scrollToTop')
+
     <script>
         // นำค่าตัวแปร $query จาก PHP มาใช้ใน JavaScript
         const queryData = @json($query);
