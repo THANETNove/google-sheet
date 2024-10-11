@@ -51,25 +51,7 @@ class GeneralJournalController extends Controller
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
         $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
 
-        /* $query = DB::table('general_ledgers')
-            ->where('general_ledgers.gl_code_company', $id)
-            ->whereBetween('general_ledgers.gl_date', [$startDate, $endDate])
-            ->leftJoin('general_ledger_subs', 'general_ledgers.gl_code', 'general_ledger_subs.gls_gl_code')
-            ->select(
-                'general_ledgers.id',
-                'general_ledgers.gl_code',
-                'general_ledgers.gl_document',
-                'general_ledgers.gl_date',
-                'general_ledgers.gl_company',
-                'general_ledgers.gl_description',
-                     'general_ledger_subs.gls_account_name',
-                'general_ledger_subs.gls_debit',
-                'general_ledger_subs.gls_credit'
-            )
-            ->orderBy('general_ledgers.gl_date', 'ASC')
-            ->groupBy('general_ledgers.id')
-                ->orderBy('general_ledger_subs.gls_id')
-            ->get(); */
+
 
         $generalLedgers = DataGeneralLedgerSub::where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])

@@ -80,7 +80,7 @@
                                         <th>เครดิต</th>
                                     </tr>
                                 </thead>
-                                  <tbody class="table-border-bottom-0">
+                                <tbody class="table-border-bottom-0">
                                     @foreach ($query as $ledger)
                                         @php
                                             $totalDebit = 0;
@@ -90,8 +90,22 @@
                                         <tr>
                                             <td>{{ $i++ }}</td>
                                             <td>{{ date('d-m-Y', strtotime($ledger->gl_date)) }}</td>
-                                            <td>{{ $ledger->gl_document }}</td>
+                                            <td>
+
+                                                @if ($ledger->gl_url)
+                                                    <a href="{{ $ledger->gl_url }}" target="_blank" class="opan-message"
+                                                        rel="noopener noreferrer">
+                                                        {{ $ledger->gl_document }}
+                                                        <span class="id-message">
+                                                            นำข้อมูลเข้าแค่อันใหม่
+                                                        </span>
+                                                    </a>
+                                                @else
+                                                    {{ $ledger->gl_document }}
+                                                @endif
+                                            </td>
                                             <td>{{ $ledger->gl_company }}&nbsp;-&nbsp;{{ $ledger->gl_description }}</td>
+                                            <td></td>
                                             <td class="hide-column"></td> <!-- Placeholder for subs -->
                                             <td class="hide-column"></td>
 
@@ -105,6 +119,7 @@
                                                 <td class="hide-column"></td>
                                                 <td class="hide-column"></td>
                                                 <td>{{ $sub->gls_account_name }}</td>
+
                                                 <td class="text-end">{{ number_format($sub->gls_debit, 2) }}</td>
                                                 <td class="text-end">{{ number_format($sub->gls_credit, 2) }}</td>
                                             </tr>
@@ -123,7 +138,8 @@
                                         @endphp
 
                                         <tr @if (!$isEqual) style="background-color: #ffcccc;" @endif>
-                                            <td colspan="4" class="text-end"><strong>รวม</strong></td>
+                                            <td colspan="4" class="text-end"><strong>รวม</strong>
+                                            </td>
                                             <td class="text-end"><strong>{{ number_format($totalDebit, 2) }}</strong></td>
                                             <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong></td>
                                         </tr>
@@ -132,8 +148,8 @@
                                         @endphp
                                     @endforeach
                                 </tbody>
-                  
-                                
+
+
 
 
                             </table>

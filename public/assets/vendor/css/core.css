@@ -256,13 +256,18 @@ sup {
   top: -0.5em;
 }
 
+
+.path-a {
+  color: #03c3ec;
+}
+
 a {
-  color: #696cff;
+  /*   color: #03c3ec; */
   text-decoration: none;
 }
 
 a:hover {
-  color: #5f61e6;
+  color: #03c3ec;
 }
 
 a:not([href]):not([class]),
