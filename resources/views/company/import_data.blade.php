@@ -14,60 +14,51 @@
                     <h5 class="card-header"></h5>
 
                     <div class="container">
-                        <div class="row">
-                            <div class="col-md-8  order-2 order-md-1">
+                        <div class="col-md-12 ">
 
-                                <h4 class="mb-3">บริษัท {{ $query->company }} </h4>
-                                <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+                            <h4 class="mb-3">บริษัท {{ $query->company }} </h4>
+                            <div id="error-message" class="alert alert-danger mb-4" style="display: none;"> </div>
 
+
+                            <div class="justify-importBtn">
+                                <button id="importBtn" type="button" onclick="confirmImport('add_delete')"
+                                    class="btn rounded-pill btn-icon btn btn-outline-primary  mt-3 importBtn"
+                                    style="display: none;">
+                                    <i class='bx bx-import'></i>
+                                    <span class="tooltip-message">
+                                        นำข้อมูลเข้าและลบข้อมูลเก่า
+                                    </span>
+                                </button>
+
+                                <button id="importBtn2" type="button" onclick="confirmImport('add_new')"
+                                    class="btn rounded-pill btn-icon btn btn-outline-primary mt-3 importBtn"
+                                    style="display: none;">
+                                    <i class='bx bx-import'></i>
+                                    <span class="tooltip-message">
+                                        นำข้อมูลเข้าแค่อันใหม่
+                                    </span>
+                                </button>
                             </div>
-                            <div class="col-md-4  text-mt--2 order-1 order-md-2">
-                                <div class="text-end  justify-content-end align-items-center">
-                                    <div class="row">
-
-                                        <div class="col-12 mb-3">
-                                            <button id="importBtn" type="button" class="btn btn-primary"
-                                                style="display: none;" onclick="confirmImport('add_delete')">
-                                                <i class='bx bx-import'></i>&nbsp; นำข้อมูลเข้าเเละลบข้อมูลเก่า
-                                            </button>
-                                        </div>
-                                        <div class="col-12">
-                                            <button id="importBtn2" type="button" class="btn btn-primary"
-                                                style="display: none;" onclick="confirmImport('add_new')">
-                                                <i class='bx bx-import'></i>&nbsp; นำข้อมูลเเค่อันใหม่เข้า
-                                            </button>
-                                        </div>
-
-                                    </div>
 
 
-                                    <button id="spinner" class="btn btn-primary" type="button">
-                                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                                        <span role="status">Loading...</span>
-                                    </button>
-                                    <button id="uploading" class="btn btn-primary" type="button" style="display: none;">
-                                        <span class="spinner-border text-success  spinner-border-sm"
-                                            aria-hidden="true"></span>
-                                        <span role="status">Uploading...</span>
-                                    </button>
 
-                                </div>
+                            <button id="spinner" class="rounded-pill btn btn-outline-primary" type="button">
+                                <span class=" spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                <span role="status">Loading...</span>
+                            </button>
+                            <button id="uploading" class="rounded-pill btn btn-outline-primary" type="button"
+                                style="display: none;">
+                                <span class="spinner-border text-success  spinner-border-sm" aria-hidden="true"></span>
+                                <span role="status">Uploading...</span>
+                            </button>
 
-                            </div>
+
                         </div>
                     </div>
 
 
-                    <div class="table-responsive mt-5 table-min-height">
+                    <div class="table-responsive  table-min-height">
                         <h5 class="card-header">ข้อมูลใน Google Sheet </h5>
-                        {{--   <button id="importBtn3" type="button" class="btn btn-primary" onclick="confirmImport('add_new')">
-                            <i class='bx bx-import'></i>&nbsp; นำข้อมูลที่เลือก
-                        </button>
-                        <div class="col m-3">
-                            <input type="text" class="form-control" id="defaultFormControlInput"
-                                oninput="searchData(this.value)" placeholder="Search"
-                                aria-describedby="defaultFormControlHelp">
-                        </div> --}}
                         <div class="col m-3">
                             <input type="text" class="form-control" id="defaultFormControlInput"
                                 oninput="searchData(this.value)" placeholder="Search"
@@ -75,9 +66,17 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <div class="m-3">
-                                <button id="importBtn3" type="button" class="btn btn-primary" style="display: none;"
+                                {{--  <button id="importBtn3" type="button" class="btn btn-primary" style="display: none;"
                                     onclick="confirmImport('add_choose')">
                                     <i class='bx bx-import'></i>&nbsp; นำข้อมูลที่เลือก
+                                </button> --}}
+                                <button id="importBtn3" type="button" onclick="confirmImport('add_choose')"
+                                    class="btn rounded-pill btn-icon btn btn-outline-primary importBtn"
+                                    style="display: none;">
+                                    <i class='bx bx-import'></i>
+                                    <span class="tooltip-message">
+                                        นำข้อมูลทเฉพาะที่เลือก
+                                    </span>
                                 </button>
                             </div>
                         </div>
@@ -87,20 +86,15 @@
                                     <th>#</th>
                                     <th>ลำดับ</th>
                                     <th>GL_Code</th>
+                                    <th>GL_Report_VAT</th>
+                                    <th>GL_Date</th>
+                                    <th>GL_Document</th>
                                     <th>GL_Company</th>
+                                    <th>GL_TaxID</th>
+                                    <th>GL_Branch</th>
                                     <th>GL_Amount</th>
                                     <th>GL_Tax</th>
                                     <th>GL_Total</th>
-                                    <th>GL_Date</th>
-                                    <th>GL_Report_VAT</th>
-                                    <th>GL_Document</th>
-                                    <th>GL_Date_Check</th>
-                                    <th>GL_Document_Check</th>
-                                    <th>GL_TaxID</th>
-                                    <th>GL_Code_Acc</th>
-                                    <th>GL_Description</th>
-                                    <th>GL_Code_Acc_Pay</th>
-                                    <th>GL_Date_Pay</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody">
@@ -209,21 +203,18 @@
 
                 // เพิ่มเซลล์ GL_Code และเซลล์อื่นๆ
                 row.appendChild(glCodeCell);
+                row.appendChild(createCell(item.GL_Report_VAT));
+                row.appendChild(createCell(item.GL_Date));
+                row.appendChild(createCell(item.GL_Document));
                 row.appendChild(createCell(item.GL_Company));
+                row.appendChild(createCell(item.GL_TaxID));
+                row.appendChild(createCell(item.GL_Branch));
                 row.appendChild(createCell(item.GL_Amount));
                 row.appendChild(createCell(item.GL_Tax));
                 row.appendChild(createCell(item.GL_Total));
-                row.appendChild(createCell(item.GL_Date));
-                row.appendChild(createCell(item.GL_Report_VAT));
-                row.appendChild(createCell(item.GL_Document));
-                row.appendChild(createCell(item.GL_Date_Check));
-                row.appendChild(createCell(item.GL_Document_Check));
-                row.appendChild(createCell(item.GL_TaxID));
-                row.appendChild(createCell(item.GL_Code_Acc));
-                row.appendChild(createCell(item.GL_Description));
-                row.appendChild(createCell(item.GL_Code_Acc_Pay));
-                row.appendChild(createCell(item.GL_Date_Pay));
 
+
+                // A,C,D,E,H,I,J,S,T,U
                 // เพิ่มแถวไปยัง tableBody
                 tableBody.appendChild(row);
             });

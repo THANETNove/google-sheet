@@ -8528,6 +8528,7 @@ button:focus {
   background-color: #ffe0db;
   border-color: #ffc5bb;
   color: #ff3e1d;
+  border-bottom: solid;
 }
 
 .alert-danger .btn-close {

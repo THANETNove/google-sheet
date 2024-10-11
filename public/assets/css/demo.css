@@ -266,3 +266,35 @@
 .card-text {
   color: var(--bs-body-color) !important;
 }
+
+.tooltip-message {
+  top: -20px;
+  left: 10px;
+  position: absolute;
+  width: 220px;
+  padding: 4px;
+  color: #696cff;
+  border-radius: 100px;
+  background-color: #e7e7ff;
+  border-color: #e7e7ff;
+  box-shadow: 0 0.125rem 0.25rem 0 #696cff;
+  opacity: 0;
+  z-index: 99;
+  /*   transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease; */
+  /*  pointer-events: none; */
+  /* ไม่ให้มีผลต่อการคลิก */
+}
+
+.importBtn:hover .tooltip-message {
+  opacity: 1;
+  z-index: 99;
+  transform: translateY(0);
+
+}
+
+.justify-importBtn {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
