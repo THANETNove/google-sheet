@@ -314,14 +314,14 @@
 
 }
 
-/* 
-th:nth-child(3),
-td:nth-child(3) {
-  width: 20% !important;
+
+.child-3 {
+  width: 100px !important;
   word-wrap: break-word !important;
   white-space: normal !important;
 }
 
+/* 
 th:nth-child(4),
 td:nth-child(4) {
   width: 15% !important;

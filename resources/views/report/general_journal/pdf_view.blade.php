@@ -32,70 +32,74 @@
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th class="2">วันที่</th>
-                                        <th class="2">เลขที่เอกสาร</th>
-                                        <th class="4">บริษัท</th>
-                                        <th class="2">คำอธิบาย</th>
-                                        <th class="1">เดบิต</th>
-                                        <th class="1">เครดิต</th>
+                                        <th class="child-1">#</th>
+                                        <th class="child-2">วันที่</th>
+                                        <th class="child-3">เลขที่เอกสาร</th>
+                                        <th>บริษัท</th>
+                                        <th>เดบิต</th>
+                                        <th>เครดิต</th>
                                     </tr>
                                 </thead>
+
                                 <tbody class="table-border-bottom-0">
                                     @php
                                         $previousId = null;
                                         $groupedQuery = $query->groupBy('id'); // Group the data by id
+                                        $i = 1;
                                     @endphp
 
                                     @foreach ($groupedQuery as $id => $groupedData)
                                         @php
-                                            $totalDebit = $groupedData->sum('gls_debit'); // คำนวณค่ารวมของ gls_debit
-                                            $totalCredit = $groupedData->sum('gls_credit'); // คำนวณค่ารวมของ gls_credit
+                                            $rowspan = count($groupedData); // Calculate the number of rows for the current id
 
-                                            // รวมข้อมูลในแต่ละรายการของคำอธิบาย เดบิต และ เครดิต
-                                            $accountNames = implode(
+                                            // คำนวณค่ารวมของ gls_debit และ gls_credit สำหรับแต่ละกลุ่ม
+                                            $totalDebit = $groupedData->sum('gls_debit');
+                                            $totalCredit = $groupedData->sum('gls_credit');
+
+                                            // รวม gls_account_name ทั้งหมด
+                                            $accountNames = $groupedData
+                                                ->pluck('gls_account_name')
+                                                ->unique()
+                                                ->toArray();
+                                            $accountNamesStr = implode(
                                                 '<br>',
-                                                $groupedData->pluck('gls_account_name')->toArray(),
-                                            );
-                                            $debits = implode(
-                                                '<br>',
-                                                $groupedData
-                                                    ->pluck('gls_debit')
-                                                    ->map(function ($value) {
-                                                        return number_format($value, 2);
-                                                    })
-                                                    ->toArray(),
-                                            );
-                                            $credits = implode(
-                                                '<br>',
-                                                $groupedData
-                                                    ->pluck('gls_credit')
-                                                    ->map(function ($value) {
-                                                        return number_format($value, 2);
-                                                    })
-                                                    ->toArray(),
-                                            );
+                                                array_map(function ($name) {
+                                                    return '&nbsp;-&nbsp;' . $name; // เพิ่ม - ก่อนหน้าชื่อบัญชี
+                                                }, $accountNames),
+                                            ); // รวมชื่อบัญชีเป็น string
                                         @endphp
 
-                                        <tr class="group-row avoid-break">
-                                            <td>{{ date('d-m-Y', strtotime($groupedData[0]->gl_date)) }}</td>
-                                            <td>{{ $groupedData[0]->gl_document }}</td>
-                                            <td>{{ $groupedData[0]->gl_company }}</td>
-                                            <td class="text-start text-spacing">{!! $accountNames !!}
-                                                <br>
-                                                <strong>รวม</strong>
-                                            </td> <!-- แสดงข้อมูลคำอธิบายแต่ละรายการในบรรทัดเดียวกัน -->
-                                            <td class="text-end text-spacing">{!! $debits !!}
-                                                <br>
-                                                <strong> {{ number_format($totalDebit, 2) }}</strong>
-                                            </td> <!-- แสดงเดบิตแต่ละรายการในบรรทัดเดียวกัน -->
-                                            <td class="text-end text-spacing">{!! $credits !!}
-                                                <br>
-                                                <strong>{{ number_format($totalCredit, 2) }}</strong>
-                                            </td> <!-- แสดงเครดิตแต่ละรายการในบรรทัดเดียวกัน -->
+                                        @foreach ($groupedData as $index => $que)
+                                            <tr>
+                                                @if ($index === 0)
+                                                    <!-- Display rowspan for the first row of each group -->
+                                                    <td rowspan="{{ $rowspan }}">{!! $i++ !!}</td>
+                                                    <td rowspan="{{ $rowspan }}">{!! date('d-m-Y', strtotime($que->gl_date)) !!}</td>
+                                                    <td rowspan="{{ $rowspan }}">{!! $que->gl_document !!}</td>
+                                                    <td rowspan="{!! $rowspan !!}">
+                                                        {!! $que->gl_company !!}
+                                                        &nbsp;-&nbsp;{{ $que->gl_description }}<br>{!! $accountNamesStr !!}
+                                                    </td>
+                                                @endif
+
+
+                                                <td class="text-end">{!! number_format($que->gls_debit, 2) !!}</td>
+                                                <td class="text-end">{!! number_format($que->gls_credit, 2) !!}</td>
+                                            </tr>
+                                        @endforeach
+
+                                        <!-- เพิ่มแถวสำหรับผลรวมใต้ข้อมูล -->
+
+
+                                        <tr
+                                            style="background-color: {{ $totalDebit != $totalCredit ? '#ff000026' : 'transparent' }};">
+                                            <td colspan="3"></td>
+                                            <td class="text-end"><strong>รวม</strong></td>
+                                            <td class="text-end"><strong>{!! number_format($totalDebit, 2) !!}</strong></td>
+                                            <td class="text-end"><strong>{!! number_format($totalCredit, 2) !!}</strong></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
 
 
 

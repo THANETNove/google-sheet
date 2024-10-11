@@ -69,13 +69,13 @@
                                     <tr class="table-secondary">
                                         <th class="child-1">#</th>
                                         <th class="child-2">วันที่</th>
-                                        <th class="child-2">เลขที่เอกสาร</th>
-                                        <th class="child-3">บริษัท</th>
-                                        <th class="child-3">คำอธิบาย</th>
-                                        <th class="child-2">เดบิต</th>
-                                        <th class="child-2">เครดิต</th>
+                                        <th class="child-3">เลขที่เอกสาร</th>
+                                        <th>บริษัท</th>
+                                        <th>เดบิต</th>
+                                        <th>เครดิต</th>
                                     </tr>
                                 </thead>
+
                                 <tbody class="table-border-bottom-0">
                                     @php
                                         $previousId = null;
@@ -85,10 +85,23 @@
 
                                     @foreach ($groupedQuery as $id => $groupedData)
                                         @php
-                                            $rowspan = count($groupedData) + 1; // Calculate the number of rows for the current id
+                                            $rowspan = count($groupedData); // Calculate the number of rows for the current id
+
                                             // คำนวณค่ารวมของ gls_debit และ gls_credit สำหรับแต่ละกลุ่ม
                                             $totalDebit = $groupedData->sum('gls_debit');
                                             $totalCredit = $groupedData->sum('gls_credit');
+
+                                            // รวม gls_account_name ทั้งหมด
+                                            $accountNames = $groupedData
+                                                ->pluck('gls_account_name')
+                                                ->unique()
+                                                ->toArray();
+                                            $accountNamesStr = implode(
+                                                '<br><br>',
+                                                array_map(function ($name) {
+                                                    return $name; // เพิ่ม - ก่อนหน้าชื่อบัญชี และเพิ่มสไตล์
+                                                }, $accountNames),
+                                            );
                                         @endphp
 
                                         @foreach ($groupedData as $index => $que)
@@ -98,24 +111,41 @@
                                                     <td rowspan="{{ $rowspan }}">{!! $i++ !!}</td>
                                                     <td rowspan="{{ $rowspan }}">{!! date('d-m-Y', strtotime($que->gl_date)) !!}</td>
                                                     <td rowspan="{{ $rowspan }}">{!! $que->gl_document !!}</td>
-                                                    <td rowspan="{{ $rowspan }}">{!! $que->gl_company !!}</td>
+                                                    <td rowspan="{!! $rowspan !!}">
+                                                        {!! $que->gl_company !!}
+                                                        &nbsp;-&nbsp;{{ $que->gl_description }}<br> {!! $accountNamesStr !!}
+                                                    </td>
                                                 @endif
-                                                <td>{{ $que->gls_account_name }}</td>
-                                                <td class="text-end">{!! number_format($que->gls_debit, 2) !!}</td>
-                                                <td class="text-end">{!! number_format($que->gls_credit, 2) !!}</td>
+
+                                                <!-- แสดงค่า debit และ credit ที่เลื่อนไปตรงกับ accountNamesStr -->
+                                                <td class="text-end">
+                                                    @if ($index === 0)
+                                                        <br>
+                                                    @endif
+                                                    {!! number_format($que->gls_debit, 2) !!}
+                                                </td>
+                                                <td class="text-end">
+                                                    @if ($index === 0)
+                                                        <br>
+                                                    @endif
+                                                    {!! number_format($que->gls_credit, 2) !!}
+                                                </td>
                                             </tr>
                                         @endforeach
 
                                         <!-- เพิ่มแถวสำหรับผลรวมใต้ข้อมูล -->
-                                        <tr>
-                                            <td><strong>รวม</strong></td>
+
+
+                                        <tr
+                                            style="background-color: {{ $totalDebit != $totalCredit ? '#ff000026' : 'transparent' }};">
+                                            <td colspan="3"></td>
+                                            <td class="text-end"><strong>รวม</strong></td>
                                             <td class="text-end"><strong>{!! number_format($totalDebit, 2) !!}</strong></td>
-                                            <td class="text-end"> <strong>{!! number_format($totalCredit, 2) !!}</strong>
-                                            </td>
+                                            <td class="text-end"><strong>{!! number_format($totalCredit, 2) !!}</strong></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
+
                         </div>
                     </div>
                 </div>
