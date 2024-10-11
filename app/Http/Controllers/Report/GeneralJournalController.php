@@ -150,6 +150,9 @@ class GeneralJournalController extends Controller
     {
 
 
+        set_time_limit(300); // เพิ่มเวลาในการทำงาน
+        ini_set('memory_limit', '512M'); // เพิ่มหน่วยความจำเป็น 512MB
+
         $data = $this->getDataGlAndGls($id, $start_date, $end_date); // รับค่ากลับมา
         $pdf = PDF::loadView('report.general_journal.pdf_view', [
             'query' => $data['query'],
@@ -160,12 +163,12 @@ class GeneralJournalController extends Controller
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
         ]);
+
         $pdf->setPaper('a4', 'portrait') // ขนาดกระดาษ A4
             ->setOption('margin-top', 15)
-            ->setOption('margin-bottom', 15)
-            ->setOption('margin-left', 10)
-            ->setOption('margin-right', 10);
-        return $pdf->stream('exportPDF.pdf');
+            ->setOption('margin-bottom', 15);
+
+        return $pdf->stream(); // โหลดไฟล์ PDF
     }
 
     public function exportExcel($id, $start_date, $end_date)

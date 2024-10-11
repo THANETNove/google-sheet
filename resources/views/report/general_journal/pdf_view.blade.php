@@ -29,7 +29,8 @@
                             <p>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</p>
                         </div>
                         <div class="table-responsive m-3">
-                            {{--  <table class="table">
+
+                            <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th class="child-1">#</th>
@@ -40,86 +41,120 @@
                                         <th>เครดิต</th>
                                     </tr>
                                 </thead>
-
-                                <tbody class="table-border-bottom-0">
+                                {{--   <tbody class="table-border-bottom-0">
                                     @php
-                                        $groupedQuery = $query->groupBy('id'); // Group the data by id
+                                        $i = 1;
+                                    @endphp
+                                    @foreach ($query as $ledger)
+                                        <tr>
+                                            <td>{{ $i++ }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($ledger->gl_date)) }}</td>
+                                            <td>{{ $ledger->gl_document }}</td>
+                                            <td>{{ $ledger->gl_company }}&nbsp;-&nbsp;{{ $ledger->gl_description }}
+                                            </td>
+                                            <td class="hide-column"></td> <!-- Placeholder for subs -->
+                                            <td class="hide-column"></td>
+
+                                        </tr>
+
+                                        <!-- Now loop through the related subs for each gl_code -->
+                                        @php
+                                            $totalDebit = 0;
+                                            $totalCredit = 0;
+                                        @endphp
+
+                                        @foreach ($ledger->subs as $sub)
+                                            <tr>
+                                                <td class="hide-column"></td>
+                                                <td class="hide-column"></td>
+                                                <td class="hide-column"></td>
+                                                <td>{{ $sub->gls_account_name }}</td>
+                                                <td class="text-end">{{ number_format($sub->gls_debit, 2) }}</td>
+                                                <td class="text-end">{{ number_format($sub->gls_credit, 2) }}</td>
+                                            </tr>
+
+                                            @php
+                                                // สะสมผลรวม
+                                                $totalDebit += $sub->gls_debit;
+                                                $totalCredit += $sub->gls_credit;
+                                            @endphp
+                                        @endforeach
+
+                                        @php
+                                            // ตรวจสอบว่าผลรวมเท่ากันหรือไม่
+                                            $isEqual = $totalDebit == $totalCredit;
+                                        @endphp
+
+                                        <tr @if (!$isEqual) style="background-color: #ffcccc;" @endif>
+                                            <td colspan="4" class="text-end"><strong>รวม</strong></td>
+                                            <td class="text-end"><strong>{{ number_format($totalDebit, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong>
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $previousId = $ledger->id;
+                                        @endphp
+                                    @endforeach
+                                </tbody> --}}
+                                <tbody style="page-break-inside: avoid;">
+                                    <!-- ป้องกันการแบ่งข้อมูลที่เป็นกลุ่มออกจากกัน -->
+                                    @php
                                         $i = 1;
                                     @endphp
 
-                                    @foreach ($groupedQuery as $id => $groupedData)
+                                    @foreach ($query as $ledger)
                                         @php
-                                            $totalDebit = $groupedData->sum('gls_debit');
-                                            $totalCredit = $groupedData->sum('gls_credit');
-
-                                            // Combine gls_account_name with their respective debit and credit
-                                            $accountDetails = $groupedData
-                                                ->map(function ($que) {
-                                                    return $que->gls_account_name .
-                                                        '&nbsp;&nbsp;' .
-                                                        number_format($que->gls_debit, 2) .
-                                                        '&nbsp;&nbsp;' .
-                                                        number_format($que->gls_credit, 2);
-                                                })
-                                                ->implode('<br>');
-
+                                            $totalDebit = 0;
+                                            $totalCredit = 0;
                                         @endphp
 
-                                        <!-- Use only one <tr> for each group -->
-                                        <tr style="border-bottom: 2px solid #000;"> <!-- Black border line -->
-                                            <td>{!! $i++ !!}</td>
-                                            <td>{!! date('d-m-Y', strtotime($groupedData->first()->gl_date)) !!}</td>
-                                            <td>{!! $groupedData->first()->gl_document !!}</td>
-                                            <td>
-                                                {!! $groupedData->first()->gl_company !!}
-                                                &nbsp;-&nbsp;{{ $groupedData->first()->gl_description }}
-                                                <br>
-                                                {!! $accountDetails !!}
-                                                <!-- Display account names with debit and credit in one cell -->
+                                        <tr style="page-break-inside: avoid;"> <!-- ข้อมูลหลักของ id -->
+                                            <td>{{ $i++ }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($ledger->gl_date)) }}</td>
+                                            <td>{{ $ledger->gl_document }}</td>
+                                            <td>{{ $ledger->gl_company }}&nbsp;-&nbsp;{{ $ledger->gl_description }}
                                             </td>
-
-                                            <td colspan="4" class="text-end"><strong>{!! number_format($totalDebit, 2) !!}</strong>
-                                            </td>
-                                            <td class="text-end"><strong>{!! number_format($totalCredit, 2) !!}</strong></td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-
-                            </table> --}}
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">GL Code</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Document</th>
-                                        <th scope="col">Company</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php $i = 1; @endphp
-
-                                    <!-- Loop through each group -->
-                                    @foreach ($query as $gl_code => $group)
-                                        <!-- Display the GL code as a header for each group -->
-                                        <tr>
-                                            <td colspan="5">
-                                                <strong>GL Code: {{ $gl_code }}</strong>
-                                            </td>
+                                            <td class="text-end"></td> <!-- Placeholder for subs -->
+                                            <td class="text-end"></td>
                                         </tr>
 
-                                        <!-- Loop through the rows in each group -->
-                                        @foreach ($group as $que)
-                                            <tr>
-                                                <td>{{ $i++ }}</td>
-                                                <td>{{ $que->gl_code }}</td>
-                                                <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
-                                                <td>{{ $que->gl_document }}</td>
-                                                <td>{{ $que->gl_company }}</td>
+                                        <!-- Loop ข้อมูลย่อยที่เกี่ยวข้องกับ id เดียวกัน -->
+                                        @foreach ($ledger->subs as $sub)
+                                            <tr style="page-break-inside: avoid;">
+                                                <td class="hide-column"></td>
+                                                <td class="hide-column"></td>
+                                                <td class="hide-column"></td>
+                                                <td>{{ $sub->gls_account_name }}</td>
+                                                <td class="text-end">{{ number_format($sub->gls_debit, 2) }}</td>
+                                                <td class="text-end">{{ number_format($sub->gls_credit, 2) }}</td>
                                             </tr>
+
+                                            @php
+                                                // สะสมผลรวม
+                                                $totalDebit += $sub->gls_debit;
+                                                $totalCredit += $sub->gls_credit;
+                                            @endphp
                                         @endforeach
+
+                                        @php
+                                            // ตรวจสอบว่าผลรวมเท่ากันหรือไม่
+                                            $isEqual = number_format($totalDebit, 2) == number_format($totalCredit, 2);
+                                        @endphp
+
+                                        <!-- แสดงผลรวม -->
+                                        <tr
+                                            style="page-break-inside: avoid; @if (!$isEqual) background-color: #ffcccc; @endif">
+                                            <td colspan="4" class="text-end"><strong>รวม</strong></td>
+                                            <td class="text-end"><strong>{{ number_format($totalDebit, 2) }}</strong>
+                                            </td>
+                                            <td class="text-end"><strong>{{ number_format($totalCredit, 2) }}</strong>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
+
+
                             </table>
 
                         </div>

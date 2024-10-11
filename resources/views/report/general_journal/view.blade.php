@@ -82,6 +82,11 @@
                                 </thead>
                                 <tbody class="table-border-bottom-0">
                                     @foreach ($query as $ledger)
+                                        @php
+                                            $totalDebit = 0;
+                                            $totalCredit = 0;
+                                        @endphp
+
                                         <tr>
                                             <td>{{ $i++ }}</td>
                                             <td>{{ date('d-m-Y', strtotime($ledger->gl_date)) }}</td>
@@ -93,10 +98,6 @@
                                         </tr>
 
                                         <!-- Now loop through the related subs for each gl_code -->
-                                        @php
-                                            $totalDebit = 0;
-                                            $totalCredit = 0;
-                                        @endphp
 
                                         @foreach ($ledger->subs as $sub)
                                             <tr>
@@ -117,7 +118,8 @@
 
                                         @php
                                             // ตรวจสอบว่าผลรวมเท่ากันหรือไม่
-                                            $isEqual = $totalDebit == $totalCredit;
+                                            $isEqual = number_format($totalDebit, 2) == number_format($totalCredit, 2);
+
                                         @endphp
 
                                         <tr @if (!$isEqual) style="background-color: #ffcccc;" @endif>
