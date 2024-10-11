@@ -52,13 +52,13 @@ class CompanyController extends Controller
         $request->validate([
 
             'code_company' => ['required', 'string', 'max:255'],
-            'company' => ['required', 'string', 'max:255',],
+            'company' => ['required', 'string', 'max:255', 'unique:users'],
             'branch' => ['required', 'string', 'max:255'],
             'tax_id' => ['required', 'string', 'max:255'],
             'id_sheet' => ['required', 'string', 'max:255'],
             'id_apps_script' => ['required', 'string', 'max:255'],
             'accounting_period' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'max:255', 'unique:users'],
+            'name' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'max:255'],
 
         ]);
@@ -72,7 +72,7 @@ class CompanyController extends Controller
         $data->id_sheet = $request['id_sheet'];
         $data->id_apps_script = $request['id_apps_script'];
         $data->accounting_period = $request['accounting_period'];
-        $data->email = $request['email'];
+        $data->name = $request['name'];
         $data->password =  Hash::make($request['password']);
         $data->status =  "0";
 
@@ -331,7 +331,7 @@ class CompanyController extends Controller
             $generalLedger = GeneralLedger::where('gl_code', $item['GL_Code'])->first();
 
             if ($generalLedger) {
-      
+
                 // ถ้ามีอยู่แล้วให้ทำการอัปเดต
                 $generalLedger->update([
                     'gl_code_company' => $request->code_company,
@@ -361,7 +361,7 @@ class CompanyController extends Controller
                     'gl_email' => $item['GL_Email'] ?? null,
                 ]);
             } else {
-               
+
                 // ถ้าไม่มีก็ทำการเพิ่มข้อมูลใหม่
                 GeneralLedger::create([
                     'gl_code_company' => $request->code_company,

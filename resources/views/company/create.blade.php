@@ -100,11 +100,11 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="basic-default-company">email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    id="basic-default-company" name="email" placeholder="Email"
-                                    value="{{ old('email') }}" required>
-                                @error('email')
+                                <label class="form-label" for="basic-default-company">Username</label>
+                                <input type="name" class="form-control @error('name') is-invalid @enderror"
+                                    id="basic-default-company" name="name" placeholder="name"
+                                    value="{{ old('name') }}" required>
+                                @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
