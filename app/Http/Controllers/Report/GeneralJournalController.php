@@ -173,7 +173,7 @@ class GeneralJournalController extends Controller
 
     public function exportExcel($id, $start_date, $end_date)
     {
-        $data = $this->getDataGlAndGls($id, $start_date, $end_date);
+        /*   $data = $this->getDataGlAndGls($id, $start_date, $end_date);
 
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {
@@ -195,6 +195,76 @@ class GeneralJournalController extends Controller
 
         // Define an inline class for export
         $export = new class($mappedData) implements FromArray, WithHeadings {
+            protected $data;
+
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+
+            public function array(): array
+            {
+                return $this->data->values()->toArray(); // Convert collection to array
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Document',
+                    'Date',
+                    'Company',
+                    'Description',
+                    'Account Name',
+                    'Debit',
+                    'Credit',
+                ];
+            }
+        };
+
+        // Download the Excel file
+        return Excel::download($export, 'general_ledger.xlsx'); */
+        $data = $this->getDataGlAndGls($id, $start_date, $end_date);
+
+        // Map the query data to include subs information
+        $mappedData = $data['query']->map(function ($ledger) {
+            $rows = [];
+
+            // แปลงข้อมูลหลักของแต่ละ general ledger
+            $formattedDate = Carbon::parse($ledger->gl_date)->format('d-m-Y');
+            $rows[] = [
+                'id' => $ledger->id,
+                'gl_document' => $ledger->gl_document,
+                'gl_date' => $formattedDate,
+                'gl_company' => $ledger->gl_company,
+                'gl_description' => $ledger->gl_description,
+                'gls_account_name' => '', // Leave empty for the main row
+                'gls_debit' => '', // Leave empty for the main row
+                'gls_credit' => '', // Leave empty for the main row
+            ];
+
+            // Loop through subs and add them to the rows
+            foreach ($ledger->subs as $sub) {
+                $rows[] = [
+                    'id' => '', // Leave empty for subs rows
+                    'gl_document' => '', // Leave empty for subs rows
+                    'gl_date' => '', // Leave empty for subs rows
+                    'gl_company' => '', // Leave empty for subs rows
+                    'gl_description' => '', // Leave empty for subs rows
+                    'gls_account_name' => $sub->gls_account_name,
+                    'gls_debit' => $sub->gls_debit,
+                    'gls_credit' => $sub->gls_credit,
+                ];
+            }
+
+            return $rows;
+        });
+
+        // Flatten the mapped data (because each ledger has multiple rows)
+        $flattenedData = collect($mappedData)->flatten(1);
+
+        // Define an inline class for export
+        $export = new class($flattenedData) implements FromArray, WithHeadings {
             protected $data;
 
             public function __construct($data)
