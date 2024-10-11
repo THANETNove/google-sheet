@@ -36,7 +36,7 @@
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-fullname">สาขา</label>
                                 <input type="text" class="form-control  @error('branch') is-invalid @enderror"
-                                    id="basic-default-fullname" name="branch" placeholder="สาขา"
+                                    id="basic-default-fullname" name="branch" placeholder="สาขา" value="00000"
                                     value="{{ old('branch') }}">
                                 @error('branch')
                                     <span class="invalid-feedback" role="alert">
@@ -44,7 +44,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="mb-3">
+                            {{--    <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">เลขผู้เสียภาษี</label>
                                 <input type="text" class="form-control  @error('tax_id') is-invalid @enderror"
                                     id="basic-default-company" name="tax_id" placeholder="เลขผู้เสียภาษี"
@@ -54,23 +54,23 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
-                                <label class="form-label" for="basic-default-company">เลขผู้เสียภาษี</label>
-                                <input type="text" class="form-control  @error('tax_id') is-invalid @enderror"
-                                    id="basic-default-company" name="tax_id" placeholder="เลขผู้เสียภาษี"
-                                    value="{{ old('tax_id') }}">
-                                @error('tax_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                <label class="form-label" for="tax-id">เลขผู้เสียภาษี</label>
+                                <input type="text" class="form-control @error('tax_id') is-invalid @enderror"
+                                    id="tax-id" name="tax_id" placeholder="เลขผู้เสียภาษี" value="{{ old('tax_id') }}"
+                                    required maxlength="17" inputmode="numeric"
+                                    title="กรุณากรอกเลขผู้เสียภาษีในรูปแบบ 0-1055-49137-97-5">
+                                <div class="invalid-feedback">
+                                    กรุณากรอกเลขผู้เสียภาษีในรูปแบบ 0-1055-49137-97-5
+                                </div>
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">id Sheet</label>
                                 <input type="text" class="form-control @error('id_sheet') is-invalid @enderror"
                                     id="basic-default-company" name="id_sheet" placeholder="id Sheet"
-                                    value="{{ old('id_sheet') }}">
+                                    value="1iEJ0TpbxwAcVzsUAG1x5hx_mgtTlQ54b29h8OjpbaNk" value="{{ old('id_sheet') }}">
                                 @error('id_sheet')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -81,6 +81,7 @@
                                 <label class="form-label" for="basic-default-company">id Apps Script</label>
                                 <input type="text" class="form-control @error('id_apps_script') is-invalid @enderror"
                                     id="basic-default-company" name="id_apps_script" placeholder="id apps script"
+                                    value="AKfycbwDs2GTo5iHyMKSGoAvv7a0594Bh4J9CiGcBXF2Uv54ezXi3MMFA_r-6Q052jG4Sp-ZQA90"
                                     value="{{ old('id_apps_script') }}">
                                 @error('id_apps_script')
                                     <span class="invalid-feedback" role="alert">
@@ -88,16 +89,27 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="mb-3">
+
+                            {{--       <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">รอบบัญชี</label>
                                 <input type="text" class="form-control @error('accounting_period') is-invalid @enderror"
                                     id="basic-default-company" name="accounting_period" placeholder="รอบบัญชี"
-                                    value="{{ old('accounting_period') }}">
-                                @error('accounting_period')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                    value="1/1" value="{{ old('accounting_period') }}" required pattern="\d+/\d+"
+                                    inputmode="numeric" title="กรุณากรอกตัวเลขและเครื่องหมาย / เช่น 1/1 หรือ 12/2023">
+
+                                <div class="invalid-feedback">
+                                    กรุณากรอกตัวเลขและเครื่องหมาย / ในรูปแบบที่ถูกต้อง เช่น 1/1
+                                </div>
+                            </div> --}}
+                            <div class="mb-3">
+                                <label class="form-label" for="accounting_period">รอบบัญชี</label>
+                                <input type="text" class="form-control @error('accounting_period') is-invalid @enderror"
+                                    id="accounting_period" name="accounting_period" placeholder="รอบบัญชี"
+                                    value="{{ old('accounting_period') }}" required inputmode="numeric" maxlength="3"
+                                    title="กรุณากรอกตัวเลขและเครื่องหมาย / เช่น 1/1">
+                                <div class="invalid-feedback">
+                                    กรุณากรอกตัวเลขและเครื่องหมาย / ในรูปแบบที่ถูกต้อง เช่น 1/1
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="basic-default-company">Username</label>
@@ -129,4 +141,73 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // รหัสผู้เสียภาษี
+            const taxIdInput = document.getElementById('tax-id');
+
+            // ตรวจสอบว่าพบองค์ประกอบหรือไม่
+            if (taxIdInput) {
+                taxIdInput.addEventListener('input', function(event) {
+                    // ลบตัวอักษรที่ไม่ใช่ตัวเลข
+                    let value = event.target.value.replace(/\D/g, '');
+
+                    // เพิ่มเครื่องหมาย '-' ในตำแหน่งที่ถูกต้อง
+                    let formattedValue = '';
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && (i === 1 || i === 6 || i === 11 || i === 13)) {
+                            formattedValue += '-';
+                        }
+                        formattedValue += value[i];
+                    }
+
+                    // ตั้งค่าฟิลด์ด้วยค่าที่มีเครื่องหมาย '-'
+                    event.target.value = formattedValue;
+
+                    // ตรวจสอบรูปแบบความถูกต้อง
+                    if (!/^\d{1}-\d{5}-\d{5}-\d{2}-\d{1}$/.test(formattedValue)) {
+                        taxIdInput.setCustomValidity("กรุณากรอกเลขผู้เสียภาษีในรูปแบบ 0-1055-49137-97-5");
+                    } else {
+                        taxIdInput.setCustomValidity(""); // รีเซ็ตข้อผิดพลาด
+                    }
+                });
+            } else {
+                console.error("Element with ID 'tax-id' not found.");
+            }
+
+            // รอบัญชี
+            const periodInput = document.getElementById('accounting_period');
+
+            // ตรวจสอบว่าพบองค์ประกอบหรือไม่
+            if (periodInput) {
+                periodInput.addEventListener('input', function(event) {
+                    // ลบตัวอักษรที่ไม่ใช่ตัวเลข
+                    let value = event.target.value.replace(/\D/g, '');
+
+                    // เพิ่มเครื่องหมาย '/' ในตำแหน่งที่ถูกต้อง
+                    let formattedValue = '';
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && (i === 1)) {
+                            formattedValue += '/';
+                        }
+                        formattedValue += value[i];
+                    }
+
+                    // ตั้งค่าฟิลด์ด้วยค่าที่มีเครื่องหมาย '/'
+                    event.target.value = formattedValue;
+
+                    // ตรวจสอบรูปแบบความถูกต้อง
+                    if (!/^\d{1,2}\/\d{1,4}$/.test(formattedValue)) {
+                        periodInput.setCustomValidity("กรุณากรอกในรูปแบบที่ถูกต้อง เช่น 1/1");
+                    } else {
+                        periodInput.setCustomValidity(""); // รีเซ็ตข้อผิดพลาด
+                    }
+                });
+            } else {
+                console.error("Element with ID 'accounting_period' not found.");
+            }
+
+        });
+    </script>
 @endsection
