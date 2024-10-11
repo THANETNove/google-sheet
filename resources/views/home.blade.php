@@ -2,16 +2,22 @@
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <a href="{{ url('company-create') }}" class="col-2   m-3 ms-auto">
-            <button type="button" class="btn btn-primary  mb-4">
+        <a href="{{ url('company-create') }}" class="col-2 m-3 ms-auto">
+            <button type="button" class="btn btn-primary mb-4">
                 <i class='bx bxs-add-to-queue'></i>&nbsp; เพิ่มบริษัท
             </button>
         </a>
+
         @if (session('success') || session('message'))
             <div class="alert alert-info mb-3">
                 {{ session('success') }} {{ session('message') }}
             </div>
         @endif
+
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="ค้นหาบริษัท..." />
+        </div>
+
         <div class="row">
             @php
                 $colors = [
@@ -66,4 +72,26 @@
             @endforeach
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const cards = document.querySelectorAll('.col-3');
+
+            searchInput.addEventListener('input', function() {
+                const searchValue = searchInput.value.toLowerCase();
+
+                cards.forEach(card => {
+                    const companyName = card.querySelector('.card-text .fw-semibold').textContent
+                        .toLowerCase();
+
+                    if (companyName.includes(searchValue)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
