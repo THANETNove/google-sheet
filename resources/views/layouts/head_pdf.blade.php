@@ -54,6 +54,8 @@
         color: #697a8d;
         border: 1px solid #d9dee3;
         border-collapse: collapse;
+
+        font-size: 12px !important;
     }
 
     .table th,

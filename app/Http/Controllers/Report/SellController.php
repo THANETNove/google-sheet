@@ -154,7 +154,7 @@ class SellController extends Controller
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
         ]);
-        $pdf->setPaper('a4', 'portrait') // ขนาดกระดาษ A4
+        $pdf->setPaper('a4', 'landscape') // ขนาดกระดาษ A4
             ->setOption('margin-top', 15)
             ->setOption('margin-bottom', 15)
             ->setOption('margin-left', 10)
