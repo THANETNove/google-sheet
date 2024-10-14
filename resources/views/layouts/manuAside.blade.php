@@ -45,7 +45,8 @@
                     </a>
 
                     <ul class="menu-sub">
-                        <li class="menu-item {{ Request::is('report/general-journal-view/*') ? 'active' : '' }} ">
+                        <li
+                            class="menu-item {{ Request::is('report/general-journal-view/*') || Request::is('report/search-date') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/general-journal-view', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
                                 <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>

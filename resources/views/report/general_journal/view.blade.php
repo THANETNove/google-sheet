@@ -19,7 +19,7 @@
                             </div>
 
                         </div>
-                        <form action="{{ route('search-date') }}" method="POST" class="container-date">
+                        <form action="{{ route('report/search-date') }}" method="POST" class="container-date">
                             @csrf
                             <div class="container-date">
                                 <div class="col-8">
