@@ -45,8 +45,15 @@ class SellController extends Controller
 
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
-        $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
-        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
+        /*  $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay(); */
+        if (is_null($startDate) && is_null($endDate)) {
+            $startDate = Carbon::now()->subMonth()->startOfMonth();  // เดือนที่แล้ว วันที่ 1
+            $endDate = Carbon::now()->subMonth()->endOfMonth();  // เดือนที่แล้ว วันสุดท้าย
+        } else {
+            $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+            $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
+        }
 
 
         $query = DB::table('general_ledgers')

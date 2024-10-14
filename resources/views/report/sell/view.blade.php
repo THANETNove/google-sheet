@@ -52,34 +52,7 @@
                             </a>
                         </div>
                         <div class="table-responsive m-3">
-                            <table class="table">
-                                {{--  <thead>
-                                    <tr class="table-secondary">
-                                        <th class="col-3">#</th>
-                                        <th class="col-1">ใบกำกับภาษี </th>
-                                        <th class="col-2"></th>
-                                        <th class="col-2"></th>
-                                        <th class="col-3">สถานประกอบการ </th>
-                                        <th class="col-1">จำนวน</th>
-                                        <th class="col-1">ภาษี</th>
-                                        <th class="col-1">รวม</th>
-                                    </tr>
-                                    <tr class="table-secondary">
-                                        <th class="col-3">วันที่</th>
-                                        <th class="col-1">เลขที่เอกสาร</th>
-                                        <th class="col-3">บริษัท</th>
-                                        <th class="col-3">หมายเลขผู้เสียภาษี</th>
-                                        <th class="col-3">สาขา</th>
-                                        <th class="col-1">จำนวน</th>
-                                        <th class="col-1">ภาษี</th>
-                                        <th class="col-1">รวม</th>
-                                    </tr>
-                                </thead>
-                                
-                                   <th class="child-1">#</th>
-                                        <th class="child-2">วันที่</th>
-                                        <th class="child-3">เลขที่เอกสาร</th> --}}
-
+                            {{--    <table class="table">
 
                                 <thead>
 
@@ -118,7 +91,7 @@
                                             <td>{{ $i++ }}</td>
                                             <td>
                                                 {{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
-                                            {{-- <td>{{ $que->gl_document }}</td> --}}
+                    
                                             <td>
                                                 @if ($que->gl_url)
                                                     <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
@@ -143,15 +116,15 @@
                                     <tr>
                                         <td colspan="5"></td>
                                         <td>รวมภาษี</td>
-                                        <td>adasd</td>
-                                        <td>adasd</td>
+                                        <td>$que->gl_amount ที่ $que->gl_tax = 0</td>
+                                        <td></td>
                                         <td>adasd</td>
                                     </tr>
                                     <tr>
                                         <td colspan="5"></td>
                                         <td>รวมภาษี /%</td>
                                         <td>adasd</td>
-                                        <td>adasd</td>
+                                        <td>$que->gl_amount ที่ $que->gl_tax > 0</td>
                                         <td>adasd</td>
                                     </tr>
                                     <tr>
@@ -159,10 +132,116 @@
                                         <td>รวมทั้งสิ้น</td>
                                         <td>adasd</td>
                                         <td>adasd</td>
-                                        <td>adasd</td>
+                                        <td>รวม $que->gl_total</td>
+                                    </tr>
+                                </tbody>
+                            </table> --}}
+
+                            <table class="table">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th class="child-1">#</th>
+                                        <th class="text-center" colspan="2">ใบกำกับภาษี</th>
+                                        <th class="no-border"></th> <!-- ลบเส้นขอบ -->
+                                        <th class=""></th>
+                                        <th class="text-center">สถานประกอบการ</th>
+                                        <th class="text-center">มูลค่าสินค้า</th>
+                                        <th class="text-center">จำนวนเงิน</th>
+                                        <th class=""></th>
+                                    </tr>
+                                    <tr class="table-secondary">
+                                        <th></th>
+                                        <th class="child-2 text-center">วันที่</th>
+                                        <th class="child-2 text-center">เลขที่เอกสาร</th>
+                                        <th class="text-center">บริษัท</th> <!-- ลบเส้นขอบ -->
+                                        <th class="text-center">หมายเลขผู้เสียภาษี</th> <!-- ลบเส้นขอบ -->
+                                        <th class="text-center">สาขา</th>
+                                        <th class="text-center">จำนวน</th>
+                                        <th class="text-center">ภาษี</th>
+                                        <th class="text-center">รวม</th>
+                                    </tr>
+                                </thead>
+
+                                @php
+                                    $i = 1;
+                                    $totalAmount = 0;
+                                    $totalTax = 0;
+                                    $totalSum = 0;
+                                    $totalAmountNoTax = 0; // ตัวแปรสำหรับผลรวม gl_amount ที่ gl_tax = 0
+
+                                @endphp
+
+                                <tbody class="table-border-bottom-0">
+                                    @foreach ($query as $index => $que)
+                                        @php
+                                            // คำนวณผลรวม
+                                            $totalAmount += $que->gl_amount;
+                                            $totalTax += $que->gl_tax;
+                                            $totalSum += $que->gl_total;
+
+                                            // คำนวณผลรวมเฉพาะ gl_amount ที่ gl_tax = 0
+                                            if ($que->gl_tax == 0) {
+                                                $totalAmountNoTax += $que->gl_amount;
+                                            }
+                                        @endphp
+
+                                        <tr>
+                                            <td>{{ $i++ }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
+                                            <td>
+                                                @if ($que->gl_url)
+                                                    <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
+                                                        rel="noopener noreferrer">
+                                                        {{ $que->gl_document }}
+                                                        <span class="id-message">หน้า {{ $que->gl_page }}</span>
+                                                    </a>
+                                                @else
+                                                    {{ $que->gl_document }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $que->gl_company }}</td>
+                                            <td>{{ $que->gl_taxid }}</td>
+                                            <td>{{ $que->gl_branch }}</td>
+                                            <td class="text-end">{{ number_format($que->gl_amount, 2) }}</td>
+                                            <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
+                                            <td class="text-end">{{ number_format($que->gl_total, 2) }}</td>
+                                        </tr>
+                                    @endforeach
+
+                                    <tr>
+                                        <td colspan="5"></td>
+                                        <td><strong>รวมภาษี</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalAmountNoTax, 2) }}</strong>
+                                        </td>
+                                        <td class="text-end"></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5"></td>
+                                        <td><strong>รวมภาษี 0%</strong></td> <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
+                                        <td class="text-end"><strong>{{ number_format($totalAmount, 2) }}</strong></td>
+
+                                        <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5"></td>
+                                        <td><strong>รวมทั้งสิ้น</strong></td>
+                                        <td class="text-end">
+                                            @php
+                                                $total = $totalAmount + $totalAmountNoTax;
+
+                                            @endphp
+
+                                            <strong>{{ number_format($total, 2) }}</strong>
+                                        </td>
+                                        <td><strong>{{ number_format($totalTax, 2) }}</strong></td>
+                                        <td><strong>{{ number_format($totalSum, 2) }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>
+
+
                         </div>
                     </div>
                 </div>
