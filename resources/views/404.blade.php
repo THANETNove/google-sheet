@@ -57,7 +57,7 @@
         <a href="{{ url('/') }}" class="btn btn-primary">Back to home</a>
         <div class="mt-3">
           <img
-            src="../assets/img/illustrations/page-misc-error-light.png"
+            src=" {{ URL::asset('/assets/img/illustrations/page-misc-error-light.png') }}"
             alt="page-misc-error-light"
             width="500"
             class="img-fluid"
