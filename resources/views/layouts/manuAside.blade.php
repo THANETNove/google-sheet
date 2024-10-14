@@ -56,13 +56,13 @@
                         </a>
                     </li>
                     <li class="menu-item {{ Request::is('report/buy-view/*') ? 'active' : '' }} ">
-                        <a href="@if (session()->has('company_id')) {{ url('eport/buy-view', session()->get('company_id')) }} @else # @endif"
+                        <a href="@if (session()->has('company_id')) {{ url('report/buy-view', session()->get('company_id')) }} @else # @endif"
                             class="menu-link">
                             <div data-i18n="Without menu">สมุดบัญชีรายงานซื้อ</div>
                         </a>
                     </li>
                     <li class="menu-item {{ Request::is('report/sell-view/*') ? 'active' : '' }} ">
-                        <a href="@if (session()->has('company_id')) {{ url('eport/sell-view', session()->get('company_id')) }} @else # @endif"
+                        <a href="@if (session()->has('company_id')) {{ url('report/sell-view', session()->get('company_id')) }} @else # @endif"
                             class="menu-link">
                             <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
                         </a>

@@ -321,6 +321,12 @@
   white-space: normal !important;
 }
 
+.child-4 {
+  width: 100px !important;
+  word-wrap: break-word !important;
+  white-space: normal !important;
+}
+
 
 
 
@@ -378,6 +384,13 @@
   font-size: 20px;
   font-weight: 700;
 }
+
+
+/* ลบเส้นขอบของแถว */
+.no-border {
+  border: 0px !important;
+}
+
 
 /* 
 th:nth-child(4),

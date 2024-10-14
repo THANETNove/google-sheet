@@ -70,7 +70,21 @@
                                         <tr>
                                             <td>
                                                 {{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
-                                            <td>{{ $que->gl_document }}</td>
+                                            {{-- <td>{{ $que->gl_document }}</td> --}}
+                                            <td>
+
+                                                @if ($que->gl_url)
+                                                    <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
+                                                        rel="noopener noreferrer">
+                                                        {{ $que->gl_document }}
+                                                        <span class="id-message">
+                                                            หน้า {{ $que->gl_page }}
+                                                        </span>
+                                                    </a>
+                                                @else
+                                                    {{ $que->gl_document }}
+                                                @endif
+                                            </td>
                                             <td>{{ $que->gl_company }}</td>
                                             <td>{{ $que->gl_taxid }}</td>
                                             <td>{{ $que->gl_description }}</td>

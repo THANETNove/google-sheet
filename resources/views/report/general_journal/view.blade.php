@@ -107,7 +107,7 @@
                                             <td>{{ $ledger->gl_company }}&nbsp;-&nbsp;{{ $ledger->gl_description }}</td>
                                             <td></td>
                                             <td class="hide-column"></td> <!-- Placeholder for subs -->
-                                            <td class="hide-column"></td>
+
 
                                         </tr>
 
