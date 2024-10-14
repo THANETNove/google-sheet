@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Report;
 
+use Illuminate\Support\Facades\Cache;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -138,8 +140,8 @@ class GeneralJournalController extends Controller
     {
 
 
-        set_time_limit(300); // เพิ่มเวลาในการทำงาน
-        ini_set('memory_limit', '512M'); // เพิ่มหน่วยความจำเป็น 512MB
+        set_time_limit(600); // เพิ่มเวลาในการทำงาน
+        ini_set('memory_limit', '1024M'); // เพิ่มหน่วยความจำเป็น 1GB
 
         $data = $this->getDataGlAndGls($id, $start_date, $end_date); // รับค่ากลับมา
         $pdf = PDF::loadView('report.general_journal.pdf_view', [
@@ -152,9 +154,11 @@ class GeneralJournalController extends Controller
             'currentYear' => $data['currentYear'],
         ]);
 
-        $pdf->setPaper('a4', 'portrait') // ขนาดกระดาษ A4
+        $pdf->setPaper('a4', 'portrait')
             ->setOption('margin-top', 15)
-            ->setOption('margin-bottom', 15);
+            ->setOption('margin-bottom', 15)
+            ->setOption('isHtml5ParserEnabled', true) // เปิดใช้งาน HTML5 parser
+            ->setOption('isRemoteEnabled', true); // อนุญาตให้ใช้ไฟล์จากภายนอก เช่น รูปภาพ
 
         return $pdf->stream(); // โหลดไฟล์ PDF
     }
