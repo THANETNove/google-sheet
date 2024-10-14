@@ -21,10 +21,8 @@ class DataGeneralLedgerSub extends Model
      * @param string $gl_code
      * @return \Illuminate\Support\Collection
      */
-    public function getSubsByGlCode($gl_code)
+    public function subs()
     {
-        return DB::table('general_ledger_subs')
-            ->where('gls_gl_code', $gl_code)
-            ->get();
+        return $this->hasMany(GeneralLedgerSub::class, 'gls_gl_code', 'gl_code');
     }
 }

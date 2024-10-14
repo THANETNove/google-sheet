@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class GeneralLedgerSub extends Model
 {
     use HasFactory;
+    protected $table = 'general_ledger_subs';
+
+
+
     protected $fillable = [
         'gls_code_company',
         'gls_code',

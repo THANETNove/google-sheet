@@ -52,7 +52,7 @@ class GeneralJournalController extends Controller
         $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
 
 
-
+        /* 
         $generalLedgers = DataGeneralLedgerSub::where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])
             ->get();
@@ -63,7 +63,13 @@ class GeneralJournalController extends Controller
             $ledger->subs = $subs;  // Attach the subs to the ledger for easy use in the view
         }
 
+ */
 
+        // Join the two tables (general_ledgers and general_ledger_subs) in one query
+        $generalLedgers = DataGeneralLedgerSub::with('subs')
+            ->where('gl_code_company', $id)
+            ->whereBetween('gl_date', [$startDate, $endDate])
+            ->get();
 
 
         // Group by document
