@@ -71,6 +71,7 @@
                                     <i class='bx bx-import'></i>&nbsp; นำข้อมูลที่เลือก
                                 </button> --}}
                                 <button id="importBtn3" type="button" onclick="confirmImport('add_choose')"
+                                    style="display: none;"
                                     class="btn rounded-pill btn-icon btn btn-outline-primary importBtn"
                                     style="display: none;">
                                     <i class='bx bx-import'></i>
@@ -80,7 +81,7 @@
                                 </button>
                             </div>
                         </div>
-                        <table class="table" id="dataTable">
+                        <table class="table m-3" id="dataTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -207,7 +208,7 @@
                 // สร้างแถวในตาราง
                 row.innerHTML = `
             <td>
-                <input type="checkbox" name="selectedItems[]" value="${item.GL_Code}" id="check_${index}">
+                <input type="checkbox" name="selectedItems[]" value="${item.GL_Code}" id="check_${index}" onClick="checkSelectedItems()">
             </td>
             <td>${index + 1}</td>
         `;
@@ -241,12 +242,13 @@
         function endImport() {
             document.getElementById('importBtn').style.display = 'inline-block';
             document.getElementById('importBtn2').style.display = 'inline-block';
-            document.getElementById('importBtn3').style.display = 'inline-block';
+
             document.getElementById('spinner').style.display = 'none';
             document.getElementById('uploading').style.display = 'none';
 
 
         }
+
 
 
 
@@ -272,21 +274,33 @@
             });
         }
 
+        // ฟังก์ชันตรวจสอบจำนวน selectedItems
+        function checkSelectedItems() {
+            const selectedItems = document.querySelectorAll('input[name="selectedItems[]"]:checked');
+
+            if (selectedItems.length > 0) {
+                // หากมี selectedItems มากกว่า 0 แสดงปุ่ม importBtn3
+                document.getElementById('importBtn3').style.display = 'inline-block';
+            } else {
+                // ถ้าไม่มี selectedItems ซ่อนปุ่ม importBtn3
+                document.getElementById('importBtn3').style.display = 'none';
+            }
+        }
+
+
+
         function importDB(e) {
-
-
-
 
 
             const selectedItems = Array.from(document.querySelectorAll('input[name="selectedItems[]"]:checked'))
                 .map(checkbox => checkbox.value);
 
-            console.log("selectedItems", selectedItems);
             let selectedData = {
                 GeneralLedger: [],
                 GeneralLedgerSub: [],
                 Account_Code: []
             };
+
 
             if (e == "add_choose") {
                 const selectedDataGl = responseData.GeneralLedger.filter(item =>
