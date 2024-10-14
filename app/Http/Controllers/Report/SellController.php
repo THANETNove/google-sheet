@@ -45,15 +45,22 @@ class SellController extends Controller
 
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
-        /*  $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
-        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay(); */
-        if (is_null($startDate) && is_null($endDate)) {
-            $startDate = Carbon::now()->subMonth()->startOfMonth();  // เดือนที่แล้ว วันที่ 1
-            $endDate = Carbon::now()->subMonth()->endOfMonth();  // เดือนที่แล้ว วันสุดท้าย
+        $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+
+
+        // ตรวจสอบว่า $startDate และ $endDate เป็น null หรือไม่
+        if (is_null($endDate)) {
+            // ถ้าเป็น null, ตั้ง $endDate ให้เป็นวันที่สิ้นสุดของเดือนที่แล้ว
+            $endDate = Carbon::now()->subMonth()->endOfMonth(); // วันสุดท้ายของเดือนก่อนหน้า
+
+            // ตั้ง $startDate ให้เป็นวันที่ 1 ของเดือนก่อนหน้า
+            /*  $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า */
         } else {
-            $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+            // ถ้า $startDate หรือ $endDate ถูกส่งมา ให้ทำงานตามลอจิกเดิม
+            /*   $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day); */
             $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         }
+
 
 
         $query = DB::table('general_ledgers')
