@@ -146,7 +146,7 @@
                                         <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
                                         <td class="text-end"><strong>{{ number_format($totalAmount, 2) }}</strong></td>
 
-                                        <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>
+                                        <td class="text-end"></td>
                                         <td></td>
                                     </tr>
                                     <tr>
