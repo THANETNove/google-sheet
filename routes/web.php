@@ -40,15 +40,15 @@ Route::post('/search-date', [GeneralJournalController::class, 'search'])->name('
 //รายงานซื้อ
 Route::get('report/buy', [BuyController::class, 'index'])->name('report/buy');
 Route::get('report/buy-view/{id}', [BuyController::class, 'show'])->name('report/buy-view');
-Route::get('buy-pdf/{id}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
-Route::get('buy-excel/{id}', [BuyController::class, 'exportExcel'])->name('buy-excel');
-Route::post('search-buy', [BuyController::class, 'search'])->name('search-buy');
+Route::get('buy-pdf/{id}/{start_date}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
+Route::get('buy-excel/{id}/{start_date}', [BuyController::class, 'exportExcel'])->name('buy-excel');
+Route::post('report/search-buy', [BuyController::class, 'search'])->name('report/search-buy');
 
 Route::get('report/sell', [SellController::class, 'index'])->name('report/sell');
 Route::get('report/sell-view/{id}', [SellController::class, 'show'])->name('report/sell-view');
-Route::post('search-sell', [SellController::class, 'search'])->name('search-sell');
-Route::get('sell-pdf/{id}', [SellController::class, 'exportPDF'])->name('sell-pdf');
-Route::get('sell-excel/{id}', [SellController::class, 'exportExcel'])->name('sell-excel');
+Route::post('report/search-sell', [SellController::class, 'search'])->name('report/search-sell');
+Route::get('sell-pdf/{id}/{start_date}/{end_date}', [SellController::class, 'exportPDF'])->name('sell-pdf');
+Route::get('sell-excel/{id}/{start_date}/{end_date}', [SellController::class, 'exportExcel'])->name('sell-excel');
 
 
 

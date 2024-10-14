@@ -39,40 +39,68 @@ class BuyController extends Controller
         ];
     }
 
-    private function getData($id, $startDate = null, $endDate = null)
+    private function getData($id, $startDate = null)
     {
         $user = DB::table('users')->find($id);
 
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
-        $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
-        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
+        // $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+        // ตรวจสอบว่า $startDate และ $endDate เป็น null หรือไม่
+        if (is_null($startDate)) {
+
+            // ถ้าเป็น null, ตั้ง $startDate ให้เป็นวันที่ 1 ของเดือนก่อนหน้า
+            $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า
+        } else {
+            // ถ้า $startDate ถูกส่งมา ให้ใช้ตามนั้น
+            $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+        }
+
+        // ดึงเดือนจาก $startDate
+        $vat_month = $startDate->month;
+
+        // ใช้ $this->getMonths() เพื่อแปลงเลขเดือนเป็นชื่อเดือน
+        $monthName = $this->getMonths()[$vat_month];
+
+        $day = $startDate->day;          // วัน
+        $vat_month = $startDate->month;  // เดือน
+        $year = $startDate->year;        // ปี
+
+        // ใช้ $this->getMonths() เพื่อแปลงเลขเดือนเป็นชื่อเดือน
+        $monthName = $this->getMonths()[$vat_month];
+
+        // สร้างสตริงโดยใช้เครื่องหมายคำพูดคู่
+        $monthName2 = "$day $monthName $year"; // ใช้เครื่องหมายคำพูดคู่แทนแบ็กทิค
+
+
 
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
-            ->where('gl_report_vat', "Buy")
-            ->whereBetween('gl_date', [$startDate, $endDate])
+            ->whereRaw('LOWER(gl_report_vat) = ?', ['buy'])
+            ->whereMonth('gl_date', $startDate->month)  // ค้นหาเฉพาะเดือนเดียวกับ $startDate
+            ->whereYear('gl_date', $startDate->year)    // ค้นหาเฉพาะปีเดียวกับ $startDate
             ->select(
                 'id',
                 'gl_document',
                 'gl_date',
                 'gl_company',
-                'gl_description',
+                'gl_branch',
                 'gl_taxid',
                 'gl_amount',
                 'gl_tax',
-                'gl_total'
-
+                'gl_total',
+                'gl_url',
+                'gl_page'
             )
-            ->orderBy('gl_date', 'ASC')
+            ->orderBy('gl_taxmonth', 'ASC')
             ->get();
 
         return [
             'query' => $query,
             'user' => $user,
             'startDate' => $startDate,
-            'endDate' => $endDate,
             'day' => $day,
+            'vat_month' =>  $monthName2,
             'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
             'currentYear' => date('Y')
         ];
@@ -95,13 +123,12 @@ class BuyController extends Controller
         $data = $this->getData($id); // รับค่ากลับมา
 
 
-
         return view('report.buy.view', [
             'query' => $data['query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
-            'endDate' => $data['endDate'],
             'day' => $data['day'],
+            'vat_month' =>  $data['vat_month'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
             'id' => $id
@@ -112,15 +139,15 @@ class BuyController extends Controller
     {
 
         $startDate = Carbon::parse($request->start_date);
-        $endDate = Carbon::parse($request->end_date);
-        $data = $this->getData($request->id, $startDate, $endDate);
+
+        $data = $this->getData($request->id, $startDate);
 
         return view('report.buy.view', [
             'query' => $data['query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
-            'endDate' => $data['endDate'],
             'day' => $data['day'],
+            'vat_month' =>  $data['vat_month'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
             'id' => $request->id
@@ -136,8 +163,8 @@ class BuyController extends Controller
             'query' => $data['query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
-            'endDate' => $data['endDate'],
             'day' => $data['day'],
+            'vat_month' =>  $data['vat_month'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
         ]);

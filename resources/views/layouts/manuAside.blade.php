@@ -36,90 +36,92 @@
  --}}
 
             <!--รายงาน -->
-            <li class="menu-item  {{ Request::is('report/*') ? 'active open' : '' }} ">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    {{--  <i class='menu-icon tf-icons  bx bxs-report'></i> --}}
-                    <i class='menu-icon tf-icons bx bxs-buildings'></i>
-                    <div data-i18n="Layouts">รายงาน</div>
-                </a>
+            @if (session()->has('company_id'))
+                <li class="menu-item  {{ Request::is('report/*') ? 'active open' : '' }} ">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        {{--  <i class='menu-icon tf-icons  bx bxs-report'></i> --}}
+                        <i class='menu-icon tf-icons bx bxs-buildings'></i>
+                        <div data-i18n="Layouts">รายงาน</div>
+                    </a>
 
-                <ul class="menu-sub">
-                    <li class="menu-item {{ Request::is('report/general-journal-view/*') ? 'active' : '' }} ">
-                        <a href="@if (session()->has('company_id')) {{ url('report/general-journal-view', session()->get('company_id')) }} @else # @endif"
-                            class="menu-link">
-                            <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('report/ledger-book') ? 'active' : '' }} ">
-                        <a href="{{ url('company') }} " class="menu-link">
-                            <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('report/buy-view/*') ? 'active' : '' }} ">
-                        <a href="@if (session()->has('company_id')) {{ url('report/buy-view', session()->get('company_id')) }} @else # @endif"
-                            class="menu-link">
-                            <div data-i18n="Without menu">สมุดบัญชีรายงานซื้อ</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('report/sell-view/*') ? 'active' : '' }} ">
-                        <a href="@if (session()->has('company_id')) {{ url('report/sell-view', session()->get('company_id')) }} @else # @endif"
-                            class="menu-link">
-                            <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('repor') ? 'active' : '' }} ">
-                        <a href="{{ url('company') }} " class="menu-link">
-                            <div data-i18n="Without menu">งบดุลบัญชี</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
-                        <a href="{{ url('company') }} " class="menu-link">
-                            <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
-                        <a href="{{ url('company') }} " class="menu-link">
-                            <div data-i18n="Without menu">งบทดลองก่อนปิดบัญชี</div>
-                        </a>
-                    </li>
+                    <ul class="menu-sub">
+                        <li class="menu-item {{ Request::is('report/general-journal-view/*') ? 'active' : '' }} ">
+                            <a href="@if (session()->has('company_id')) {{ url('report/general-journal-view', session()->get('company_id')) }} @else # @endif"
+                                class="menu-link">
+                                <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('report/ledger-book') ? 'active' : '' }} ">
+                            <a href="{{ url('company') }} " class="menu-link">
+                                <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
+                            </a>
+                        </li>
+                        <li
+                            class="menu-item {{ Request::is('report/buy-view/*') || Request::is('report/search-buy') ? 'active' : '' }} ">
+                            <a href="@if (session()->has('company_id')) {{ url('report/buy-view', session()->get('company_id')) }} @else # @endif"
+                                class="menu-link">
+                                <div data-i18n="Without menu">สมุดบัญชีรายงานซื้อ</div>
+                            </a>
+                        </li>
+                        <li
+                            class="menu-item {{ Request::is('report/sell-view/*') || Request::is('report/search-sell') ? 'active' : '' }} ">
+                            <a href="@if (session()->has('company_id')) {{ url('report/sell-view', session()->get('company_id')) }} @else # @endif"
+                                class="menu-link">
+                                <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('repor') ? 'active' : '' }} ">
+                            <a href="{{ url('company') }} " class="menu-link">
+                                <div data-i18n="Without menu">งบดุลบัญชี</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
+                            <a href="{{ url('company') }} " class="menu-link">
+                                <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
+                            <a href="{{ url('company') }} " class="menu-link">
+                                <div data-i18n="Without menu">งบทดลองก่อนปิดบัญชี</div>
+                            </a>
+                        </li>
 
-                </ul>
-            </li>
+                    </ul>
+                </li>
 
-            <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
-            <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
-                </a>
+                <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
+                <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-layout"></i>
+                        <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
+                    </a>
 
-                <ul class="menu-sub">
-                    <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                        <a href="{{ url('#') }} " class="menu-link">
-                            <div data-i18n="Without menu">รายงานภาษีขาย-ซื้อ</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                        <a href="{{ url('#') }} " class="menu-link">
-                            <div data-i18n="Without menu">ภาษีหัก ณ ที่จ่าย</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                        <a href="{{ url('#') }} " class="menu-link">
-                            <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
-                        <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
-                            class="menu-link">
-                            <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
-                        </a>
-                    </li>
+                    <ul class="menu-sub">
+                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                            <a href="{{ url('#') }} " class="menu-link">
+                                <div data-i18n="Without menu">รายงานภาษีขาย-ซื้อ</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                            <a href="{{ url('#') }} " class="menu-link">
+                                <div data-i18n="Without menu">ภาษีหัก ณ ที่จ่าย</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                            <a href="{{ url('#') }} " class="menu-link">
+                                <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
+                            <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
+                                class="menu-link">
+                                <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
+                            </a>
+                        </li>
 
-                </ul>
-            </li>
-
-
+                    </ul>
+                </li>
+            @endif
         </ul>
     </div>
 </aside>

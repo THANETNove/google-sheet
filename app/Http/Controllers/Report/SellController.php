@@ -65,7 +65,7 @@ class SellController extends Controller
 
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
-            ->where('gl_report_vat', "Sell")
+            ->whereRaw('LOWER(gl_report_vat) = ?', ['sell'])
             ->whereBetween('gl_date', [$startDate, $endDate])
             ->select(
                 'id',
@@ -84,7 +84,6 @@ class SellController extends Controller
             //D,E,H,I,J,S,T,U
             ->orderBy('gl_date', 'ASC')
             ->get();
-
         return [
             'query' => $query,
             'user' => $user,
@@ -148,10 +147,10 @@ class SellController extends Controller
         ]);
     }
 
-    public function exportPDF($id)
+    public function exportPDF($id, $start_date, $end_date)
     {
 
-        $data = $this->getData($id); // รับค่ากลับมา
+        $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
         $pdf = PDF::loadView('report.sell.pdf_view', [
             'query' => $data['query'],
             'user' => $data['user'],
@@ -170,9 +169,9 @@ class SellController extends Controller
     }
 
 
-    public function exportExcel($id)
+    public function exportExcel($id, $start_date, $end_date)
     {
-        $data = $this->getData($id);
+        $data = $this->getData($id, $start_date, $end_date);
 
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {
@@ -185,7 +184,7 @@ class SellController extends Controller
                 'gl_date' => $formattedDate,
                 'gl_company' => $item->gl_company,
                 'gl_taxid' => $item->gl_taxid,
-                'gl_description' => $item->gl_description,
+                'gl_branch' => $item->gl_branch,
                 'gl_amount' => $item->gl_amount,
                 'gl_tax' => $item->gl_tax,
                 'gl_total' => $item->gl_total,
@@ -214,8 +213,8 @@ class SellController extends Controller
                     'Document',
                     'Date',
                     'Company',
-                    'Description',
                     'TaxID',
+                    'Branch',
                     'Amount',
                     'Tax',
                     'Total',

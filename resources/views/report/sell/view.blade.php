@@ -18,7 +18,7 @@
                                         {{ date('d-m-Y', strtotime($endDate)) }}<strong></p>
                             </div>
                         </div>
-                        <form action="{{ route('search-sell') }}" method="POST" class="container-date">
+                        <form action="{{ route('report/search-sell') }}" method="POST" class="container-date">
                             @csrf
                             <div class="container-date">
                                 <div class="col-8">
@@ -44,98 +44,17 @@
                         </form>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-                            <a href="{{ url('/sell-pdf', $id) }}" target="_blank" class="btn btn-primary">
+                            <a href="{{ url('/sell-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
+                                target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
-                            <a href="{{ url('/sell-excel', $id) }}" class="btn btn-primary">
+                            <a href="{{ url('/sell-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
+                                class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
                             </a>
                         </div>
                         <div class="table-responsive m-3">
-                            {{--    <table class="table">
 
-                                <thead>
-
-                                    <tr class="table-secondary">
-                                        <th class="child-1">#</th>
-                                        <th class=" text-center" colspan="2">ใบกำกับภาษี</th>
-                                        <!-- ลบเส้นขอบ -->
-                                        <th class=" no-border"></th> <!-- ลบเส้นขอบ -->
-                                        <th class=""></th>
-                                        <th class="child-2 text-center">สถานประกอบการ</th>
-                                        <th class="text-center">มูลค่าสินค้า</th>
-                                        <th class="text-center">จำนวนเงิน</th>
-                                        <th class=""></th>
-                                    </tr>
-                                    <tr class="table-secondary">
-                                        <th></th>
-                                        <th class="child-2 text-center">วันที่</th>
-                                        <th class="text-center">เลขที่เอกสาร</th>
-                                        <th class="text-center">บริษัท</th> <!-- ลบเส้นขอบ -->
-                                        <th class="text-center">หมายเลขผู้เสียภาษี</th> <!-- ลบเส้นขอบ -->
-                                        <th class="text-center">สาขา</th>
-                                        <th class="text-center">จำนวน</th>
-                                        <th class="text-center">ภาษี</th>
-                                        <th class="text-center">รวม</th>
-                                    </tr>
-
-
-                                </thead>
-
-                                @php
-                                    $i = 1;
-                                @endphp
-                                <tbody class="table-border-bottom-0">
-                                    @foreach ($query as $index => $que)
-                                        <tr>
-                                            <td>{{ $i++ }}</td>
-                                            <td>
-                                                {{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
-                    
-                                            <td>
-                                                @if ($que->gl_url)
-                                                    <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
-                                                        rel="noopener noreferrer">
-                                                        {{ $que->gl_document }}
-                                                        <span class="id-message">
-                                                            หน้า {{ $que->gl_page }}
-                                                        </span>
-                                                    </a>
-                                                @else
-                                                    {{ $que->gl_document }}
-                                                @endif
-                                            </td>
-                                            <td>{{ $que->gl_company }}</td>
-                                            <td>{{ $que->gl_taxid }}</td>
-                                            <td>{{ $que->gl_branch }}</td>
-                                            <td class="text-end">{{ number_format($que->gl_amount, 2) }}</td>
-                                            <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
-                                            <td class="text-end">{{ number_format($que->gl_total, 2) }}</td>
-                                        </tr>
-                                    @endforeach
-                                    <tr>
-                                        <td colspan="5"></td>
-                                        <td>รวมภาษี</td>
-                                        <td>$que->gl_amount ที่ $que->gl_tax = 0</td>
-                                        <td></td>
-                                        <td>adasd</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5"></td>
-                                        <td>รวมภาษี /%</td>
-                                        <td>adasd</td>
-                                        <td>$que->gl_amount ที่ $que->gl_tax > 0</td>
-                                        <td>adasd</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5"></td>
-                                        <td>รวมทั้งสิ้น</td>
-                                        <td>adasd</td>
-                                        <td>adasd</td>
-                                        <td>รวม $que->gl_total</td>
-                                    </tr>
-                                </tbody>
-                            </table> --}}
 
                             <table class="table">
                                 <thead>
