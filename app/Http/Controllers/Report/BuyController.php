@@ -77,12 +77,12 @@ class BuyController extends Controller
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
             ->whereRaw('LOWER(gl_report_vat) = ?', ['buy'])
-            ->whereMonth('gl_date', $startDate->month)  // ค้นหาเฉพาะเดือนเดียวกับ $startDate
-            ->whereYear('gl_date', $startDate->year)    // ค้นหาเฉพาะปีเดียวกับ $startDate
+            ->whereMonth('gl_taxmonth', $startDate->month)  // ค้นหาเฉพาะเดือนเดียวกับ $startDate
+            ->whereYear('gl_taxmonth', $startDate->year)    // ค้นหาเฉพาะปีเดียวกับ $startDate
             ->select(
                 'id',
                 'gl_document',
-                'gl_date',
+                'gl_taxmonth',
                 'gl_company',
                 'gl_branch',
                 'gl_taxid',
@@ -184,15 +184,15 @@ class BuyController extends Controller
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {
             // แปลงวันที่ให้เป็นรูปแบบ dd-mm-yyyy
-            $formattedDate = Carbon::parse($item->gl_date)->format('d-m-Y');
+            $formattedDate = Carbon::parse($item->gl_taxmonth)->format('d-m-Y');
 
             return [
                 'id' => $item->id,
                 'gl_document' => $item->gl_document,
-                'gl_date' => $formattedDate,
+                'gl_taxmonth' => $formattedDate,
                 'gl_company' => $item->gl_company,
                 'gl_taxid' => $item->gl_taxid,
-                'gl_description' => $item->gl_description,
+                'gl_branch' => $item->gl_branch,
                 'gl_amount' => $item->gl_amount,
                 'gl_tax' => $item->gl_tax,
                 'gl_total' => $item->gl_total,
@@ -221,8 +221,8 @@ class BuyController extends Controller
                     'Document',
                     'Date',
                     'Company',
-                    'Description',
                     'TaxID',
+                    'Branch',
                     'Amount',
                     'Tax',
                     'Total',
