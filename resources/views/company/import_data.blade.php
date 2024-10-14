@@ -188,6 +188,17 @@
             });
         }
 
+
+        // ฟังก์ชันแปลงรูปแบบวันที่เป็น d-m-y
+        function formatDate(dateString) {
+            const date = new Date(dateString); // แปลงเป็น Date object
+            const day = String(date.getDate()).padStart(2, '0'); // วันที่
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // เดือน (ต้อง +1 เพราะ getMonth() คืนค่าเป็น 0-11)
+            const year = date.getFullYear(); // ปี
+
+            return `${day}-${month}-${year}`; // คืนค่าวันที่ในรูปแบบ d-m-y
+        }
+
         function displayData(data) {
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = ''; // ล้างข้อมูลเดิมในตารางก่อน
@@ -206,6 +217,9 @@
                 }
 
                 // สร้างแถวในตาราง
+                const formattedDate = formatDate(item.GL_Date);
+
+                console.log("formattedDate", formattedDate);
                 row.innerHTML = `
             <td>
                 <input type="checkbox" name="selectedItems[]" value="${item.GL_Code}" id="check_${index}" onClick="checkSelectedItems()">
@@ -216,7 +230,7 @@
                 // เพิ่มเซลล์ GL_Code และเซลล์อื่นๆ
                 row.appendChild(glCodeCell);
                 row.appendChild(createCell(item.GL_Report_VAT));
-                row.appendChild(createCell(item.GL_Date));
+                row.appendChild(createCell(formattedDate));
                 row.appendChild(createCell(item.GL_Document));
                 row.appendChild(createCell(item.GL_Company));
                 row.appendChild(createCell(item.GL_TaxID));
