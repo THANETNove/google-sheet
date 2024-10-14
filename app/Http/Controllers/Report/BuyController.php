@@ -53,7 +53,7 @@ class BuyController extends Controller
             $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า
         } else {
             // ถ้า $startDate ถูกส่งมา ให้ใช้ตามนั้น
-            $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+            $startDate = Carbon::parse($startDate);
         }
 
         // ดึงเดือนจาก $startDate
@@ -155,10 +155,10 @@ class BuyController extends Controller
     }
 
 
-    public function exportPDF($id)
+    public function exportPDF($id, $start_date,)
     {
 
-        $data = $this->getData($id); // รับค่ากลับมา
+        $data = $this->getData($id, $start_date); // รับค่ากลับมา
         $pdf = PDF::loadView('report.buy.pdf_view', [
             'query' => $data['query'],
             'user' => $data['user'],
@@ -168,7 +168,7 @@ class BuyController extends Controller
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
         ]);
-        $pdf->setPaper('a4', 'portrait') // ขนาดกระดาษ A4
+        $pdf->setPaper('a4', 'landscape') // ขนาดกระดาษ A4
             ->setOption('margin-top', 15)
             ->setOption('margin-bottom', 15)
             ->setOption('margin-left', 10)
@@ -177,9 +177,9 @@ class BuyController extends Controller
     }
 
 
-    public function exportExcel($id)
+    public function exportExcel($id, $start_date)
     {
-        $data = $this->getData($id);
+        $data = $this->getData($id, $start_date);
 
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {
