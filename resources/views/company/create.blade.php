@@ -81,7 +81,7 @@
                                 <label class="form-label" for="basic-default-company">id Apps Script</label>
                                 <input type="text" class="form-control @error('id_apps_script') is-invalid @enderror"
                                     id="basic-default-company" name="id_apps_script" placeholder="id apps script"
-                                    value="AKfycbwDs2GTo5iHyMKSGoAvv7a0594Bh4J9CiGcBXF2Uv54ezXi3MMFA_r-6Q052jG4Sp-ZQA90"
+                                    value="AKfycbwDs2GTo5iHyMKSGoAvv7a0594Bh4J9CiGcBXF2Uv54ezXi3MMFA_r-6Q052jG4Sp-ZQA"
                                     value="{{ old('id_apps_script') }}">
                                 @error('id_apps_script')
                                     <span class="invalid-feedback" role="alert">
