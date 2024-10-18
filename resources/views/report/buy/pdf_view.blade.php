@@ -58,22 +58,15 @@
                                     $totalAmount = 0;
                                     $totalTax = 0;
                                     $totalSum = 0;
-                                    $totalAmountNoTax = 0; // ตัวแปรสำหรับผลรวม gl_amount ที่ gl_tax = 0
 
                                 @endphp
-
                                 <tbody class="table-border-bottom-0">
                                     @foreach ($query as $index => $que)
                                         @php
                                             // คำนวณผลรวม
                                             $totalAmount += $que->gl_amount;
                                             $totalTax += $que->gl_tax;
-                                            $totalSum += $que->gl_total;
 
-                                            // คำนวณผลรวมเฉพาะ gl_amount ที่ gl_tax = 0
-                                            if ($que->gl_tax == 0) {
-                                                $totalAmountNoTax += $que->gl_amount;
-                                            }
                                         @endphp
 
                                         <tr>
@@ -84,6 +77,7 @@
                                             </td>
                                             <td>{{ $que->gl_company }}</td>
                                             <td class="monospace">{{ $que->gl_taxid }}</td>
+
                                             <td>{{ $que->gl_branch }}</td>
                                             <td class="text-end">{{ number_format($que->gl_amount, 2) }}</td>
                                             <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
@@ -93,34 +87,17 @@
 
                                     <tr>
                                         <td colspan="5"></td>
-                                        <td><strong>รวมภาษี</strong></td>
-                                        <td class="text-end"><strong>{{ number_format($totalAmountNoTax, 2) }}</strong>
-                                        </td>
-                                        <td class="text-end"></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5"></td>
-                                        <td><strong>รวมภาษี 0%</strong></td>
-                                        <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
-                                        <td class="text-end"><strong>{{ number_format($totalAmount, 2) }}</strong></td>
-
-                                        <td class="text-end"></strong></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5"></td>
                                         <td class="text-end"><strong>รวมทั้งสิ้น</strong></td>
                                         <td class="text-end">
                                             @php
-                                                $total = $totalAmount + $totalAmountNoTax;
+                                                $totalAll = $totalAmount + $totalTax;
 
                                             @endphp
 
-                                            <strong>{{ number_format($total, 2) }}</strong>
+                                            <strong>{{ number_format($totalAmount, 2) }}</strong>
                                         </td>
                                         <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>
-                                        <td class="text-end"><strong>{{ number_format($totalSum, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalAll, 2) }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>

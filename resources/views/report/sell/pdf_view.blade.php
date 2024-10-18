@@ -63,8 +63,10 @@
                                     $i = 1;
                                     $totalAmount = 0;
                                     $totalTax = 0;
-                                    $totalSum = 0;
+                                    $totalNoTax = 0;
                                     $totalAmountNoTax = 0; // ตัวแปรสำหรับผลรวม gl_amount ที่ gl_tax = 0
+                                    $totalNoTaxSum = 0;
+                                    $totalTaxSum = 0;
 
                                 @endphp
 
@@ -72,13 +74,17 @@
                                     @foreach ($query as $index => $que)
                                         @php
                                             // คำนวณผลรวม
-                                            $totalAmount += $que->gl_amount;
-                                            $totalTax += $que->gl_tax;
-                                            $totalSum += $que->gl_total;
 
                                             // คำนวณผลรวมเฉพาะ gl_amount ที่ gl_tax = 0
                                             if ($que->gl_tax == 0) {
                                                 $totalAmountNoTax += $que->gl_amount;
+                                                $totalNoTax += $que->gl_tax;
+                                                $totalNoTaxSum += $que->gl_total;
+                                            }
+                                            if ($que->gl_tax > 0) {
+                                                $totalAmount += $que->gl_amount;
+                                                $totalTax += $que->gl_tax;
+                                                $totalTaxSum += $que->gl_total;
                                             }
                                         @endphp
 
@@ -86,21 +92,23 @@
                                             <td>{{ $i++ }}</td>
                                             <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
                                             <td>
-                                                {{ $que->gl_document }}
-                                                {{-- @if ($que->gl_url)
+                                                @if ($que->gl_url)
                                                     <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
                                                         rel="noopener noreferrer">
                                                         {{ $que->gl_document }}
-                                                          <span class="id-message">หน้า {{ $que->gl_page }}</span>
+                                                        <span class="id-message">หน้า {{ $que->gl_page }}</span>
                                                     </a>
                                                 @else
                                                     {{ $que->gl_document }}
-                                                @endif --}}
+                                                @endif
                                             </td>
                                             <td>{{ $que->gl_company }}</td>
                                             <td class="monospace">{{ $que->gl_taxid }}</td>
                                             <td>{{ $que->gl_branch }}</td>
-                                            <td class="text-end">{{ number_format($que->gl_amount, 2) }}</td>
+                                            <td class="text-end"
+                                                style="{{ $que->gl_amount < 0 ? 'background-color: #f8d7da;' : '' }}">
+                                                {{ number_format($que->gl_amount, 2) }}
+                                            </td>
                                             <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
                                             <td class="text-end">{{ number_format($que->gl_total, 2) }}</td>
                                         </tr>
@@ -108,34 +116,45 @@
 
                                     <tr>
                                         <td colspan="5"></td>
-                                        <td><strong>รวมภาษี</strong></td>
-                                        <td class="text-end"><strong>{{ number_format($totalAmountNoTax, 2) }}</strong>
+                                        <td class="text-end"><strong>รวมภาษี</strong></td>
+                                        <td class="text-end"
+                                            style="{{ $totalAmount < 0 ? 'background-color: #f8d7da;' : '' }}">
+                                            <strong>{{ number_format($totalAmount, 2) }}</strong>
                                         </td>
-                                        <td class="text-end"></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5"></td>
-                                        <td><strong>รวมภาษี 0%</strong></td>
-                                        <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
-                                        <td class="text-end"><strong>{{ number_format($totalAmount, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalTaxSum, 2) }}</strong></td>
 
-                                        <td class="text-end"></td>
-                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td colspan="5"></td>
-                                        <td><strong>รวมทั้งสิ้น</strong></td>
+                                        <td class="text-end"><strong>รวมภาษี 0%</strong></td>
+                                        <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
+                                        <td class="text-end"
+                                            style="{{ $totalAmountNoTax < 0 ? 'background-color: #f8d7da;' : '' }}">
+                                            <strong>{{ number_format($totalAmountNoTax, 2) }}</strong>
+                                        </td>
+
+                                        <td class="text-end"><strong>{{ number_format($totalNoTax, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalNoTaxSum, 2) }}</strong>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5"></td>
+                                        <td class="text-end"><strong>รวมทั้งสิ้น</strong></td>
                                         <td class="text-end">
                                             @php
-                                                $total = $totalAmount + $totalAmountNoTax;
+                                                $totalSum = $totalAmount + $totalAmountNoTax;
+                                                $totalSumTax = $totalTax + $totalNoTax;
+                                                $totalSumNoTax = $totalSum + $totalSumTax;
 
                                             @endphp
 
-                                            <strong>{{ number_format($total, 2) }}</strong>
+                                            <strong>{{ number_format($totalSum, 2) }}</strong>
                                         </td>
-                                        <td><strong>{{ number_format($totalTax, 2) }}</strong></td>
-                                        <td><strong>{{ number_format($totalSum, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalSumTax, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalSumNoTax, 2) }}</strong>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
