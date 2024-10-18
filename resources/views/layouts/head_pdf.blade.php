@@ -249,9 +249,9 @@
         background-color: #f8d7da !important;
     }
 
-    th {
-        font-size: 14px !important;
-        color: #000000 !important;
-        font-weight: bold !important;
+    .table th {
+        text-transform: uppercase;
+        font-size: 0.90rem;
+        letter-spacing: 0px;
     }
 </style>
