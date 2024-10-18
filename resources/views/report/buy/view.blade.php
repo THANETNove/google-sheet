@@ -20,6 +20,62 @@
                         <form action="{{ route('report/search-buy') }}" method="POST" class="container-date">
                             @csrf
                             <div class="container-date">
+
+                                <div class="col-8">
+
+                                    <!-- แถวสำหรับเลือกเดือนและปี -->
+                                    <div class="row">
+                                        <!-- เลือกเดือน -->
+                                        <div class="col-6">
+                                            <small class="text-light fw-semibold d-block mb-1" for="month">เดือน:</small>
+                                            <select id="month" name="month" class="form-control">
+                                                <option value="1" {{ $month == '01' ? 'selected' : '' }}>มกราคม
+                                                </option>
+                                                <option value="2" {{ $month == '02' ? 'selected' : '' }}>
+                                                    กุมภาพันธ์</option>
+                                                <option value="3" {{ $month == '03' ? 'selected' : '' }}>มีนาคม
+                                                </option>
+                                                <option value="4" {{ $month == '04' ? 'selected' : '' }}>เมษายน
+                                                </option>
+                                                <option value="5" {{ $month == '05' ? 'selected' : '' }}>พฤษภาคม
+                                                </option>
+                                                <option value="6" {{ $month == '06' ? 'selected' : '' }}>มิถุนายน
+                                                </option>
+                                                <option value="7" {{ $month == '07' ? 'selected' : '' }}>กรกฎาคม
+                                                </option>
+                                                <option value="8" {{ $month == '08' ? 'selected' : '' }}>สิงหาคม
+                                                </option>
+                                                <option value="9" {{ $month == '09' ? 'selected' : '' }}>กันยายน
+                                                </option>
+                                                <option value="10" {{ $month == '10' ? 'selected' : '' }}>ตุลาคม
+                                                </option>
+                                                <option value="11" {{ $month == '11' ? 'selected' : '' }}>
+                                                    พฤศจิกายน</option>
+                                                <option value="12" {{ $month == '12' ? 'selected' : '' }}>ธันวาคม
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <!-- เลือกปี -->
+                                        <div class="col-6">
+                                            <small class="text-light fw-semibold d-block mb-1" for="year">ปี:</small>
+                                            <input id="year" name="year" class="form-control" type="number"
+                                                value="{{ $year }}" placeholder="ป้อนปี" min="1900"
+                                                max="2100">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hidden input สำหรับส่งค่าอื่นๆ เช่น ID -->
+                                <input class="form-control" type="text" name="id" style="display: none"
+                                    value="{{ $id }}">
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">ค้นหา</button>
+                                </div>
+                            </div>
+
+                            {{-- <div class="container-date">
                                 <div class="col-8">
                                     <small class="text-light fw-semibold d-block mb-1">วันที่</small>
                                     <div class="input-group input-group-merge speech-to-text">
@@ -33,15 +89,16 @@
                                 <div>
                                     <button type="submit" class="btn btn-primary">ค้นหา</button>
                                 </div>
-                            </div>
+                            </div> --}}
                         </form>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-                            <a href="{{ url('/buy-pdf/' . $id . '/' . urlencode($startDate)) }}" target="_blank"
-                                class="btn btn-primary">
+                            <a href="{{ url('/buy-pdf/' . $id . '/' . urlencode($month) . '/' . urlencode($year)) }}"
+                                target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
-                            <a href="{{ url('/buy-excel/' . $id . '/' . urlencode($startDate)) }}" class="btn btn-primary">
+                            <a href="{{ url('/buy-excel/' . $id . '/' . urlencode($month) . '/' . urlencode($year)) }}"
+                                class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
                             </a>
                         </div>

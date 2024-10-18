@@ -39,47 +39,39 @@ class BuyController extends Controller
         ];
     }
 
-    private function getData($id, $startDate = null)
+    private function getData($id, $month = null, $year = null)
     {
         $user = DB::table('users')->find($id);
 
+        // รับเดือนและปีจากฟอร์ม ถ้าไม่ได้ส่งมาจะใช้จาก $user->accounting_period
         $accounting_period = $user->accounting_period;
-        list($day, $month) = explode('/', $accounting_period);
-        // $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
-        // ตรวจสอบว่า $startDate และ $endDate เป็น null หรือไม่
-        if (is_null($startDate)) {
+        list($day, $defaultMonth) = explode('/', $accounting_period);
 
-            // ถ้าเป็น null, ตั้ง $startDate ให้เป็นวันที่ 1 ของเดือนก่อนหน้า
-            $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า
-        } else {
-            // ถ้า $startDate ถูกส่งมา ให้ใช้ตามนั้น
-            $startDate = Carbon::parse($startDate);
+        // ถ้าไม่ได้ส่ง month หรือ year มา ให้ใช้ค่าเริ่มต้นจาก accounting_period ของผู้ใช้
+        if (is_null($month) || is_null($year)) {
+            $currentDate = Carbon::now();
+            $previousMonthDate = $currentDate->subMonth(); // ลดลง 1 เดือน
+
+            // กำหนดเดือนและปีให้เป็นเดือนก่อนหน้าและปีปัจจุบัน
+            $month = $month ?? $previousMonthDate->format('m');  // ใช้เดือนก่อนหน้า
+            $year = $year ?? $previousMonthDate->format('Y');    // ใช้ปีจากเดือนก่อนหน้า
         }
+        // ใช้ Carbon เพื่อสร้างวันที่จากเดือนและปีที่กำหนด
+        $startDate = Carbon::createFromDate($year, $month, 1); // วันที่ 1 ของเดือนที่เลือก
+        $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth(); // วันที่สุดท้ายของเดือนที่เลือก
 
-        // ดึงเดือนจาก $startDate
+        // แปลงเดือนเป็นชื่อเดือนภาษาไทย
         $vat_month = $startDate->month;
-
-        // ใช้ $this->getMonths() เพื่อแปลงเลขเดือนเป็นชื่อเดือน
         $monthName = $this->getMonths()[$vat_month];
+        $monthName2 = "$monthName $year"; // เช่น 'มกราคม 2024'
 
-        $day = $startDate->day;          // วัน
-        $vat_month = $startDate->month;  // เดือน
-        $year = $startDate->year;        // ปี
-
-        // ใช้ $this->getMonths() เพื่อแปลงเลขเดือนเป็นชื่อเดือน
-        $monthName = $this->getMonths()[$vat_month];
-
-        // สร้างสตริงโดยใช้เครื่องหมายคำพูดคู่
-        $monthName2 = " $monthName $year"; // ใช้เครื่องหมายคำพูดคู่แทนแบ็กทิค
-
-
-
+        // ดึงข้อมูลตามเดือนและปีที่เลือก
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
             ->whereRaw('LOWER(gl_report_vat) = ?', ['buy'])
             ->where('gl_vat', 1)
-            ->whereMonth('gl_taxmonth', $startDate->month)  // ค้นหาเฉพาะเดือนเดียวกับ $startDate
-            ->whereYear('gl_taxmonth', $startDate->year)    // ค้นหาเฉพาะปีเดียวกับ $startDate
+            ->whereMonth('gl_taxmonth', $month)  // ค้นหาเฉพาะเดือนที่เลือก
+            ->whereYear('gl_taxmonth', $year)    // ค้นหาเฉพาะปีที่เลือก
             ->select(
                 'id',
                 'gl_date',
@@ -101,10 +93,12 @@ class BuyController extends Controller
             'query' => $query,
             'user' => $user,
             'startDate' => $startDate,
-            'day' => $day,
-            'vat_month' =>  $monthName2,
+            'day' => $startDate->day,
+            'vat_month' => $monthName2,
+            'month' => $month,
+            'year' => $year,
             'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
-            'currentYear' => date('Y')
+            'currentYear' => $year
         ];
     }
 
@@ -130,6 +124,8 @@ class BuyController extends Controller
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'day' => $data['day'],
+            'month' => $data['month'],
+            'year' => $data['year'],
             'vat_month' =>  $data['vat_month'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
@@ -140,15 +136,19 @@ class BuyController extends Controller
     public function search(Request $request)
     {
 
-        $startDate = Carbon::parse($request->start_date);
+        $month = $request->month;  // รับค่าจากฟอร์มเลือกเดือน
+        $year = $request->year;    // รับค่าจากฟอร์มเลือกปี
 
-        $data = $this->getData($request->id, $startDate);
+        // เรียกฟังก์ชัน getData และส่งค่า month และ year ไป
+        $data = $this->getData($request->id, $month, $year);
 
         return view('report.buy.view', [
             'query' => $data['query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'day' => $data['day'],
+            'month' => $data['month'],
+            'year' => $data['year'],
             'vat_month' =>  $data['vat_month'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
@@ -157,10 +157,11 @@ class BuyController extends Controller
     }
 
 
-    public function exportPDF($id, $start_date,)
+    public function exportPDF($id, $month, $year)
     {
 
-        $data = $this->getData($id, $start_date); // รับค่ากลับมา
+        $data = $this->getData($id, $month, $year); // รับค่ากลับมา
+
         $pdf = PDF::loadView('report.buy.pdf_view', [
             'query' => $data['query'],
             'user' => $data['user'],
@@ -179,9 +180,9 @@ class BuyController extends Controller
     }
 
 
-    public function exportExcel($id, $start_date)
+    public function exportExcel($id, $month, $year)
     {
-        $data = $this->getData($id, $start_date);
+        $data = $this->getData($id, $month, $year);
 
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {

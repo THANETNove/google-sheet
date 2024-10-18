@@ -40,8 +40,8 @@ Route::post('/report/search-date', [GeneralJournalController::class, 'search'])-
 //รายงานซื้อ
 Route::get('report/buy', [BuyController::class, 'index'])->name('report/buy');
 Route::get('report/buy-view/{id}', [BuyController::class, 'show'])->name('report/buy-view');
-Route::get('buy-pdf/{id}/{start_date}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
-Route::get('buy-excel/{id}/{start_date}', [BuyController::class, 'exportExcel'])->name('buy-excel');
+Route::get('buy-pdf/{id}/{month}/{year}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
+Route::get('buy-excel/{id}/{month}/{year}', [BuyController::class, 'exportExcel'])->name('buy-excel');
 Route::post('report/search-buy', [BuyController::class, 'search'])->name('report/search-buy');
 
 Route::get('report/sell', [SellController::class, 'index'])->name('report/sell');
