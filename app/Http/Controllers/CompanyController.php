@@ -127,7 +127,7 @@ class CompanyController extends Controller
 
         // บันทึก General Ledger เป็น row
         foreach ($dataGeneralLedger as $item) {
-            dd($item);
+
             GeneralLedger::create([
                 'gl_code_company' => $request->code_company,
                 'gl_code' => isset($item['GL_Code']) ? trim($item['GL_Code']) : null,
@@ -144,7 +144,7 @@ class CompanyController extends Controller
                 'gl_description' => isset($item['GL_Description']) ? trim($item['GL_Description']) : null,
                 'gl_code_acc_pay' => isset($item['GL_Code_Acc_Pay']) ? trim($item['GL_Code_Acc_Pay']) : null,
                 'gl_date_pay' => isset($item['GL_Date_Pay']) ? trim($item['GL_Date_Pay']) : null,
-                'gl_vat' => isset($item['GL_Vat']) ? trim($item['GL_Vat']) : null,
+                'gl_vat' => $item['GL_Vat'],
                 'gl_rate' => isset($item['GL_Rate']) ? trim($item['GL_Rate']) : null,
                 'gl_taxmonth' => isset($item['GL_TaxMonth']) ? trim($item['GL_TaxMonth']) : null,
                 'gl_amount_no_vat' => isset($item['GL_AmountNoVat']) ? trim($item['GL_AmountNoVat']) : null,
