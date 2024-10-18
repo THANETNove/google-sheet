@@ -231,4 +231,9 @@
     .mt-16 {
         margin-top: 64px !important;
     }
+
+    .text-center-vertical {
+        text-align: center;
+        vertical-align: middle;
+    }
 </style>

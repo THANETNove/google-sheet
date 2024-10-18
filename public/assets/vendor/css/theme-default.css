@@ -198,9 +198,9 @@ button.list-group-item-primary.active {
   color: #435971;
   border-color: #d1d4f1;
 }
-.table-primary th {
+/* .table-primary th {
   border-bottom-color: inherit !important;
-}
+} */
 .table-primary .btn-icon {
   color: #435971;
 }

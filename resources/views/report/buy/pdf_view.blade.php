@@ -32,27 +32,24 @@
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th class="child-1">#</th>
+                                        <th class="child-1 text-center-vertical" rowspan="2">#</th>
                                         <th class="text-center" colspan="2">ใบกำกับภาษี</th>
-                                        <th></th> <!-- ลบเส้นขอบ -->
-                                        <th class=""></th>
+                                        <th class="text-center-vertical" rowspan="2">ชื่อผู้ขายสินค้า/ผู้ให้บริการ
+                                        </th>
+                                        <th class="text-center-vertical child-4" rowspan="2">
+                                            เลขประจำตัวผู้เสียภาษีอากรของ
+                                            ผู้ขายสินค้า/ผู้ให้บริการ</th>
                                         <th class="text-center">สถานประกอบการ</th>
                                         <th class="text-center">มูลค่าสินค้า</th>
                                         <th class="text-center">จำนวนเงิน</th>
-                                        <th class=""></th>
+                                        <th class="text-center-vertical" rowspan="2">รวม</th>
                                     </tr>
                                     <tr class="table-secondary">
-                                        <th></th>
-                                        <th class="child-2 text-center">วัน เดือน ปี </th>
-                                        <th class="child-2 text-center">เล่มที่/เลขที่</th>
-                                        <th class="text-center">ชื่อผู้ขายสินค้า/ผู้ให้บริการ</th> <!-- ลบเส้นขอบ -->
-                                        <th class="child-4 text-center">เลขประจำตัวผู้เสียภาษีอากรของ
-                                            ผู้ขายสินค้า/ผู้ให้บริการ</th> <!-- ลบเส้นขอบ -->
-                                        <th class="text-center">สำนักงานใหญ่ / สาขา</th>
+                                        <th class="child-2 text-center">วัน เดือน ปี</th>
+                                        <th class="child-3 text-center">เล่มที่/เลขที่</th>
+                                        <th class=" text-center">สำนักงานใหญ่ / สาขา</th>
                                         <th class="text-center">หรือบริการ</th>
-                                        <th class="text-center">ภาษีมูลค่าเพิ่ม
-                                        </th>
-                                        <th class="text-center">รวม</th>
+                                        <th class="text-center">ภาษีมูลค่าเพิ่ม</th>
                                     </tr>
                                 </thead>
 

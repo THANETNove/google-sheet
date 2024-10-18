@@ -199,17 +199,22 @@
   text-align: right !important;
 }
 
-.no-border {
-  border: none !important;
-  border-bottom: none !important;
+
+.no-border-t {
   border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
+  /* ลบเส้นขอบด้านซ้าย */
+
+
 }
 
-table {
-  border-collapse: collapse;
+.no-border-b {
+
+  border-bottom: none !important;
+  /* ลบเส้นขอบด้านซ้าย */
+
 }
+
+
 
 /* .container-date {
   margin: 0px 16px 16px 16px;
@@ -406,6 +411,13 @@ table {
 .monospace {
   font-family: monospace;
 }
+
+/* จัดตำแหน่งให้อยู่กลางทั้งแนวตั้งและแนวนอน */
+.text-center-vertical {
+  text-align: center;
+  vertical-align: middle;
+}
+
 
 /* 
 th:nth-child(4),
