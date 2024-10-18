@@ -64,7 +64,8 @@
                                         <th class="text-center-vertical" rowspan="2">
                                             ชื่อผู้ซื้อสินค้า/ผู้รับบริการ
                                         </th>
-                                        <th class="text-center-vertical" rowspan="2">เลขประจำตัวผู้เสียภาษีอากรของ
+                                        <th class="child-4 text-center-vertical" rowspan="2">
+                                            เลขประจำตัวผู้เสียภาษีอากรของ
                                             ผู้ซื้อสินค้า/ผู้รับบริการ</th>
                                         <th class="text-center">สถานประกอบการ</th>
                                         <th class="text-center">มูลค่าสินค้า</th>
@@ -124,7 +125,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ $que->gl_company }}</td>
-                                            <td>{{ $que->gl_taxid }}</td>
+                                            <td class="monospace">{{ $que->gl_taxid }}</td>
                                             <td>{{ $que->gl_branch }}</td>
                                             <td class="text-end"
                                                 style="{{ $que->gl_amount < 0 ? 'background-color: #f8d7da;' : '' }}">

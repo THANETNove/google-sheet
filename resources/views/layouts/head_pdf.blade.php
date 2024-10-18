@@ -216,6 +216,14 @@
         white-space: normal !important;
     }
 
+    .child-4 {
+        width: 180px !important;
+        word-wrap: break-word !important;
+        white-space: normal !important;
+    }
+
+
+
     .text-end {
         text-align: right !important;
     }
