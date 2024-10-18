@@ -248,4 +248,10 @@
     .error-message {
         background-color: #f8d7da !important;
     }
+
+    th {
+        font-size: 14px !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+    }
 </style>
