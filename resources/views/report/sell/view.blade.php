@@ -76,7 +76,7 @@
                                         <th class="child-2 text-center">วันที่</th>
                                         <th class="child-2 text-center">เล่มที่/เลขที่</th>
                                         <th class="text-center">สำนักงานใหญ่ /สาขา </th>
-                                        <th class="text-center">มูลค่าสินค้า </th>
+                                        <th class="text-center">หรือบริการ </th>
                                         <th class="text-center">ภาษีมูลค่าเพิ่ม</th>
                                     </tr>
                                 </thead>
@@ -87,22 +87,25 @@
                                     $totalTax = 0;
                                     $totalNoTax = 0;
                                     $totalAmountNoTax = 0; // ตัวแปรสำหรับผลรวม gl_amount ที่ gl_tax = 0
-
+                                    $totalNoTaxSum = 0;
+                                    $totalTaxSum = 0;
                                 @endphp
 
                                 <tbody class="table-border-bottom-0">
                                     @foreach ($query as $index => $que)
                                         @php
                                             // คำนวณผลรวม
-                                    
+
                                             // คำนวณผลรวมเฉพาะ gl_amount ที่ gl_tax = 0
                                             if ($que->gl_tax == 0) {
                                                 $totalAmountNoTax += $que->gl_amount;
                                                 $totalNoTax += $que->gl_tax;
+                                                $totalNoTaxSum += $que->gl_total;
                                             }
                                             if ($que->gl_tax > 0) {
                                                 $totalAmount += $que->gl_amount;
                                                 $totalTax += $que->gl_tax;
+                                                $totalTaxSum += $que->gl_total;
                                             }
                                         @endphp
 
@@ -140,7 +143,8 @@
                                             <strong>{{ number_format($totalAmount, 2) }}</strong>
                                         </td>
                                         <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>
-                                        <td></td>
+                                        <td class="text-end"><strong>{{ number_format($totalTaxSum, 2) }}</strong></td>
+
                                     </tr>
                                     <tr>
                                         <td colspan="5"></td>
@@ -152,7 +156,8 @@
                                         </td>
 
                                         <td class="text-end"><strong>{{ number_format($totalNoTax, 2) }}</strong></td>
-                                        <td></td>
+                                        <td class="text-end"><strong>{{ number_format($totalNoTaxSum, 2) }}</strong></td>
+
                                     </tr>
                                     <tr>
                                         <td colspan="5"></td>
