@@ -28,8 +28,8 @@
 
 <!-- Page CSS -->
 <!-- Page -->
-{{-- <link rel="stylesheet" href="{{ URL::asset('/assets/vendor/css/pages/page-auth.css') }}" />
-<link rel="stylesheet" href="{{ URL::asset('/assets/vendor/css/pages/page-misc.css') }}" /> --}}
+<link rel="stylesheet" href="{{ URL::asset('/assets/vendor/css/pages/page-auth.css') }}" />
+<link rel="stylesheet" href="{{ URL::asset('/assets/vendor/css/pages/page-misc.css') }}" />
 <!-- Helpers -->
 <script src="{{ URL::asset('/assets/vendor/js/helpers.js') }}"></script>
 
