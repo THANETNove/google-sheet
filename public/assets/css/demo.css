@@ -418,6 +418,9 @@
   vertical-align: middle;
 }
 
+.error-message {
+  background-color: #f8d7da;
+}
 
 /* 
 th:nth-child(4),

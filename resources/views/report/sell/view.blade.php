@@ -127,8 +127,7 @@
                                             <td>{{ $que->gl_company }}</td>
                                             <td class="monospace">{{ $que->gl_taxid }}</td>
                                             <td>{{ $que->gl_branch }}</td>
-                                            <td class="text-end"
-                                                style="{{ $que->gl_amount < 0 ? 'background-color: #f8d7da;' : '' }}">
+                                            <td class="text-end {{ $totalAmountNoTax < 0 ? 'error-message' : '' }}">
                                                 {{ number_format($que->gl_amount, 2) }}
                                             </td>
                                             <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
@@ -139,8 +138,7 @@
                                     <tr>
                                         <td colspan="5"></td>
                                         <td class="text-end"><strong>รวมภาษี</strong></td>
-                                        <td class="text-end"
-                                            style="{{ $totalAmount < 0 ? 'background-color: #f8d7da;' : '' }}">
+                                        <td class="text-end {{ $totalAmountNoTax < 0 ? 'error-message' : '' }}">
                                             <strong>{{ number_format($totalAmount, 2) }}</strong>
                                         </td>
                                         <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>
@@ -151,8 +149,7 @@
                                         <td colspan="5"></td>
                                         <td class="text-end"><strong>รวมภาษี 0%</strong></td>
                                         <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
-                                        <td class="text-end"
-                                            style="{{ $totalAmountNoTax < 0 ? 'background-color: #f8d7da;' : '' }}">
+                                        <td class="text-end {{ $totalAmountNoTax < 0 ? 'error-message' : '' }}">
                                             <strong>{{ number_format($totalAmountNoTax, 2) }}</strong>
                                         </td>
 

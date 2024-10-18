@@ -127,6 +127,7 @@ class CompanyController extends Controller
 
         // บันทึก General Ledger เป็น row
         foreach ($dataGeneralLedger as $item) {
+            dd($item);
             GeneralLedger::create([
                 'gl_code_company' => $request->code_company,
                 'gl_code' => isset($item['GL_Code']) ? trim($item['GL_Code']) : null,
