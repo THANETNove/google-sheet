@@ -77,7 +77,6 @@ class BuyController extends Controller
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
             ->whereRaw('LOWER(gl_report_vat) = ?', ['buy'])
-            /*    ->whereRaw('LOWER(gl_vat) = ?', ['true']) */
             ->where('gl_vat', 1)
             ->whereMonth('gl_taxmonth', $startDate->month)  // ค้นหาเฉพาะเดือนเดียวกับ $startDate
             ->whereYear('gl_taxmonth', $startDate->year)    // ค้นหาเฉพาะปีเดียวกับ $startDate
