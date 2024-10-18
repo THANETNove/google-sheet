@@ -115,6 +115,11 @@
                                 <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
                             </a>
                         </li>
+                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                            <a href="{{ url('#') }} " class="menu-link">
+                                <div data-i18n="Without menu">ภาษีมูลค่าเพิ่ม</div>
+                            </a>
+                        </li>
                         <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
                             <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
