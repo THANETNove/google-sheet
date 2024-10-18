@@ -94,7 +94,7 @@ class BuyController extends Controller
                 'gl_url',
                 'gl_page'
             )
-            ->orderBy('gl_taxmonth', 'ASC')
+            ->orderBy('gl_date', 'ASC')
             ->get();
 
         return [
