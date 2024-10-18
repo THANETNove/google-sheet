@@ -2,7 +2,7 @@
 <html lang="th">
 
 <head>
-    <title>สมุดรายวันทั่วไป</title>
+    <title>รายงานภาษีซื้อ</title>
 
     @include('layouts.head_pdf')
 </head>

@@ -2,7 +2,7 @@
 <html lang="th">
 
 <head>
-    <title>สมุดรายวันทั่วไป</title>
+    <title>รายงานภาษีขาย</title>
 
     @include('layouts.head_pdf')
 </head>
@@ -92,15 +92,7 @@
                                             <td>{{ $i++ }}</td>
                                             <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
                                             <td>
-                                                @if ($que->gl_url)
-                                                    <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
-                                                        rel="noopener noreferrer">
-                                                        {{ $que->gl_document }}
-                                                        <span class="id-message">หน้า {{ $que->gl_page }}</span>
-                                                    </a>
-                                                @else
-                                                    {{ $que->gl_document }}
-                                                @endif
+                                                {{ $que->gl_document }}
                                             </td>
                                             <td>{{ $que->gl_company }}</td>
                                             <td class="monospace">{{ $que->gl_taxid }}</td>
