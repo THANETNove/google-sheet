@@ -128,6 +128,8 @@ class CompanyController extends Controller
         // บันทึก General Ledger เป็น row
         foreach ($dataGeneralLedger as $item) {
 
+
+
             GeneralLedger::create([
                 'gl_code_company' => $request->code_company,
                 'gl_code' => isset($item['GL_Code']) ? trim($item['GL_Code']) : null,
@@ -164,18 +166,20 @@ class CompanyController extends Controller
 
             // บันทึก General Ledger Sub เป็น row
             foreach ($dataGeneralLedgerSub as $subItem) {
-                GeneralLedgerSub::create([
-                    'gls_code_company' => $request->code_company,
-                    'gls_code' => isset($subItem['GLS_Code']) ? trim($subItem['GLS_Code']) : null,
-                    'gls_id' => isset($subItem['GLS_ID']) ? trim($subItem['GLS_ID']) : null,
-                    'gls_gl_code' => isset($subItem['GLS_GL_Code']) ? trim($subItem['GLS_GL_Code']) : null,
-                    'gls_gl_document' => isset($subItem['GLS_GL_Document']) ? trim($subItem['GLS_GL_Document']) : null,
-                    'gls_gl_date' => isset($subItem['GLS_GL_Date']) ? trim($subItem['GLS_GL_Date']) : null,
-                    'gls_account_code' => isset($subItem['GLS_Account_Code']) ? trim($subItem['GLS_Account_Code']) : null,
-                    'gls_account_name' => isset($subItem['GLS_Account_Name']) ? trim($subItem['GLS_Account_Name']) : null,
-                    'gls_debit' => isset($subItem['GLS_Debit']) ? trim($subItem['GLS_Debit']) : null,
-                    'gls_credit' => isset($subItem['GLS_Credit']) ? trim($subItem['GLS_Credit']) : null,
-                ]);
+                if ($subItem['GLS_ID'] > 0) {
+                    GeneralLedgerSub::create([
+                        'gls_code_company' => $request->code_company,
+                        'gls_code' => isset($subItem['GLS_Code']) ? trim($subItem['GLS_Code']) : null,
+                        'gls_id' => isset($subItem['GLS_ID']) ? trim($subItem['GLS_ID']) : null,
+                        'gls_gl_code' => isset($subItem['GLS_GL_Code']) ? trim($subItem['GLS_GL_Code']) : null,
+                        'gls_gl_document' => isset($subItem['GLS_GL_Document']) ? trim($subItem['GLS_GL_Document']) : null,
+                        'gls_gl_date' => isset($subItem['GLS_GL_Date']) ? trim($subItem['GLS_GL_Date']) : null,
+                        'gls_account_code' => isset($subItem['GLS_Account_Code']) ? trim($subItem['GLS_Account_Code']) : null,
+                        'gls_account_name' => isset($subItem['GLS_Account_Name']) ? trim($subItem['GLS_Account_Name']) : null,
+                        'gls_debit' => isset($subItem['GLS_Debit']) ? trim($subItem['GLS_Debit']) : null,
+                        'gls_credit' => isset($subItem['GLS_Credit']) ? trim($subItem['GLS_Credit']) : null,
+                    ]);
+                }
             }
         }
 
@@ -255,7 +259,7 @@ class CompanyController extends Controller
                 // เช็คว่ามี gls_code ในฐานข้อมูลหรือไม่
                 $existingSubEntry = GeneralLedgerSub::where('gls_code', trim($subItem['GLS_Code']))->first();
 
-                if (!$existingSubEntry) {
+                if (!$existingSubEntry && $subItem['GLS_ID'] > 0) {
                     // ถ้าไม่มี gls_code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
                     GeneralLedgerSub::create([
                         'gls_code_company' => trim($request->code_company),
@@ -359,7 +363,7 @@ class CompanyController extends Controller
                     'gl_description' => $item['GL_Description'] ?? null,
                     'gl_code_acc_pay' => $item['GL_Code_Acc_Pay'] ?? null,
                     'gl_date_pay' => $item['GL_Date_Pay'] ?? null,
-                    'gl_vat' => $item['GL_Vat'] ,
+                    'gl_vat' => $item['GL_Vat'],
                     'gl_rate' => $item['GL_Rate'] ?? null,
                     'gl_taxmonth' => $item['GL_TaxMonth'] ?? null,
                     'gl_amount_no_vat' => $item['GL_AmountNoVat'] ?? null,
@@ -382,7 +386,7 @@ class CompanyController extends Controller
             foreach ($dataGeneralLedgerSub as $subItem) {
                 $generalLedgerSub = GeneralLedgerSub::where('gls_code', $subItem['GLS_Code'])->first();
 
-                if ($generalLedgerSub) {
+                if ($generalLedgerSub && $subItem['GLS_ID'] > 0) {
                     // ถ้ามีอยู่แล้วให้ทำการอัปเดต
                     $generalLedgerSub->update([
                         'gls_code_company' => $request->code_company,
@@ -397,18 +401,21 @@ class CompanyController extends Controller
                     ]);
                 } else {
                     // ถ้าไม่มีก็ทำการเพิ่มข้อมูลใหม่
-                    GeneralLedgerSub::create([
-                        'gls_code_company' => $request->code_company,
-                        'gls_code' => $subItem['GLS_Code'],
-                        'gls_id' => $subItem['GLS_ID'] ?? null,
-                        'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
-                        'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
-                        'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
-                        'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
-                        'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
-                        'gls_debit' => $subItem['GLS_Debit'] ?? null,
-                        'gls_credit' => $subItem['GLS_Credit'] ?? null,
-                    ]);
+
+                    if ($subItem['GLS_ID'] > 0) {
+                        GeneralLedgerSub::create([
+                            'gls_code_company' => $request->code_company,
+                            'gls_code' => $subItem['GLS_Code'],
+                            'gls_id' => $subItem['GLS_ID'] ?? null,
+                            'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
+                            'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
+                            'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
+                            'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
+                            'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
+                            'gls_debit' => $subItem['GLS_Debit'] ?? null,
+                            'gls_credit' => $subItem['GLS_Credit'] ?? null,
+                        ]);
+                    }
                 }
             }
         }
