@@ -12,7 +12,7 @@
                             <div class="company">
                                 <p><strong>{{ $user->company }}</strong></p>
 
-                                <p><strong>-- สมุดบัญชีรายงานซื้อ --</strong></p>
+                                <p><strong>-- รายงานภาษีซื้อ --</strong></p>
                                 <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}<strong></p>
                                 <p><strong>เดือนภาษี {{ $vat_month }}<strong></p>
                             </div>

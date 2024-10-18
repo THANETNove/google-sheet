@@ -60,14 +60,14 @@
                             class="menu-item {{ Request::is('report/buy-view/*') || Request::is('report/search-buy') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/buy-view', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
-                                <div data-i18n="Without menu">สมุดบัญชีรายงานซื้อ</div>
+                                <div data-i18n="Without menu">รายงานภาษีซื้อ</div>
                             </a>
                         </li>
                         <li
                             class="menu-item {{ Request::is('report/sell-view/*') || Request::is('report/search-sell') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/sell-view', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
-                                <div data-i18n="Without menu">สมุดบัญชีรายงานขาย</div>
+                                <div data-i18n="Without menu">รายงานภาษีขาย</div>
                             </a>
                         </li>
                         <li class="menu-item {{ Request::is('repor') ? 'active' : '' }} ">

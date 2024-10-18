@@ -12,7 +12,7 @@
                             <div class="company">
                                 <p><strong>{{ $user->company }}</strong></p>
 
-                                <p><strong>-- สมุดบัญชีรายงานขาย --</strong></p>
+                                <p><strong>-- รายงานภาษีขาย --</strong></p>
                                 <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}<strong></p>
                                 <p><strong>ตั้งแต่วันที่ {{ date('d-m-Y', strtotime($startDate)) }} จนถึงวันที่
                                         {{ date('d-m-Y', strtotime($endDate)) }}<strong></p>
