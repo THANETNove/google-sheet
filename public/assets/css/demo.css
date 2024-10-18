@@ -193,14 +193,22 @@
   /* จัดกึ่งกลาง */
 }
 
-.table td,
-.table th {
 
-  vertical-align: top;
-}
 
 .text-end {
   text-align: right !important;
+}
+
+.no-border {
+  border: none !important;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+table {
+  border-collapse: collapse;
 }
 
 /* .container-date {
@@ -321,6 +329,12 @@
   white-space: normal !important;
 }
 
+.child-4 {
+  width: 180px !important;
+  word-wrap: break-word !important;
+  white-space: normal !important;
+}
+
 
 
 
@@ -387,6 +401,10 @@
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.monospace {
+  font-family: monospace;
 }
 
 /* 
