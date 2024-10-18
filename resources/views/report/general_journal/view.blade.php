@@ -118,7 +118,8 @@
                                                 <td class="hide-column"></td>
                                                 <td class="hide-column"></td>
                                                 <td class="hide-column"></td>
-                                                <td>{{ $sub->gls_account_name }}</td>
+                                                <td> &nbsp; {{ $sub->gls_account_code }}&nbsp; &nbsp;
+                                                    {{ $sub->gls_account_name }}</td>
 
                                                 <td class="text-end">{{ number_format($sub->gls_debit, 2) }}</td>
                                                 <td class="text-end">{{ number_format($sub->gls_credit, 2) }}</td>
