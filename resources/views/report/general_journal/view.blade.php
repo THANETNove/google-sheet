@@ -70,7 +70,7 @@
                             @endphp
 
                             <table class="table">
-                                <thead>
+                                <thead class="text-center">
                                     <tr class="table-secondary">
                                         <th class="child-1">#</th>
                                         <th class="child-2">วันที่</th>
