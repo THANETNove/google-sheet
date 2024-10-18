@@ -54,26 +54,21 @@ class GeneralJournalController extends Controller
         $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
 
 
-        /* 
-        $generalLedgers = DataGeneralLedgerSub::where('gl_code_company', $id)
-            ->whereBetween('gl_date', [$startDate, $endDate])
-            ->get();
-
-        // For each general ledger, fetch the related subs
-        foreach ($generalLedgers as $ledger) {
-            $subs = $ledger->getSubsByGlCode($ledger->gl_code);  // Call the function from the model
-            $ledger->subs = $subs;  // Attach the subs to the ledger for easy use in the view
-        }
-
- */
-
         // Join the two tables (general_ledgers and general_ledger_subs) in one query
         $generalLedgers = DataGeneralLedgerSub::with('subs')
             ->where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])
             ->get();
 
-
+        session(['generalLedgers' => [
+            'query' => $generalLedgers,
+            'user' => $user,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'day' => $day,
+            'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
+            'currentYear' => date('Y')
+        ]]);
         // Group by document
 
         return [
@@ -142,8 +137,10 @@ class GeneralJournalController extends Controller
 
         set_time_limit(600); // เพิ่มเวลาในการทำงาน
         ini_set('memory_limit', '1024M'); // เพิ่มหน่วยความจำเป็น 1GB
+        $data = session()->get('generalLedgers');
 
-        $data = $this->getDataGlAndGls($id, $start_date, $end_date); // รับค่ากลับมา
+
+
         $pdf = PDF::loadView('report.general_journal.pdf_view', [
             'query' => $data['query'],
             'user' => $data['user'],
@@ -157,7 +154,6 @@ class GeneralJournalController extends Controller
         $pdf->setPaper('a4', 'portrait')
             ->setOption('margin-top', 15)
             ->setOption('margin-bottom', 15)
-            ->setOption('isHtml5ParserEnabled', true) // เปิดใช้งาน HTML5 parser
             ->setOption('isRemoteEnabled', true); // อนุญาตให้ใช้ไฟล์จากภายนอก เช่น รูปภาพ
 
         return $pdf->stream(); // โหลดไฟล์ PDF
@@ -166,7 +162,7 @@ class GeneralJournalController extends Controller
     public function exportExcel($id, $start_date, $end_date)
     {
 
-        $data = $this->getDataGlAndGls($id, $start_date, $end_date);
+        $data = session()->get('generalLedgers');
 
         // Map the query data to include subs information
         $mappedData = $data['query']->map(function ($ledger) {
