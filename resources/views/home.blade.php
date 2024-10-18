@@ -56,8 +56,67 @@
                                     </div>
                                 </div>
                             </div>
+                            @php
+                                $accounting_period = $que->accounting_period;
+
+                                // วันที่ปัจจุบัน
+                                $currentDate = new DateTime();
+                                $currentYear = $currentDate->format('Y');
+                                $currentMonth = $currentDate->format('m');
+                                $currentDay = $currentDate->format('d');
+
+                                // แยกวันและเดือนออกจาก accounting_period
+                                $accountingDate = DateTime::createFromFormat('j/n', $accounting_period);
+
+                                if ($accountingDate === false) {
+                                    // ถ้าไม่สามารถแปลงวันที่ได้ ให้แสดงข้อความแจ้งเตือน
+                                    $fiscalYearStart = 'รูปแบบวันที่ไม่ถูกต้อง';
+                                    $fiscalYearEnd = 'รูปแบบวันที่ไม่ถูกต้อง';
+                                } else {
+                                    // วันและเดือนของรอบบัญชี
+                                    $accountingMonth = $accountingDate->format('m');
+                                    $accountingDay = $accountingDate->format('d');
+
+                                    // กำหนดปีเริ่มต้นและสิ้นสุดตามรอบบัญชี
+                                    $accountingDateThisYear = (clone $accountingDate)->setDate(
+                                        $currentYear,
+                                        $accountingMonth,
+                                        $accountingDay,
+                                    );
+
+                                    if ($accountingDateThisYear < $currentDate) {
+                                        // ถ้ารอบบัญชีน้อยกว่าวันปัจจุบัน (แปลว่าเป็นรอบปีที่แล้ว)
+                                        $fiscalYearStart = (clone $accountingDateThisYear)->setDate(
+                                            $currentYear,
+                                            $accountingMonth,
+                                            $accountingDay,
+                                        );
+                                        $fiscalYearEnd = (clone $fiscalYearStart)
+                                            ->modify('last day of this month')
+                                            ->setDate($currentYear + 1, $accountingMonth, $accountingDay - 1);
+                                    } else {
+                                        // ถ้าวันบัญชีมากกว่าวันปัจจุบัน (แปลว่าเป็นรอบบัญชีปีนี้ถึงปีถัดไป)
+                                        $fiscalYearStart = (clone $accountingDateThisYear)->setDate(
+                                            $currentYear - 1,
+                                            $accountingMonth,
+                                            $accountingDay,
+                                        );
+                                        $fiscalYearEnd = (clone $fiscalYearStart)
+                                            ->modify('last day of this month')
+                                            ->setDate($currentYear, $accountingMonth, $accountingDay - 1);
+                                    }
+
+                                    // แปลงเป็นรูปแบบที่ต้องการ
+                                    $fiscalYearStartFormatted = $fiscalYearStart->format('d/m/Y');
+                                    $fiscalYearEndFormatted = $fiscalYearEnd->format('d/m/Y');
+                                }
+
+                            @endphp
                             <div class="card-text">
                                 <span class="fw-semibold d-block mb-1">{{ $que->company }}</span>
+                                <span class="d-block mb-1">รอบบัญชี {{ $que->accounting_period }}</span>
+                                <span class="d-block mb-1">รอบบัญชีตั้งเเต่ {{ $fiscalYearStartFormatted }} -
+                                    {{ $fiscalYearEndFormatted }}</span>
                                 <small class="d-block">General Ledger <span
                                         style="float: right;">{{ $que->general_ledger_count }}</span></small>
                                 <small class="d-block">General Ledger Sub <span

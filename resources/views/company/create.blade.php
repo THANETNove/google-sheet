@@ -44,17 +44,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            {{--    <div class="mb-3">
-                                <label class="form-label" for="basic-default-company">เลขผู้เสียภาษี</label>
-                                <input type="text" class="form-control  @error('tax_id') is-invalid @enderror"
-                                    id="basic-default-company" name="tax_id" placeholder="เลขผู้เสียภาษี"
-                                    value="{{ old('tax_id') }}">
-                                @error('tax_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div> --}}
+
                             <div class="mb-3">
                                 <label class="form-label" for="tax-id">เลขผู้เสียภาษี</label>
                                 <input type="text" class="form-control @error('tax_id') is-invalid @enderror"
@@ -90,17 +80,7 @@
                                 @enderror
                             </div>
 
-                            {{--       <div class="mb-3">
-                                <label class="form-label" for="basic-default-company">รอบบัญชี</label>
-                                <input type="text" class="form-control @error('accounting_period') is-invalid @enderror"
-                                    id="basic-default-company" name="accounting_period" placeholder="รอบบัญชี"
-                                    value="1/1" value="{{ old('accounting_period') }}" required pattern="\d+/\d+"
-                                    inputmode="numeric" title="กรุณากรอกตัวเลขและเครื่องหมาย / เช่น 1/1 หรือ 12/2023">
 
-                                <div class="invalid-feedback">
-                                    กรุณากรอกตัวเลขและเครื่องหมาย / ในรูปแบบที่ถูกต้อง เช่น 1/1
-                                </div>
-                            </div> --}}
                             <div class="mb-3">
                                 <label class="form-label" for="accounting_period">รอบบัญชี</label>
                                 <input type="text" class="form-control @error('accounting_period') is-invalid @enderror"
