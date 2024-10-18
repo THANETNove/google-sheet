@@ -32,57 +32,30 @@
                             <p>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</p>
                         </div>
                         <div class="table-responsive m-3">
-                            {{--   <table class="table">
-                                <thead>
-                                    <tr class="table-secondary">
-                                        <th>วันที่</th>
-                                        <th>เลขที่เอกสาร</th>
-                                        <th>บริษัท</th>
-                                        <th>หมายเลขผู้เสียภาษี</th>
-                                        <th>คำอธิบาย</th>
-                                        <th>จำนวน</th>
-                                        <th>ภาษี</th>
-                                        <th>รวม</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="table-border-bottom-0">
-                                    @foreach ($query as $que)
-                                        <tr>
-                                            <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
-                                            <td>{{ $que->gl_document }}</td>
-                                            <td>{{ $que->gl_company }}</td>
-                                            <td>{{ $que->gl_taxid }}</td>
-                                            <td>{{ $que->gl_description }}</td>
-                                            <td class="text-end">{{ number_format($que->gl_amount, 2) }}</td>
-                                            <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
-                                            <td class="text-end">{{ number_format($que->gl_total, 2) }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table> --}}
+
 
                             <table class="table">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th class="child-1">#</th>
+                                        <th class="child-1 text-center-vertical" rowspan="2">#</th>
                                         <th class="text-center" colspan="2">ใบกำกับภาษี</th>
-                                        <th class="no-border"></th> <!-- ลบเส้นขอบ -->
-                                        <th class=""></th>
-                                        <th class="child-2 text-center">สถานประกอบการ</th>
+                                        <th class="text-center-vertical" rowspan="2">
+                                            ชื่อผู้ซื้อสินค้า/ผู้รับบริการ
+                                        </th>
+                                        <th class="text-center-vertical" rowspan="2">เลขประจำตัวผู้เสียภาษีอากรของ
+                                            ผู้ซื้อสินค้า/ผู้รับบริการ</th>
+                                        <th class="text-center">สถานประกอบการ</th>
                                         <th class="text-center">มูลค่าสินค้า</th>
                                         <th class="text-center">จำนวนเงิน</th>
-                                        <th class=""></th>
+                                        <th class="text-center-vertical" rowspan="2">รวม</th>
                                     </tr>
                                     <tr class="table-secondary">
-                                        <th></th>
+
                                         <th class="child-2 text-center">วันที่</th>
-                                        <th class="child-2 text-center">เลขที่เอกสาร</th>
-                                        <th class="text-center">บริษัท</th> <!-- ลบเส้นขอบ -->
-                                        <th class="child-2 text-center">หมายเลขผู้เสียภาษี</th> <!-- ลบเส้นขอบ -->
-                                        <th class="text-center">สาขา</th>
-                                        <th class="text-center">จำนวน</th>
-                                        <th class="text-center">ภาษี</th>
-                                        <th class="text-center">รวม</th>
+                                        <th class="child-2 text-center">เล่มที่/เลขที่</th>
+                                        <th class="text-center">สำนักงานใหญ่ /สาขา </th>
+                                        <th class="text-center">หรือบริการ </th>
+                                        <th class="text-center">ภาษีมูลค่าเพิ่ม</th>
                                     </tr>
                                 </thead>
 

@@ -50,6 +50,7 @@ class SellController extends Controller
 
         // ตรวจสอบว่า $startDate และ $endDate เป็น null หรือไม่
         if (is_null($endDate)) {
+
             // ถ้าเป็น null, ตั้ง $endDate ให้เป็นวันที่สิ้นสุดของเดือนที่แล้ว
             $endDate = Carbon::now()->subMonth()->endOfMonth(); // วันสุดท้ายของเดือนก่อนหน้า
 
@@ -61,8 +62,7 @@ class SellController extends Controller
             $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         }
 
-
-
+       
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
             ->whereRaw('LOWER(gl_report_vat) = ?', ['sell'])
