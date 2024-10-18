@@ -57,7 +57,7 @@
                     </div>
 
 
-                    <div class="table-responsive  table-min-height">
+                    <div class="table-responsive ">
                         <h5 class="card-header">ข้อมูลใน Google Sheet </h5>
                         <div class="col m-3">
                             <input type="text" class="form-control" id="defaultFormControlInput"
@@ -92,7 +92,6 @@
                                     <th>GL_Document</th>
                                     <th>GL_Company</th>
                                     <th>GL_TaxID</th>
-                                    <th>GL_Branch</th>
                                     <th>GL_Amount</th>
                                     <th>GL_Tax</th>
                                     <th>GL_Total</th>
@@ -155,8 +154,9 @@
 
                     console.error(`Error in request:`, error.response ? error.response.data : error.message);
                     const errorMessageElement = document.getElementById('error-message');
-                    errorMessageElement.textContent = error.response ? error.response.data.message : error
-                        .message; // ใช้ข้อความจาก server หรือข้อความ error ทั่วไป
+                    errorMessageElement.textContent = "กรุณาตรวจสอบ Google Sheet";
+                    /* error.response ? error.response.data.message : error
+                                            .message;  */ // ใช้ข้อความจาก server หรือข้อความ error ทั่วไป
                     errorMessageElement.style.display = 'block'; // แสดง element
 
                 });
@@ -234,7 +234,6 @@
                 row.appendChild(createCell(item.GL_Document));
                 row.appendChild(createCell(item.GL_Company));
                 row.appendChild(createCell(item.GL_TaxID));
-                row.appendChild(createCell(item.GL_Branch));
                 row.appendChild(createCell(item.GL_Amount));
                 row.appendChild(createCell(item.GL_Tax));
                 row.appendChild(createCell(item.GL_Total));
