@@ -45,7 +45,7 @@ class SellController extends Controller
 
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
-        $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+        /*   $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day); */
 
 
         // ตรวจสอบว่า $startDate และ $endDate เป็น null หรือไม่
@@ -54,10 +54,10 @@ class SellController extends Controller
             $endDate = Carbon::now()->subMonth()->endOfMonth(); // วันสุดท้ายของเดือนก่อนหน้า
 
             // ตั้ง $startDate ให้เป็นวันที่ 1 ของเดือนก่อนหน้า
-            /*  $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า */
+            $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า
         } else {
             // ถ้า $startDate หรือ $endDate ถูกส่งมา ให้ทำงานตามลอจิกเดิม
-            /*   $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day); */
+            $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
             $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         }
 
