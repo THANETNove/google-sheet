@@ -79,7 +79,7 @@
 
                                         <tr>
                                             <td>{{ $i++ }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($que->gl_taxmonth)) }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
                                             <td>
                                                 {{ $que->gl_document }}
                                             </td>

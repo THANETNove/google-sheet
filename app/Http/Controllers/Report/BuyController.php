@@ -81,6 +81,7 @@ class BuyController extends Controller
             ->whereYear('gl_taxmonth', $startDate->year)    // ค้นหาเฉพาะปีเดียวกับ $startDate
             ->select(
                 'id',
+                'gl_date',
                 'gl_document',
                 'gl_taxmonth',
                 'gl_company',
