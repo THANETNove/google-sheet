@@ -42,10 +42,14 @@
                                         <th>เครดิต</th>
                                     </tr>
                                 </thead>
+                                @php
+                                    $i = 1;
+
+                                @endphp
                                 <tbody class="table-border-bottom-0">
                                     @foreach ($query as $ledger)
                                         @php
-                                            $i = 1;
+
                                             $totalDebit = 0;
                                             $totalCredit = 0;
                                         @endphp
