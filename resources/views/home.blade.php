@@ -36,7 +36,7 @@
             @endphp
 
             @foreach ($query as $index => $que)
-                <div class="col-3 mb-4">
+                <div class="col-lg-3 col-md-4 col-sm-6  col-12 mb-4">
                     <div class="card cursor-pointer" onclick="window.location='{{ url('select-card', $que->id) }}'">
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
