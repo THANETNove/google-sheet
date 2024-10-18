@@ -22,7 +22,7 @@
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ URL::asset('/assets/img/icons/icon.png') }}" width="36px">
-                    <span class="gl-navbar"> GL</span>
+                    <span class="gl-navbar"> บัญชีเเยกประเภท</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
