@@ -156,7 +156,7 @@
                     // เพิ่มเครื่องหมาย '-' ในตำแหน่งที่ถูกต้อง
                     let formattedValue = '';
                     for (let i = 0; i < value.length; i++) {
-                        if (i > 0 && (i === 1 || i === 6 || i === 11 || i === 13)) {
+                        if (i > 0 && (i === 1 || i === 5 || i === 10 || i === 12)) {
                             formattedValue += '-';
                         }
                         formattedValue += value[i];
@@ -166,7 +166,7 @@
                     event.target.value = formattedValue;
 
                     // ตรวจสอบรูปแบบความถูกต้อง
-                    if (!/^\d{1}-\d{5}-\d{5}-\d{2}-\d{1}$/.test(formattedValue)) {
+                    if (!/^\d{1}-\d{4}-\d{5}-\d{2}-\d{1}$/.test(formattedValue)) {
                         taxIdInput.setCustomValidity("กรุณากรอกเลขผู้เสียภาษีในรูปแบบ 0-1055-49137-97-5");
                     } else {
                         taxIdInput.setCustomValidity(""); // รีเซ็ตข้อผิดพลาด

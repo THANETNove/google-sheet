@@ -51,7 +51,7 @@ class CompanyController extends Controller
     {
         $request->validate([
 
-            'code_company' => ['required', 'string', 'max:255'],
+            'code_company' => ['required', 'string', 'max:255', 'unique:users'],
             'company' => ['required', 'string', 'max:255', 'unique:users'],
             'branch' => ['required', 'string', 'max:255'],
             'tax_id' => ['required', 'string', 'max:255'],
