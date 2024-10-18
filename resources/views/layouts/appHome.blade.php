@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
-    <title>GL</title>
+    <title>บัญชีเเยกประเภท</title>
     <!-- Fonts -->
 
 
@@ -34,7 +34,7 @@
         </div>
         <!-- / Layout page -->
     </div>
-   
+
     @include('layouts.footer')
 </body>
 
