@@ -3,6 +3,9 @@
         <div class="app-brand demo">
             <img src="{{ URL::asset('/assets/img/icons/icon.png') }}" class="icon-aside">
             <span class="app-brand-text  menu-text fw-bolder ms-2 text-gl-aside">บัญชีเเยกประเภท</span>
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-none">
+                <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
         </div>
 
         <div class="menu-inner-shadow"></div>
