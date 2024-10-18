@@ -97,7 +97,7 @@
                                             <td>{{ $que->gl_company }}</td>
                                             <td class="monospace">{{ $que->gl_taxid }}</td>
                                             <td>{{ $que->gl_branch }}</td>
-                                            <td class="text-end {{ $totalAmountNoTax < 0 ? 'error-message' : '' }}">
+                                            <td class="text-end {{ $que->gl_amount < 0 ? 'error-message' : '' }}">
                                                 {{ number_format($que->gl_amount, 2) }}
                                             </td>
                                             <td class="text-end">{{ number_format($que->gl_tax, 2) }}</td>
@@ -108,7 +108,7 @@
                                     <tr>
                                         <td colspan="5"></td>
                                         <td class="text-end"><strong>รวมภาษี</strong></td>
-                                        <td class="text-end {{ $totalAmountNoTax < 0 ? 'error-message' : '' }}">
+                                        <td class="text-end {{ $totalAmount < 0 ? 'error-message' : '' }}">
                                             <strong>{{ number_format($totalAmount, 2) }}</strong>
                                         </td>
                                         <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>

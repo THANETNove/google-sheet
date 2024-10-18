@@ -244,4 +244,8 @@
         text-align: center;
         vertical-align: middle;
     }
+
+    .error-message {
+        background-color: #f8d7da !important;
+    }
 </style>
