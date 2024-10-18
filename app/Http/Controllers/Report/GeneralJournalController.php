@@ -58,6 +58,7 @@ class GeneralJournalController extends Controller
         $generalLedgers = DataGeneralLedgerSub::with('subs')
             ->where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])
+            ->orderBy('gl_date', 'ASC')
             ->get();
 
         session(['generalLedgers' => [

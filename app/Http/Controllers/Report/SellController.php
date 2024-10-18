@@ -62,7 +62,7 @@ class SellController extends Controller
             $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         }
 
-       
+
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
             ->whereRaw('LOWER(gl_report_vat) = ?', ['sell'])

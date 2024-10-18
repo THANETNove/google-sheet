@@ -70,7 +70,7 @@ class BuyController extends Controller
         $monthName = $this->getMonths()[$vat_month];
 
         // สร้างสตริงโดยใช้เครื่องหมายคำพูดคู่
-        $monthName2 = "$day $monthName $year"; // ใช้เครื่องหมายคำพูดคู่แทนแบ็กทิค
+        $monthName2 = " $monthName $year"; // ใช้เครื่องหมายคำพูดคู่แทนแบ็กทิค
 
 
 
