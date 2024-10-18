@@ -134,8 +134,11 @@
                                 @enderror
                             </div>
 
-                            <button type="submit" class="btn btn-primary mt-3">Send</button>
+                            <button type="submit" class="btn btn-primary mt-3">บัททึก</button>
+                            <a type="button" href="{{ url('home') }}" class="btn btn-warning mt-3"
+                                style="margin-left: 10px !important;">ยกเลิก</a>
                         </form>
+
                     </div>
                 </div>
             </div>

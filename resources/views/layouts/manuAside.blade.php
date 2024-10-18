@@ -39,8 +39,7 @@
             @if (session()->has('company_id'))
                 <li class="menu-item  {{ Request::is('report/*') ? 'active open' : '' }} ">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        {{--  <i class='menu-icon tf-icons  bx bxs-report'></i> --}}
-                        <i class='menu-icon tf-icons bx bxs-buildings'></i>
+                        <i class='menu-icon tf-icons bx bxs-report'></i>
                         <div data-i18n="Layouts">รายงาน</div>
                     </a>
 
@@ -93,7 +92,7 @@
                 <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
                 <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons bx bx-layout"></i>
+                        <i class='menu-icon tf-icons bx bxs-server'></i>
                         <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
                     </a>
 
