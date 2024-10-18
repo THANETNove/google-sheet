@@ -165,57 +165,7 @@ class GeneralJournalController extends Controller
 
     public function exportExcel($id, $start_date, $end_date)
     {
-        /*   $data = $this->getDataGlAndGls($id, $start_date, $end_date);
 
-        // Map the query data to match the Excel export structure
-        $mappedData = $data['query']->map(function ($item) {
-            // แปลงวันที่ให้เป็นรูปแบบ dd-mm-yyyy
-            $formattedDate = Carbon::parse($item->gl_date)->format('d-m-Y');
-
-            return [
-                'id' => $item->id,
-                'gl_document' => $item->gl_document,
-                'gl_date' => $formattedDate,
-                'gl_company' => $item->gl_company,
-                'gl_description' => $item->gl_description,
-                'gls_account_name' => $item->gls_account_name,
-                'gls_debit' => $item->gls_debit,
-                'gls_credit' => $item->gls_credit,
-            ];
-        });
-
-
-        // Define an inline class for export
-        $export = new class($mappedData) implements FromArray, WithHeadings {
-            protected $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function array(): array
-            {
-                return $this->data->values()->toArray(); // Convert collection to array
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'ID',
-                    'Document',
-                    'Date',
-                    'Company',
-                    'Description',
-                    'Account Name',
-                    'Debit',
-                    'Credit',
-                ];
-            }
-        };
-
-        // Download the Excel file
-        return Excel::download($export, 'general_ledger.xlsx'); */
         $data = $this->getDataGlAndGls($id, $start_date, $end_date);
 
         // Map the query data to include subs information
