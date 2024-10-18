@@ -36,8 +36,8 @@
             @endphp
 
             @foreach ($query as $index => $que)
-                <div class="col-lg-3 col-md-4 col-sm-6  col-12 mb-4">
-                    <div class="card cursor-pointer" onclick="window.location='{{ url('select-card', $que->id) }}'">
+                <div class="col-lg-4 col-md-4 col-sm-6  col-12 mb-4">
+                    <div class="card  cursor-pointer" onclick="window.location='{{ url('select-card', $que->id) }}'">
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <i class='bx bxs-buildings'
@@ -115,7 +115,7 @@
                             <div class="card-text">
                                 <span class="fw-semibold d-block mb-1">{{ $que->company }}</span>
                                 <span class="d-block mb-1">รอบบัญชี {{ $que->accounting_period }}</span>
-                                <span class="d-block mb-1">รอบบัญชีตั้งเเต่ {{ $fiscalYearStartFormatted }} -
+                                <span class="d-block mb-1">ตั้งเเต่ {{ $fiscalYearStartFormatted }} -
                                     {{ $fiscalYearEndFormatted }}</span>
                                 <small class="d-block">General Ledger <span
                                         style="float: right;">{{ $que->general_ledger_count }}</span></small>

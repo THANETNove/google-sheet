@@ -422,6 +422,11 @@
   background-color: #f8d7da !important;
 }
 
+.card-box-item {
+  width: 280px !important;
+  height: auto;
+}
+
 
 /* 
 th:nth-child(4),
