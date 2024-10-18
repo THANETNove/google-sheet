@@ -129,7 +129,7 @@
 
                                     <tr>
                                         <td colspan="5"></td>
-                                        <td><strong>รวมภาษี</strong></td>
+                                        <td class="text-end"><strong>รวมภาษี</strong></td>
                                         <td class="text-end"><strong>{{ number_format($totalAmountNoTax, 2) }}</strong>
                                         </td>
                                         <td class="text-end"></td>
@@ -137,7 +137,8 @@
                                     </tr>
                                     <tr>
                                         <td colspan="5"></td>
-                                        <td><strong>รวมภาษี 0%</strong></td> <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
+                                        <td class="text-end"><strong>รวมภาษี 0%</strong></td>
+                                        <!-- แสดงผลรวมของ gl_amount ที่ gl_tax = 0 -->
                                         <td class="text-end"><strong>{{ number_format($totalAmount, 2) }}</strong></td>
 
                                         <td class="text-end"></strong></td>
@@ -154,8 +155,8 @@
 
                                             <strong>{{ number_format($total, 2) }}</strong>
                                         </td>
-                                        <td><strong>{{ number_format($totalTax, 2) }}</strong></td>
-                                        <td><strong>{{ number_format($totalSum, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalTax, 2) }}</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalSum, 2) }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>

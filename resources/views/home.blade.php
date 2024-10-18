@@ -34,14 +34,15 @@
                     '#233446', // --bs-dark
                 ];
             @endphp
+
             @foreach ($query as $index => $que)
                 <div class="col-3 mb-4">
-                    <div class="card">
+                    <div class="card cursor-pointer" onclick="window.location='{{ url('select-card', $que->id) }}'">
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <i class='bx bxs-buildings'
                                     style="font-size: 32px; color: {{ $colors[$index % count($colors)] }};"></i>
-                                <div class="dropdown">
+                                <div class="dropdown" onclick="event.stopPropagation();">
                                     <button class="btn p-0" type="button" id="cardOpt3" data-bs-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                         <i class="bx bx-dots-vertical-rounded"></i>
@@ -55,21 +56,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="{{ url('select-card', $que->id) }}">
-                                <div class="card-text">
-                                    <span class="fw-semibold d-block mb-1">{{ $que->company }}</span>
-                                    <small class="d-block">General Ledger <span
-                                            style="float: right;">{{ $que->general_ledger_count }}</span></small>
-                                    <small class="d-block">General Ledger Sub <span
-                                            style="float: right;">{{ $que->general_ledger_sub_count }}</span></small>
-                                    <small class="d-block">Account_Code <span
-                                            style="float: right;">{{ $que->account_code_count }}</span></small>
-                                </div>
-                            </a>
+                            <div class="card-text">
+                                <span class="fw-semibold d-block mb-1">{{ $que->company }}</span>
+                                <small class="d-block">General Ledger <span
+                                        style="float: right;">{{ $que->general_ledger_count }}</span></small>
+                                <small class="d-block">General Ledger Sub <span
+                                        style="float: right;">{{ $que->general_ledger_sub_count }}</span></small>
+                                <small class="d-block">Account_Code <span
+                                        style="float: right;">{{ $que->account_code_count }}</span></small>
+                            </div>
                         </div>
                     </div>
                 </div>
             @endforeach
+
+
         </div>
     </div>
 

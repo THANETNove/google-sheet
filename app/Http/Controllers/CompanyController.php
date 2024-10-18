@@ -498,6 +498,6 @@ class CompanyController extends Controller
     {
         $data = User::find($id);
         $data->delete();
-        return redirect('company')->with('message', "ลบข้อมูลสำเร็จ");
+        return redirect('home')->with('message', "ลบข้อมูลสำเร็จ");
     }
 }

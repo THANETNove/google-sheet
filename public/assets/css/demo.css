@@ -385,6 +385,9 @@
   border: none !important;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
 
 /* 
 th:nth-child(4),

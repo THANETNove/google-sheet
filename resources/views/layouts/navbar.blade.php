@@ -11,7 +11,9 @@
         <!-- Search -->
 
         <div class="navbar-nav align-items-center">
-            <h5 class="mt-3"><strong id="navbar-company"></strong></h5>
+            @if (session()->has('company_name'))
+                {{ session()->get('company_name') }}
+            @endif
         </div>
         <!-- /Search -->
 

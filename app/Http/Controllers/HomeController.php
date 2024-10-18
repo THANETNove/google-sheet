@@ -42,9 +42,9 @@ class HomeController extends Controller
 
         session(['company_id' => $id]);
         $query =  User::find($id);
+        session(['company_name' =>  $query->company]);
 
-
-        return redirect()->back()->with('success', "เลือกบริษัท $query->company เรียบร้อย");
+        return redirect()->back()->with('success', "เลือก $query->company เรียบร้อย");
     }
     public function google_sheet()
     {
