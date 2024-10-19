@@ -10,6 +10,8 @@ use App\Models\GeneralLedgerSub;
 use App\Models\Account_Code;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+
 
 class CompanyController extends Controller
 {
@@ -135,9 +137,15 @@ class CompanyController extends Controller
                 'gl_code' => isset($item['GL_Code']) ? trim($item['GL_Code']) : null,
                 'gl_refer' => isset($item['GL_Refer']) ? trim($item['GL_Refer']) : null,
                 'gl_report_vat' => isset($item['GL_Report_VAT']) ? trim($item['GL_Report_VAT']) : null,
-                'gl_date' => isset($item['GL_Date']) ? trim($item['GL_Date']) : null,
+
+                // แปลงวันที่เป็น UTC+7
+                'gl_date' => isset($item['GL_Date']) ? Carbon::parse(trim($item['GL_Date']))->setTimezone('Asia/Bangkok') : null,
+
                 'gl_document' => isset($item['GL_Document']) ? trim($item['GL_Document']) : null,
-                'gl_date_check' => isset($item['GL_Date_Check']) ? trim($item['GL_Date_Check']) : null,
+
+                // แปลงวันที่เป็น UTC+7
+                'gl_date_check' => isset($item['GL_Date_Check']) ? Carbon::parse(trim($item['GL_Date_Check']))->setTimezone('Asia/Bangkok') : null,
+
                 'gl_document_check' => isset($item['GL_Document_Check']) ? trim($item['GL_Document_Check']) : null,
                 'gl_company' => isset($item['GL_Company']) ? trim($item['GL_Company']) : null,
                 'gl_taxid' => isset($item['GL_TaxID']) ? trim($item['GL_TaxID']) : null,
@@ -145,7 +153,10 @@ class CompanyController extends Controller
                 'gl_code_acc' => isset($item['GL_Code_Acc']) ? trim($item['GL_Code_Acc']) : null,
                 'gl_description' => isset($item['GL_Description']) ? trim($item['GL_Description']) : null,
                 'gl_code_acc_pay' => isset($item['GL_Code_Acc_Pay']) ? trim($item['GL_Code_Acc_Pay']) : null,
-                'gl_date_pay' => isset($item['GL_Date_Pay']) ? trim($item['GL_Date_Pay']) : null,
+
+                // แปลงวันที่เป็น UTC+7
+                'gl_date_pay' => isset($item['GL_Date_Pay']) ? Carbon::parse(trim($item['GL_Date_Pay']))->setTimezone('Asia/Bangkok') : null,
+
                 'gl_vat' => $item['GL_Vat'],
                 'gl_rate' => isset($item['GL_Rate']) ? trim($item['GL_Rate']) : null,
                 'gl_taxmonth' => isset($item['GL_TaxMonth']) ? trim($item['GL_TaxMonth']) : null,
@@ -173,7 +184,7 @@ class CompanyController extends Controller
                         'gls_id' => isset($subItem['GLS_ID']) ? trim($subItem['GLS_ID']) : null,
                         'gls_gl_code' => isset($subItem['GLS_GL_Code']) ? trim($subItem['GLS_GL_Code']) : null,
                         'gls_gl_document' => isset($subItem['GLS_GL_Document']) ? trim($subItem['GLS_GL_Document']) : null,
-                        'gls_gl_date' => isset($subItem['GLS_GL_Date']) ? trim($subItem['GLS_GL_Date']) : null,
+                        'gls_gl_date' => isset($subItem['GLS_GL_Date']) ? Carbon::parse(trim($subItem['GLS_GL_Date']))->setTimezone('Asia/Bangkok') : null,
                         'gls_account_code' => isset($subItem['GLS_Account_Code']) ? trim($subItem['GLS_Account_Code']) : null,
                         'gls_account_name' => isset($subItem['GLS_Account_Name']) ? trim($subItem['GLS_Account_Name']) : null,
                         'gls_debit' => isset($subItem['GLS_Debit']) ? trim($subItem['GLS_Debit']) : null,
@@ -220,32 +231,42 @@ class CompanyController extends Controller
             if (!$existingEntry && !empty($item['GL_Code'])) {
                 // ถ้าไม่มี GL_Code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
                 GeneralLedger::create([
-                    'gl_code_company' => trim($request->code_company),
-                    'gl_code' => trim($item['GL_Code'] ?? null),
-                    'gl_refer' => trim($item['GL_Refer'] ?? null),
-                    'gl_report_vat' => trim($item['GL_Report_VAT'] ?? null),
-                    'gl_date' => trim($item['GL_Date'] ?? null),
-                    'gl_document' => trim($item['GL_Document'] ?? null),
-                    'gl_date_check' => trim($item['GL_Date_Check'] ?? null),
-                    'gl_document_check' => trim($item['GL_Document_Check'] ?? null),
-                    'gl_company' => trim($item['GL_Company'] ?? null),
-                    'gl_taxid' => trim($item['GL_TaxID'] ?? null),
-                    'gl_branch' => trim($item['GL_Branch'] ?? null),
-                    'gl_code_acc' => trim($item['GL_Code_Acc'] ?? null),
-                    'gl_description' => trim($item['GL_Description'] ?? null),
-                    'gl_code_acc_pay' => trim($item['GL_Code_Acc_Pay'] ?? null),
-                    'gl_date_pay' => trim($item['GL_Date_Pay'] ?? null),
+                    'gl_code_company' => $request->code_company,
+                    'gl_code' => isset($item['GL_Code']) ? trim($item['GL_Code']) : null,
+                    'gl_refer' => isset($item['GL_Refer']) ? trim($item['GL_Refer']) : null,
+                    'gl_report_vat' => isset($item['GL_Report_VAT']) ? trim($item['GL_Report_VAT']) : null,
+
+                    // แปลงวันที่เป็น UTC+7
+                    'gl_date' => isset($item['GL_Date']) ? Carbon::parse(trim($item['GL_Date']))->setTimezone('Asia/Bangkok') : null,
+
+                    'gl_document' => isset($item['GL_Document']) ? trim($item['GL_Document']) : null,
+
+                    // แปลงวันที่เป็น UTC+7
+                    'gl_date_check' => isset($item['GL_Date_Check']) ? Carbon::parse(trim($item['GL_Date_Check']))->setTimezone('Asia/Bangkok') : null,
+
+                    'gl_document_check' => isset($item['GL_Document_Check']) ? trim($item['GL_Document_Check']) : null,
+                    'gl_company' => isset($item['GL_Company']) ? trim($item['GL_Company']) : null,
+                    'gl_taxid' => isset($item['GL_TaxID']) ? trim($item['GL_TaxID']) : null,
+                    'gl_branch' => isset($item['GL_Branch']) ? trim($item['GL_Branch']) : null,
+                    'gl_code_acc' => isset($item['GL_Code_Acc']) ? trim($item['GL_Code_Acc']) : null,
+                    'gl_description' => isset($item['GL_Description']) ? trim($item['GL_Description']) : null,
+                    'gl_code_acc_pay' => isset($item['GL_Code_Acc_Pay']) ? trim($item['GL_Code_Acc_Pay']) : null,
+
+                    // แปลงวันที่เป็น UTC+7
+                    'gl_date_pay' => isset($item['GL_Date_Pay']) ? Carbon::parse(trim($item['GL_Date_Pay']))->setTimezone('Asia/Bangkok') : null,
+
                     'gl_vat' => $item['GL_Vat'],
-                    'gl_rate' => trim($item['GL_Rate'] ?? null),
-                    'gl_taxmonth' => trim($item['GL_TaxMonth'] ?? null),
-                    'gl_amount_no_vat' => trim($item['GL_AmountNoVat'] ?? null),
-                    'gl_amount' => trim($item['GL_Amount'] ?? null),
-                    'gl_tax' => trim($item['GL_Tax'] ?? null),
-                    'gl_total' => trim($item['GL_Total'] ?? null),
-                    'gl_url' => trim($item['GL_URL'] ?? null),
-                    'gl_page' => trim($item['GL_Page'] ?? null),
-                    'gl_remark' => trim($item['GL_Remark'] ?? null),
-                    'gl_email' => trim($item['GL_Email'] ?? null),
+                    'gl_rate' => isset($item['GL_Rate']) ? trim($item['GL_Rate']) : null,
+                    'gl_taxmonth' => isset($item['GL_TaxMonth']) ? trim($item['GL_TaxMonth']) : null,
+                    'gl_amount_no_vat' => isset($item['GL_AmountNoVat']) ? trim($item['GL_AmountNoVat']) : null,
+                    'gl_amount' => isset($item['GL_Amount']) ? trim($item['GL_Amount']) : null,
+                    'gl_tax' => isset($item['GL_Tax']) ? trim($item['GL_Tax']) : null,
+                    'gl_total' => isset($item['GL_Total']) ? trim($item['GL_Total']) : null,
+                    'gl_url' => isset($item['GL_URL']) ? trim($item['GL_URL']) : null,
+                    'gl_page' => isset($item['GL_Page']) ? trim($item['GL_Page']) : null,
+                    'gl_remark' => isset($item['GL_Remark']) ? trim($item['GL_Remark']) : null,
+                    'gl_email' => isset($item['GL_Email']) ? trim($item['GL_Email']) : null,
+
                 ]);
             } else {
                 return response()->json(['error' => true, 'message' => 'General Ledger data already exists']);
@@ -269,7 +290,7 @@ class CompanyController extends Controller
                         'gls_id' => trim($subItem['GLS_ID'] ?? null),
                         'gls_gl_code' => trim($subItem['GLS_GL_Code'] ?? null),
                         'gls_gl_document' => trim($subItem['GLS_GL_Document'] ?? null),
-                        'gls_gl_date' => trim($subItem['GLS_GL_Date'] ?? null),
+                        'gls_gl_date' => isset($subItem['GLS_GL_Date']) ? Carbon::parse(trim($subItem['GLS_GL_Date']))->setTimezone('Asia/Bangkok') : null,
                         'gls_account_code' => trim($subItem['GLS_Account_Code'] ?? null),
                         'gls_account_name' => trim($subItem['GLS_Account_Name'] ?? null),
                         'gls_debit' => trim($subItem['GLS_Debit'] ?? null),
@@ -307,6 +328,8 @@ class CompanyController extends Controller
         return response()->json(['success' => true, 'message' => 'Data saved successfully']);
     }
 
+
+
     public function addChoose($request)
     {
         // ตรวจสอบว่ามีข้อมูลใน sheets หรือไม่
@@ -328,9 +351,9 @@ class CompanyController extends Controller
                     'gl_code_company' => $request->code_company,
                     'gl_refer' => $item['GL_Refer'] ?? null,
                     'gl_report_vat' => $item['GL_Report_VAT'] ?? null,
-                    'gl_date' => $item['GL_Date'] ?? null,
+                    'gl_date' => isset($item['GL_Date']) ? Carbon::parse($item['GL_Date'])->setTimezone('Asia/Bangkok') : null,
                     'gl_document' => $item['GL_Document'] ?? null,
-                    'gl_date_check' => $item['GL_Date_Check'] ?? null,
+                    'gl_date_check' => isset($item['GL_Date_Check']) ? Carbon::parse($item['GL_Date_Check'])->setTimezone('Asia/Bangkok') : null,
                     'gl_document_check' => $item['GL_Document_Check'] ?? null,
                     'gl_company' => $item['GL_Company'] ?? null,
                     'gl_taxid' => $item['GL_TaxID'] ?? null,
@@ -338,7 +361,7 @@ class CompanyController extends Controller
                     'gl_code_acc' => $item['GL_Code_Acc'] ?? null,
                     'gl_description' => $item['GL_Description'] ?? null,
                     'gl_code_acc_pay' => $item['GL_Code_Acc_Pay'] ?? null,
-                    'gl_date_pay' => $item['GL_Date_Pay'] ?? null,
+                    'gl_date_pay' => isset($item['GL_Date_Pay']) ? Carbon::parse($item['GL_Date_Pay'])->setTimezone('Asia/Bangkok') : null,
                     'gl_vat' => $item['GL_Vat'],
                     'gl_rate' => $item['GL_Rate'] ?? null,
                     'gl_taxmonth' => $item['GL_TaxMonth'] ?? null,
@@ -358,9 +381,9 @@ class CompanyController extends Controller
                     'gl_code' => $item['GL_Code'],
                     'gl_refer' => $item['GL_Refer'] ?? null,
                     'gl_report_vat' => $item['GL_Report_VAT'] ?? null,
-                    'gl_date' => $item['GL_Date'] ?? null,
+                    'gl_date' => isset($item['GL_Date']) ? Carbon::parse($item['GL_Date'])->setTimezone('Asia/Bangkok') : null,
                     'gl_document' => $item['GL_Document'] ?? null,
-                    'gl_date_check' => $item['GL_Date_Check'] ?? null,
+                    'gl_date_check' => isset($item['GL_Date_Check']) ? Carbon::parse($item['GL_Date_Check'])->setTimezone('Asia/Bangkok') : null,
                     'gl_document_check' => $item['GL_Document_Check'] ?? null,
                     'gl_company' => $item['GL_Company'] ?? null,
                     'gl_taxid' => $item['GL_TaxID'] ?? null,
@@ -368,7 +391,7 @@ class CompanyController extends Controller
                     'gl_code_acc' => $item['GL_Code_Acc'] ?? null,
                     'gl_description' => $item['GL_Description'] ?? null,
                     'gl_code_acc_pay' => $item['GL_Code_Acc_Pay'] ?? null,
-                    'gl_date_pay' => $item['GL_Date_Pay'] ?? null,
+                    'gl_date_pay' => isset($item['GL_Date_Pay']) ? Carbon::parse($item['GL_Date_Pay'])->setTimezone('Asia/Bangkok') : null,
                     'gl_vat' => $item['GL_Vat'],
                     'gl_rate' => $item['GL_Rate'] ?? null,
                     'gl_taxmonth' => $item['GL_TaxMonth'] ?? null,
@@ -399,7 +422,7 @@ class CompanyController extends Controller
                         'gls_id' => $subItem['GLS_ID'] ?? null,
                         'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
                         'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
-                        'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
+                        'gls_gl_date' => isset($subItem['GLS_GL_Date']) ? Carbon::parse($subItem['GLS_GL_Date'])->setTimezone('Asia/Bangkok') : null,
                         'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
                         'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
                         'gls_debit' => $subItem['GLS_Debit'] ?? null,
@@ -415,7 +438,7 @@ class CompanyController extends Controller
                             'gls_id' => $subItem['GLS_ID'] ?? null,
                             'gls_gl_code' => $subItem['GLS_GL_Code'] ?? null,
                             'gls_gl_document' => $subItem['GLS_GL_Document'] ?? null,
-                            'gls_gl_date' => $subItem['GLS_GL_Date'] ?? null,
+                            'gls_gl_date' => isset($subItem['GLS_GL_Date']) ? Carbon::parse($subItem['GLS_GL_Date'])->setTimezone('Asia/Bangkok') : null,
                             'gls_account_code' => $subItem['GLS_Account_Code'] ?? null,
                             'gls_account_name' => $subItem['GLS_Account_Name'] ?? null,
                             'gls_debit' => $subItem['GLS_Debit'] ?? null,
@@ -455,7 +478,6 @@ class CompanyController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Data saved successfully']);
     }
-
 
 
     public function show(string $id)
