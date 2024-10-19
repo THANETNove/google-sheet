@@ -112,8 +112,8 @@
                                         </tr>
 
                                         <!-- Now loop through the related subs for each gl_code -->
-
                                         @foreach ($ledger->subs as $sub)
+                                            {{--   @foreach ($ledger->subs->unique() as $sub) --}}
                                             <tr>
                                                 <td class="hide-column"></td>
                                                 <td class="hide-column"></td>

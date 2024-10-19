@@ -12,7 +12,17 @@ class DataGeneralLedgerSub extends Model
 {
     use HasFactory;
 
+    // กำหนดชื่อของตาราง (ถ้าตารางในฐานข้อมูลชื่ออื่นจากชื่อโมเดล)
     protected $table = 'general_ledgers';
+
+    // กำหนดคีย์หลัก (Primary Key) ของตาราง
+    protected $primaryKey = 'gl_code';  // กำหนดฟิลด์ gl_code เป็น Primary Key ถ้าไม่ใช่ id
+
+    // กำหนดว่าคีย์หลักนี้ไม่ใช่แบบ auto increment
+    public $incrementing = false;
+
+    // กำหนดชนิดของคีย์หลัก
+    protected $keyType = 'string';
 
 
     /**

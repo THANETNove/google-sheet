@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GeneralLedger extends Model
 {
+    
     use HasFactory;
     protected $fillable = [
         'gl_code_company',

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\DataGeneralLedgerSub;
+use App\Models\GeneralLedger;
 
 
 use Carbon\Carbon;
@@ -55,11 +56,33 @@ class GeneralJournalController extends Controller
         $endDate = $endDate->endOfDay();
 
         // Join the two tables (general_ledgers and general_ledger_subs) in one query
-        $generalLedgers = DataGeneralLedgerSub::with('subs')
+        /* $generalLedgers = DataGeneralLedgerSub::with('subs')
             ->where('gl_code_company', $id)
             ->whereBetween(DB::raw('DATE(gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
+            ->whereHas('subs', function ($query) use ($id) {
+                $query->where('gls_code_company', $id);
+            })
             ->orderBy('gl_date', 'ASC')
+            ->get(); */
+
+        $glCodes = DB::table('general_ledgers')
+            ->where('gl_code_company', $id)
+            ->get(); // ดึงเฉพาะคอลัมน์ gl_code
+
+        // นำ $glCodes ไปใช้ใน query หลัก
+        $generalLedgers = DB::table('general_ledgers')
+            ->leftJoin('general_ledger_subs', 'general_ledgers.gl_code', '=', 'general_ledger_subs.gls_code')
+            ->whereIn('general_ledgers.gl_code', $glCodes) // ใช้ gl_codes ที่ดึงมา
+            ->where('general_ledgers.gl_code_company', $id)
+            //->where('general_ledger_subs.gls_code_company', $id)
+            ->select('general_ledgers.*', 'general_ledger_subs.*')
             ->get();
+
+        // แสดงผล
+        //dd($generalLedgers, $glCodes);
+
+
+
 
         session(['generalLedgers' => [
             'query' => $generalLedgers,
