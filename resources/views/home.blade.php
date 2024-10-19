@@ -134,9 +134,10 @@
     </div>
 
     <script>
+    
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
-            const cards = document.querySelectorAll('.col-3');
+            const cards = document.querySelectorAll('.col-lg-4, .col-md-4, .col-sm-6, .col-12');
 
             searchInput.addEventListener('input', function() {
                 const searchValue = searchInput.value.toLowerCase();
