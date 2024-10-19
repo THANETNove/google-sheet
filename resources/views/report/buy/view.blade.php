@@ -29,23 +29,23 @@
                                         <div class="col-6">
                                             <small class="text-light fw-semibold d-block mb-1" for="month">เดือน:</small>
                                             <select id="month" name="month" class="form-control">
-                                                <option value="1" {{ $month == '01' ? 'selected' : '' }}>มกราคม
+                                                <option value="01" {{ $month == '01' ? 'selected' : '' }}>มกราคม
                                                 </option>
-                                                <option value="2" {{ $month == '02' ? 'selected' : '' }}>
+                                                <option value="02" {{ $month == '02' ? 'selected' : '' }}>
                                                     กุมภาพันธ์</option>
-                                                <option value="3" {{ $month == '03' ? 'selected' : '' }}>มีนาคม
+                                                <option value="03" {{ $month == '03' ? 'selected' : '' }}>มีนาคม
                                                 </option>
-                                                <option value="4" {{ $month == '04' ? 'selected' : '' }}>เมษายน
+                                                <option value="04" {{ $month == '04' ? 'selected' : '' }}>เมษายน
                                                 </option>
-                                                <option value="5" {{ $month == '05' ? 'selected' : '' }}>พฤษภาคม
+                                                <option value="05" {{ $month == '05' ? 'selected' : '' }}>พฤษภาคม
                                                 </option>
-                                                <option value="6" {{ $month == '06' ? 'selected' : '' }}>มิถุนายน
+                                                <option value="06" {{ $month == '06' ? 'selected' : '' }}>มิถุนายน
                                                 </option>
-                                                <option value="7" {{ $month == '07' ? 'selected' : '' }}>กรกฎาคม
+                                                <option value="07" {{ $month == '07' ? 'selected' : '' }}>กรกฎาคม
                                                 </option>
-                                                <option value="8" {{ $month == '08' ? 'selected' : '' }}>สิงหาคม
+                                                <option value="08" {{ $month == '08' ? 'selected' : '' }}>สิงหาคม
                                                 </option>
-                                                <option value="9" {{ $month == '09' ? 'selected' : '' }}>กันยายน
+                                                <option value="09" {{ $month == '09' ? 'selected' : '' }}>กันยายน
                                                 </option>
                                                 <option value="10" {{ $month == '10' ? 'selected' : '' }}>ตุลาคม
                                                 </option>
@@ -148,7 +148,7 @@
                                         <tr>
                                             <td>{{ $i++ }}</td>
                                             <td>{{ date('d-m-Y', strtotime($que->gl_date)) }} <br>
-                                                {{--  {{ date('d-m-Y', strtotime($que->gl_taxmonth)) }} --}}</td>
+                                                {{ date('d-m-Y', strtotime($que->gl_taxmonth)) }}</td>
                                             <td>
                                                 @if ($que->gl_url)
                                                     <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"

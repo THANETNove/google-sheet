@@ -73,8 +73,8 @@ class BuyController extends Controller
             ->where('gl_code_company', $id)
             ->whereRaw('LOWER(gl_report_vat) = ?', ['buy'])
             ->where('gl_vat', 1)
-            ->whereMonth('gl_taxmonth', $month)  // ค้นหาเฉพาะเดือนที่เลือก
-            ->whereYear('gl_taxmonth', $year)    // ค้นหาเฉพาะปีที่เลือก
+            ->whereMonth(DB::raw("CONVERT_TZ(gl_taxmonth, '+00:00', '+07:00')"), $month)  // แปลงเวลาจาก UTC เป็นเวลาไทย
+            ->whereYear(DB::raw("CONVERT_TZ(gl_taxmonth, '+00:00', '+07:00')"), $year)
             ->select(
                 'id',
                 'gl_date',
