@@ -11,18 +11,16 @@
                         $query = isset($query) ? $query : [];
                     @endphp
 
-                    <h5 class="card-header"></h5>
+                    <h5 class="card-header">ข้อมูลใน Google Sheet</h5>
 
                     <div class="container">
-                        <div class="col-md-12 ">
-
+                        <div class="col-md-12">
                             <h4 class="mb-3">บริษัท {{ $query->company }} </h4>
                             <div id="error-message" class="alert alert-danger mb-4" style="display: none;"> </div>
 
-
                             <div class="justify-importBtn">
                                 <button id="importBtn" type="button" onclick="confirmImport('add_delete')"
-                                    class="btn rounded-pill btn-icon btn btn-outline-primary  mt-3 importBtn"
+                                    class="btn rounded-pill btn-icon btn btn-outline-primary mt-3 importBtn"
                                     style="display: none;">
                                     <i class='bx bx-import'></i>
                                     <span class="tooltip-message">
@@ -40,25 +38,20 @@
                                 </button>
                             </div>
 
-
-
                             <button id="spinner" class="rounded-pill btn btn-outline-primary" type="button">
-                                <span class=" spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                                 <span role="status">Loading...</span>
                             </button>
                             <button id="uploading" class="rounded-pill btn btn-outline-primary" type="button"
                                 style="display: none;">
-                                <span class="spinner-border text-success  spinner-border-sm" aria-hidden="true"></span>
+                                <span class="spinner-border text-success spinner-border-sm" aria-hidden="true"></span>
                                 <span role="status">Uploading...</span>
                             </button>
-
-
                         </div>
                     </div>
 
-
-                    <div class="table-responsive ">
-                        <h5 class="card-header">ข้อมูลใน Google Sheet </h5>
+                    <div>
+                        <h5 class="card-header">ข้อมูลใน Google Sheet</h5>
                         <div class="col m-3">
                             <input type="text" class="form-control" id="defaultFormControlInput"
                                 oninput="searchData(this.value)" placeholder="Search"
@@ -66,39 +59,104 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <div class="m-3">
-
                                 <button id="importBtn3" type="button" onclick="confirmImport('add_choose')"
-                                    style="display: none;"
                                     class="btn rounded-pill btn-icon btn btn-outline-primary importBtn"
                                     style="display: none;">
                                     <i class='bx bx-import'></i>
                                     <span class="tooltip-message">
-                                        นำข้อมูลทเฉพาะที่เลือก
+                                        นำข้อมูลเฉพาะที่เลือก
                                     </span>
                                 </button>
                             </div>
                         </div>
-                        <table class="table m-3" id="dataTable">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>ลำดับ</th>
-                                    <th>GL_Code</th>
-                                    <th>GL_Report_VAT</th>
-                                    <th>GL_Date</th>
-                                    <th>GL_Document</th>
-                                    <th>GL_Company</th>
-                                    <th>GL_TaxID</th>
-                                    <th>GL_Amount</th>
-                                    <th>GL_Tax</th>
-                                    <th>GL_Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Rows will be added dynamically here -->
-                            </tbody>
-                        </table>
+                        <div style="padding: 0px 16px 32px 16px">
+                            <table class="table" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ลำดับ</th>
+                                        <th>GL_Code</th>
+                                        <th>GL_Report_VAT</th>
+                                        <th>GL_Date</th>
+                                        <th>GL_Document</th>
+                                        <th>GL_Company</th>
+                                        <th>GL_TaxID</th>
+                                        <th>GL_Amount</th>
+                                        <th>GL_Tax</th>
+                                        <th>GL_Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <!-- Rows will be added dynamically here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+                    <style>
+                        /* ปรับแต่งสไตล์ทั่วไปของตารางให้เต็มพื้นที่และไม่มี scrollbar */
+                        table {
+                            width: 100%;
+                            table-layout: fixed;
+                            /* บังคับให้คอลัมน์มีขนาดคงที่ */
+                        }
+
+                        table th,
+                        table td {
+                            padding: 8px;
+                            text-align: left;
+                            word-wrap: break-word;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            /* แสดง ... เมื่อข้อความยาวเกินไป */
+                        }
+
+                        /* ซ่อนบางคอลัมน์เมื่อหน้าจอเล็กกว่า 1200px */
+                        @media screen and (max-width: 1200px) {
+
+                            table th:nth-child(5),
+                            table td:nth-child(5),
+                            /* ซ่อน GL_Report_VAT */
+                            table th:nth-child(6),
+                            table td:nth-child(6) {
+                                /* ซ่อน GL_Date */
+                                display: none;
+                            }
+                        }
+
+                        /* ซ่อนเพิ่มเติมเมื่อหน้าจอเล็กกว่า 768px */
+                        @media screen and (max-width: 768px) {
+
+                            table th:nth-child(7),
+                            table td:nth-child(7),
+                            /* ซ่อน GL_Document */
+                            table th:nth-child(8),
+                            table td:nth-child(8),
+                            /* ซ่อน GL_Company */
+                            table th:nth-child(9),
+                            table td:nth-child(9) {
+                                /* ซ่อน GL_TaxID */
+                                display: none;
+                            }
+                        }
+
+                        /* ซ่อนเพิ่มเติมเมื่อหน้าจอเล็กกว่า 576px */
+                        @media screen and (max-width: 576px) {
+
+                            table th:nth-child(10),
+                            table td:nth-child(10),
+                            /* ซ่อน GL_Amount */
+                            table th:nth-child(11),
+                            table td:nth-child(11),
+                            /* ซ่อน GL_Tax */
+                            table th:nth-child(12),
+                            table td:nth-child(12) {
+                                /* ซ่อน GL_Total */
+                                display: none;
+                            }
+                        }
+                    </style>
+
                 </div>
             </div>
         </div>
