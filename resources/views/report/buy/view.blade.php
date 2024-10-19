@@ -70,7 +70,7 @@
                                 <input class="form-control" type="text" name="id" style="display: none"
                                     value="{{ $id }}">
 
-                                <div class="mt-3">
+                                <div class="">
                                     <button type="submit" class="btn btn-primary">ค้นหา</button>
                                 </div>
                             </div>
