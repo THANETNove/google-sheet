@@ -49,12 +49,15 @@ class BuyController extends Controller
 
         // ถ้าไม่ได้ส่ง month หรือ year มา ให้ใช้ค่าเริ่มต้นจาก accounting_period ของผู้ใช้
         if (is_null($month) || is_null($year)) {
+            // ดึงวันที่ปัจจุบัน
             $currentDate = Carbon::now();
-            $previousMonthDate = $currentDate->subMonth(); // ลดลง 1 เดือน
 
-            // กำหนดเดือนและปีให้เป็นเดือนก่อนหน้าและปีปัจจุบัน
-            $month = $month ?? $previousMonthDate->format('m');  // ใช้เดือนก่อนหน้า
-            $year = $year ?? $previousMonthDate->format('Y');    // ใช้ปีจากเดือนก่อนหน้า
+            // ลดลง 1 เดือนจากวันที่ปัจจุบัน
+            $previousMonthDate = $currentDate->subMonth(); // ย้อน 1 เดือน (จากต.ค. เป็น ก.ย.)
+
+            // กำหนดเดือนและปีให้เป็นเดือนและปีของเดือนก่อนหน้า
+            $month = $previousMonthDate->format('m');  // ใช้เดือนของเดือนก่อนหน้า (กันยายน)
+            $year = $previousMonthDate->format('Y');   // ใช้ปีของเดือนก่อนหน้า (2024)
         }
         // ใช้ Carbon เพื่อสร้างวันที่จากเดือนและปีที่กำหนด
         $startDate = Carbon::createFromDate($year, $month, 1); // วันที่ 1 ของเดือนที่เลือก
