@@ -217,7 +217,7 @@ class CompanyController extends Controller
             // เช็คว่ามี GL_Code ในฐานข้อมูลหรือไม่
             $existingEntry = GeneralLedger::where('gl_code', trim($item['GL_Code']))->first();
 
-            if (!$existingEntry) {
+            if (!$existingEntry && !empty($item['GL_Code'])) {
                 // ถ้าไม่มี GL_Code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
                 GeneralLedger::create([
                     'gl_code_company' => trim($request->code_company),
@@ -247,6 +247,8 @@ class CompanyController extends Controller
                     'gl_remark' => trim($item['GL_Remark'] ?? null),
                     'gl_email' => trim($item['GL_Email'] ?? null),
                 ]);
+            } else {
+                return response()->json(['error' => true, 'message' => 'General Ledger data already exists']);
             }
         }
 
@@ -259,7 +261,7 @@ class CompanyController extends Controller
                 // เช็คว่ามี gls_code ในฐานข้อมูลหรือไม่
                 $existingSubEntry = GeneralLedgerSub::where('gls_code', trim($subItem['GLS_Code']))->first();
 
-                if (!$existingSubEntry && $subItem['GLS_ID'] > 0) {
+                if (!$existingSubEntry && !empty($subItem['GLS_Code'])) {
                     // ถ้าไม่มี gls_code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
                     GeneralLedgerSub::create([
                         'gls_code_company' => trim($request->code_company),
@@ -273,6 +275,8 @@ class CompanyController extends Controller
                         'gls_debit' => trim($subItem['GLS_Debit'] ?? null),
                         'gls_credit' => trim($subItem['GLS_Credit'] ?? null),
                     ]);
+                } else {
+                    return response()->json(['error' => true, 'message' => 'General Ledger Sub data already exists']);
                 }
             }
         }
@@ -286,7 +290,7 @@ class CompanyController extends Controller
                 // เช็คว่ามี acc_code ในฐานข้อมูลหรือไม่
                 $existingAccountEntry = Account_Code::where('acc_code', trim($accountItem['ACC_Code']))->first();
 
-                if (!$existingAccountEntry) {
+                if (!$existingAccountEntry && !empty($accountItem['ACC_Code'])) {
                     // ถ้าไม่มี acc_code นี้ในฐานข้อมูล ให้ทำการบันทึกข้อมูลใหม่
                     Account_Code::create([
                         'acc_code_company' => trim($request->code_company),
@@ -294,6 +298,8 @@ class CompanyController extends Controller
                         'acc_name' => trim($accountItem['ACC_Name'] ?? null),
                         'acc_type' => trim($accountItem['ACC_Type'] ?? null),
                     ]);
+                } else {
+                    return response()->json(['error' => true, 'message' => 'Account Code data already exists']);
                 }
             }
         }

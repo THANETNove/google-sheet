@@ -66,10 +66,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <div class="m-3">
-                                {{--  <button id="importBtn3" type="button" class="btn btn-primary" style="display: none;"
-                                    onclick="confirmImport('add_choose')">
-                                    <i class='bx bx-import'></i>&nbsp; นำข้อมูลที่เลือก
-                                </button> --}}
+
                                 <button id="importBtn3" type="button" onclick="confirmImport('add_choose')"
                                     style="display: none;"
                                     class="btn rounded-pill btn-icon btn btn-outline-primary importBtn"
@@ -332,7 +329,7 @@
                 };
 
 
-                console.log("selectedData", selectedData);
+
             }
             // แสดง Progress Bar
             document.getElementById('uploading').style.display = 'inline-block';
@@ -369,7 +366,13 @@
                     endImport(); // เรียก endImport เมื่อคำสั่งเสร็จสิ้น
                 })
                 .catch(error => {
-
+                    console.log("error", error);
+                    Swal.fire({
+                        icon: 'error', // แสดงไอคอน error
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: 'การนำเข้าข้อมูลล้มเหลว กรุณาลองใหม่อีกครั้ง',
+                        confirmButtonText: 'ตกลง'
+                    });
                     endImport(); // แม้มีข้อผิดพลาดก็เรียก endImport เพื่อคืนสถานะ
                 });
         }
