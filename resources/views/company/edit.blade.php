@@ -48,7 +48,7 @@
                             <div class="mb-3">
                                 <label class="form-label" for="tax-id">เลขผู้เสียภาษี</label>
                                 <input type="text" class="form-control @error('tax_id') is-invalid @enderror"
-                                    id="tax-id" name="tax_id" placeholder="เลขผู้เสียภาษี" value="{{ old('tax_id') }}"
+                                    id="tax-id" name="tax_id" placeholder="เลขผู้เสียภาษี" value="{{ $query->tax_id }}"
                                     required maxlength="17" inputmode="numeric"
                                     title="กรุณากรอกเลขผู้เสียภาษีในรูปแบบ 0-1055-49137-97-5">
                                 <div class="invalid-feedback">
@@ -84,8 +84,7 @@
                                 <label class="form-label" for="accounting_period">รอบบัญชี</label>
                                 <input type="text" class="form-control @error('accounting_period') is-invalid @enderror"
                                     id="accounting_period" name="accounting_period" placeholder="รอบบัญชี"
-                                    value="{{ $query->accounting_period }}" value="{{ old('accounting_period') }}"
-                                    required inputmode="numeric" maxlength="3"
+                                    value="{{ $query->accounting_period }}" required inputmode="numeric" maxlength="3"
                                     title="กรุณากรอกตัวเลขและเครื่องหมาย / เช่น 1/1">
                                 <div class="invalid-feedback">
                                     กรุณากรอกตัวเลขและเครื่องหมาย / ในรูปแบบที่ถูกต้อง เช่น 1/1

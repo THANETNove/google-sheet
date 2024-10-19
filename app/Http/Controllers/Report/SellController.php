@@ -61,12 +61,15 @@ class SellController extends Controller
             $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
             $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         }
+        $endDate = $endDate->endOfDay();
+
 
 
         $query = DB::table('general_ledgers')
             ->where('gl_code_company', $id)
             ->whereRaw('LOWER(gl_report_vat) = ?', ['sell'])
-            ->whereBetween('gl_date', [$startDate, $endDate])
+            ->whereBetween(DB::raw('DATE(gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
+
             ->select(
                 'id',
                 'gl_date',
@@ -84,6 +87,8 @@ class SellController extends Controller
             //D,E,H,I,J,S,T,U
             ->orderBy('gl_date', 'ASC')
             ->get();
+
+
         return [
             'query' => $query,
             'user' => $user,
