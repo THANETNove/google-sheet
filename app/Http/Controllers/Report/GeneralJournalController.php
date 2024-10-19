@@ -51,13 +51,13 @@ class GeneralJournalController extends Controller
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
-        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay()->endOfDay();
-
+        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
+        $endDate = $endDate->endOfDay();
 
         // Join the two tables (general_ledgers and general_ledger_subs) in one query
         $generalLedgers = DataGeneralLedgerSub::with('subs')
             ->where('gl_code_company', $id)
-            ->whereBetween('gl_date', [$startDate, $endDate])
+            ->whereBetween(DB::raw('DATE(gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->orderBy('gl_date', 'ASC')
             ->get();
 
