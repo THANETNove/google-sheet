@@ -36,7 +36,7 @@
             @endphp
 
             @foreach ($query as $index => $que)
-                <div class="col-lg-4 col-md-4 col-sm-6  col-12 mb-4">
+                <div class="col-lg-4 col-md-4 col-sm-6  col-12 mb-4 search-name">
                     <div class="card  cursor-pointer" onclick="window.location='{{ url('select-card', $que->id) }}'">
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
@@ -134,10 +134,9 @@
     </div>
 
     <script>
-    
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
-            const cards = document.querySelectorAll('.col-lg-4, .col-md-4, .col-sm-6, .col-12');
+            const cards = document.querySelectorAll('.search-name');
 
             searchInput.addEventListener('input', function() {
                 const searchValue = searchInput.value.toLowerCase();
