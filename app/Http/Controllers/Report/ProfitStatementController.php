@@ -46,48 +46,16 @@ class ProfitStatementController extends Controller
 
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
-
-        // ตรวจสอบและแปลง $startDate และ $endDate ให้เป็น Carbon object หากยังไม่ใช่
-        if (is_null($endDate)) {
-            $endDate = Carbon::now()->subMonth()->endOfMonth(); // วันสุดท้ายของเดือนก่อนหน้า
-            $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า
-        } else {
-            // ตรวจสอบว่าถูกส่งมาเป็น string หรือไม่ ถ้าใช่ให้แปลงเป็น Carbon object
-            if (!($startDate instanceof Carbon)) {
-                $startDate = Carbon::parse($startDate);
-            }
-            if (!($endDate instanceof Carbon)) {
-                $endDate = Carbon::parse($endDate);
-            }
-            $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
-            $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
-        }
-
-        // ใช้ endOfDay ได้อย่างถูกต้องหลังจากแปลงเป็น Carbon
+        $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
+        $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         $endDate = $endDate->endOfDay();
 
 
-        $query = DB::table('general_ledgers')
-            ->where('gl_code_company', $id)
-            ->whereRaw('LOWER(gl_report_vat) = ?', ['sell'])
-            ->whereBetween(DB::raw('DATE(gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
-
-            ->select(
-                'id',
-                'gl_date',
-                'gl_document',
-                'gl_company',
-                'gl_taxid',
-                'gl_branch',
-                'gl_amount',
-                'gl_tax',
-                'gl_total',
-                'gl_url',
-                'gl_page'
-
-            )
+        $query = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             //D,E,H,I,J,S,T,U
-            ->orderBy('gl_date', 'ASC')
+            ->orderBy('gls_gl_date', 'ASC')
             ->get();
 
 
@@ -109,7 +77,7 @@ class ProfitStatementController extends Controller
 
 
 
-        return view('report.sell.view', [
+        return view('report.profit_statement.view', [
             'query' => $data['query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],

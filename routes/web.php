@@ -8,7 +8,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Report\GeneralJournalController;
 use App\Http\Controllers\Report\BuyController;
 use App\Http\Controllers\Report\SellController;
-use App\Http\Controllers\Report\ProfitLossStatementController;
+use App\Http\Controllers\Report\ProfitStatementController;
 
 
 Route::get('/', function () {
@@ -52,7 +52,7 @@ Route::get('sell-pdf/{id}/{start_date}/{end_date}', [SellController::class, 'exp
 Route::get('sell-excel/{id}/{start_date}/{end_date}', [SellController::class, 'exportExcel'])->name('sell-excel');
 
 // งบกำไร(ขาดทุน)
-Route::get('report/profit-loss-statement/{id}', [ProfitLossStatementController::class, 'show'])->name('report/profit-loss-statement');
+Route::get('report/profit-statement/{id}', [ProfitStatementController::class, 'show'])->name('report/profit-statement');
 
 
 
