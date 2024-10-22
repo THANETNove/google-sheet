@@ -533,7 +533,20 @@ class CompanyController extends Controller
     public function destroy(string $id)
     {
         $data = User::find($id);
-        $data->delete();
+        if ($data) {
+            $data->delete();
+        }
+
+        // Delete records from general_ledgers where gl_code_company matches $id
+        DB::table('general_ledgers')
+            ->where('gl_code_company', $id)
+            ->delete();
+
+
+        // Delete records from general_ledger_subs where gl_code_company matches $id
+        DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->delete();
         return redirect('home')->with('message', "ลบข้อมูลสำเร็จ");
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Report\GeneralJournalController;
 use App\Http\Controllers\Report\BuyController;
 use App\Http\Controllers\Report\SellController;
+use App\Http\Controllers\Report\ProfitLossStatementController;
 
 
 Route::get('/', function () {
@@ -43,12 +44,15 @@ Route::get('report/buy-view/{id}', [BuyController::class, 'show'])->name('report
 Route::get('buy-pdf/{id}/{month}/{year}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
 Route::get('buy-excel/{id}/{month}/{year}', [BuyController::class, 'exportExcel'])->name('buy-excel');
 Route::post('report/search-buy', [BuyController::class, 'search'])->name('report/search-buy');
-
+// รายการขาย
 Route::get('report/sell', [SellController::class, 'index'])->name('report/sell');
 Route::get('report/sell-view/{id}', [SellController::class, 'show'])->name('report/sell-view');
 Route::post('report/search-sell', [SellController::class, 'search'])->name('report/search-sell');
 Route::get('sell-pdf/{id}/{start_date}/{end_date}', [SellController::class, 'exportPDF'])->name('sell-pdf');
 Route::get('sell-excel/{id}/{start_date}/{end_date}', [SellController::class, 'exportExcel'])->name('sell-excel');
+
+// งบกำไร(ขาดทุน)
+Route::get('report/profit-loss-statement/{id}', [ProfitLossStatementController::class, 'show'])->name('report/profit-loss-statement');
 
 
 

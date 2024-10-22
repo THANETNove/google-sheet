@@ -78,8 +78,9 @@
                                 <div data-i18n="Without menu">งบดุลบัญชี</div>
                             </a>
                         </li>
-                        <li class="menu-item {{ Request::is('report') ? 'active' : '' }} ">
-                            <a href="{{ url('company') }} " class="menu-link">
+                        <li class="menu-item {{ Request::is('report/profit-statement') ? 'active' : '' }} ">
+                            <a href="@if (session()->has('company_id')) {{ url('report/profit-statement', session()->get('company_id')) }} @else # @endif"
+                                class="menu-link">
                                 <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>
                             </a>
                         </li>
