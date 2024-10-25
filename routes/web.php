@@ -53,6 +53,7 @@ Route::get('sell-excel/{id}/{start_date}/{end_date}', [SellController::class, 'e
 
 // งบกำไร(ขาดทุน)
 Route::get('report/profit-statement/{id}', [ProfitStatementController::class, 'show'])->name('report/profit-statement');
+Route::post('report/search-profit-statement', [ProfitStatementController::class, 'search'])->name('report/search-profit-statement');
 
 
 
