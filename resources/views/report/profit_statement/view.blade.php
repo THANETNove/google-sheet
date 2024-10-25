@@ -57,60 +57,166 @@
                         <div class="table-responsive m-3">
 
 
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="center">รหัสบัญชี</th>
-                                        <th class="center">เลขบัญชี</th>
-                                        <th class="center">ชื่อบัญชี</th>
-                                        <th>ยอดยกมาต้นงวด (เดบิต)</th>
-                                        <th>ยอดยกมาต้นงวด (เครดิต)</th>
-                                        <th>ยอดยกมางวดนี้ (เดบิต)</th>
-                                        <th>ยอดยกมางวดนี้ (เครดิต)</th>
-                                        <th>ยอดสะสมคงเหลือ (เดบิต)</th>
-                                        <th>ยอดสะสมคงเหลือ (เครดิต)</th>
+                            <table class="table">
+                                <thead class="text-center">
+                                    <tr class="table-secondary">
+                                        <th class="text-center-vertical" rowspan="2">รหัสบัญชี</th>
+                                        <th class="text-center-vertical" rowspan="2">ชื่อบัญชี</th>
+                                        <th colspan="2">ยอดยกมาต้นงวด</th>
+                                        <th colspan="2">ยอดยกมางวดนี้ </th>
+                                        <th colspan="2">ยอดสะสมคงเหลือ </th>
+
+                                    </tr>
+                                    <tr class="table-secondary">
+                                        <th>เดบิต</th>
+                                        <th>เครดิต</th>
+                                        <th>เดบิต</th>
+                                        <th>เครดิต</th>
+                                        <th>เดบิต</th>
+                                        <th>เครดิต</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $quoted_net_balance4 = 0;
+                                        $net_balance4 = 0;
+                                        $quoted_net_balance5 = 0;
+                                        $net_balance5 = 0;
+                                    @endphp
+
+                                    <tr>
+                                        <td style="border: none;"></td>
+                                        <th colspan="7" class="center" style="border: none;">
+                                            รายได้จากการดำเนินงาน</th>
+                                    </tr>
                                     @foreach ($query as $entry)
-                                        <tr>
-                                            <td class="center">{{ date('d-m-Y', strtotime($entry->gls_gl_date)) }}</td>
-                                            <td class="center">{{ $entry->gls_account_code }}</td>
-                                            <td class="center">{{ $entry->gls_account_name }}</td>
+                                        @if (Str::startsWith($entry->gls_account_code, '4'))
+                                            @php
+                                                $quoted_net_balance4 += $entry->quoted_net_balance;
+                                                $net_balance4 += $entry->net_balance;
+                                            @endphp
 
-                                            <td></td>
-                                            <td>{{ number_format($entry->quoted_net_balance, 2) }}</td>
-                                            <td></td>
-                                            <td>{{ number_format($entry->net_balance, 2) }}</td>
-                                            <td></td>
-                                            <td>{{ number_format($entry->net_balance + $entry->quoted_net_balance, 2) }}
-                                            </td>
+                                            <tr>
 
-                                        </tr>
+                                                <td class="center">{{ $entry->gls_account_code }}</td>
+                                                <td class="center">{{ $entry->gls_account_name }}</td>
+                                                <td class="text-end"></td>
+                                                <td
+                                                    class="text-end {{ $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->quoted_net_balance, 2) }}</td>
+                                                <td class="text-end"></td>
+                                                <td class="text-end {{ $entry->net_balance < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->net_balance, 2) }}</td>
+                                                <td class="text-end"></td>
+                                                <td
+                                                    class="text-end {{ $entry->net_balance + $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->net_balance + $entry->quoted_net_balance, 2) }}
+                                                </td>
+
+                                            </tr>
+                                        @endif
                                     @endforeach
+                                    <tr>
+                                        <td style="border: none;"></td>
+                                        <td style="border: none;"></td>
+                                        <th class="center text-end" style="border: none;">
+                                            รายได้จากการดำเนินงาน</th>
+                                        <th class="text-end  {{ $quoted_net_balance4 < 0 ? 'error-message' : '' }}"
+                                            style="border: none;">
+                                            {{ number_format($quoted_net_balance4, 2) }}</th>
+                                        <td style="border: none;"></td>
+                                        <th class="text-end {{ $net_balance4 < 0 ? 'error-message' : '' }}"
+                                            style="border: none;">
+                                            {{ number_format($net_balance4, 2) }}</th>
+                                        <td style="border: none;"></td>
+                                        <th class="text-end  {{ $quoted_net_balance4 + $net_balance4 < 0 ? 'error-message' : '' }}"
+                                            style="border: none;">
+                                            {{ number_format($quoted_net_balance4 + $net_balance4, 2) }}</th>
+                                    </tr>
+
+
+                                    {{-- 5% --}}
+                                    <tr>
+                                        <td style="border: none;"></td>
+                                        <th colspan="7" class="center" style="border: none;">
+                                            รายได้จากการดำเนินงาน</th>
+                                    </tr>
+                                    @foreach ($query as $entry)
+                                        @if (Str::startsWith($entry->gls_account_code, '5'))
+                                            @php
+                                                $quoted_net_balance5 += $entry->quoted_net_balance;
+                                                $net_balance5 += $entry->net_balance;
+                                            @endphp
+
+                                            <tr>
+
+                                                <td class="center">{{ $entry->gls_account_code }}</td>
+                                                <td class="center">{{ $entry->gls_account_name }}</td>
+                                                <td
+                                                    class="text-end {{ $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->quoted_net_balance, 2) }}</td>
+                                                <td class="text-end"></td>
+                                                <td class="text-end {{ $entry->net_balance < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->net_balance, 2) }}</td>
+                                                <td class="text-end"></td>
+                                                <td
+                                                    class="text-end {{ $entry->net_balance + $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->quoted_net_balance + $entry->net_balance, 2) }}
+                                                </td>
+                                                <td class="text-end"></td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    <tr>
+                                        <td style="border: none;"></td>
+                                        <td style="border: none;"></td>
+                                        <th class="center text-end" style="border: none;">
+                                            รายได้จากการดำเนินงาน</th>
+                                        <th class="text-end {{ $quoted_net_balance5 < 0 ? 'error-message' : '' }}"
+                                            style="border: none;">
+                                            {{ number_format($quoted_net_balance5, 2) }}</th>
+
+                                        <th class="text-end {{ $net_balance5 < 0 ? 'error-message' : '' }}"
+                                            style="border: none;">
+                                            {{ number_format($net_balance5, 2) }}</th>
+                                        <td style="border: none;"></td>
+                                        <th class="text-end {{ $quoted_net_balance5 + $net_balance5 < 0 ? 'error-message' : '' }}"
+                                            style="border: none;">
+                                            {{ number_format($quoted_net_balance5 + $net_balance5, 2) }}</th>
+                                        <td style="border: none;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="8" style="border: none; height: 32px;"></td>
+                                        <!-- ใช้ height เพิ่มช่องว่าง -->
+                                    </tr>
+                                    @php
+                                        $total_balance4 = $quoted_net_balance4 + $net_balance4;
+                                        $total_balance5 = $quoted_net_balance5 + $net_balance5;
+                                        $overall_total = $total_balance4 + $total_balance5;
+                                    @endphp
+
+                                    <tr style="border: none; margin-top: 64px;">
+                                        <td class="text-end" style="border: none;"></td>
+                                        <td style="border: none;"></td>
+                                        <th class="text-end" style="border: none;">ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้</th>
+                                        <td style="border: none;"></td>
+                                        <th style="border: none;"
+                                            class="text-end {{ $total_balance4 < 0 ? 'error-message' : '' }}">
+                                            {{ number_format($total_balance4, 2) }}
+                                        </th>
+                                        <td style="border: none;"></td>
+                                        <th style="border: none;"
+                                            class="text-end {{ $total_balance5 < 0 ? 'error-message' : '' }}">
+                                            {{ number_format($total_balance5, 2) }}
+                                        </th>
+                                        <th style="border: none;"
+                                            class="text-end {{ $overall_total < 0 ? 'error-message' : '' }}">
+                                            {{ number_format($overall_total, 2) }}
+                                        </th>
+                                    </tr>
                                 </tbody>
                             </table>
-
-                            <h3>รวมยอดทั้งหมด</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>รวมเดบิต</th>
-                                        <th>รวมเครดิต</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        {{--   <td>{{ number_format($query->sum('total_debit'), 2) }}</td>
-                                            color: #acacac !important;
-    font-size: 16px !important;
-    font-weight: 500;
-    cursor: pointer;
-                                        <td>{{ number_format($query->sum('total_credit'), 2) }}</td> --}}
-                                    </tr>
-                                </tbody>
-                            </table>
-
 
                         </div>
                     </div>
