@@ -17,6 +17,8 @@ use PDF;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+
 
 class GeneralJournalController extends Controller
 {
@@ -174,16 +176,17 @@ class GeneralJournalController extends Controller
         return $pdf->stream(); // โหลดไฟล์ PDF
     }
 
+
     public function exportExcel($id, $start_date, $end_date)
     {
 
         $data = session()->get('generalLedgers');
 
-        // Map the query data to include subs information
+        // Map the query data to include subs information and calculate subtotals
         $mappedData = $data['query']->map(function ($ledger) {
             $rows = [];
 
-            // แปลงข้อมูลหลักของแต่ละ general ledger
+            // Format the main row
             $formattedDate = Carbon::parse($ledger->gl_date)->format('d-m-Y');
             $rows[] = [
                 'id' => $ledger->id,
@@ -195,6 +198,10 @@ class GeneralJournalController extends Controller
                 'gls_debit' => '', // Leave empty for the main row
                 'gls_credit' => '', // Leave empty for the main row
             ];
+
+            // Calculate subtotal for each document
+            $subtotalDebit = 0;
+            $subtotalCredit = 0;
 
             // Loop through subs and add them to the rows
             foreach ($ledger->subs as $sub) {
@@ -208,16 +215,32 @@ class GeneralJournalController extends Controller
                     'gls_debit' => $sub->gls_debit,
                     'gls_credit' => $sub->gls_credit,
                 ];
+
+                // Accumulate totals
+                $subtotalDebit += $sub->gls_debit;
+                $subtotalCredit += $sub->gls_credit;
             }
+
+            // Add subtotal row
+            $rows[] = [
+                'id' => '',
+                'gl_document' => '',
+                'gl_date' => '',
+                'gl_company' => '',
+                'gl_description' => 'รวม',
+                'gls_account_name' => '',
+                'gls_debit' => $subtotalDebit,
+                'gls_credit' => $subtotalCredit,
+            ];
 
             return $rows;
         });
 
-        // Flatten the mapped data (because each ledger has multiple rows)
+        // Flatten the mapped data (since each ledger has multiple rows)
         $flattenedData = collect($mappedData)->flatten(1);
 
-        // Define an inline class for export
-        $export = new class($flattenedData) implements FromArray, WithHeadings {
+        // Define an inline class for export with column widths
+        $export = new class($flattenedData) implements FromArray, WithHeadings, WithColumnWidths {
             protected $data;
 
             public function __construct($data)
@@ -243,9 +266,23 @@ class GeneralJournalController extends Controller
                     'Credit',
                 ];
             }
+
+            public function columnWidths(): array
+            {
+                return [
+                    'A' => 10,  // ID
+                    'B' => 20,  // Document
+                    'C' => 15,  // Date
+                    'D' => 40,  // Company
+                    'E' => 25,  // Description
+                    'F' => 30,  // Account Name
+                    'G' => 15,  // Debit
+                    'H' => 15,  // Credit
+                ];
+            }
         };
 
         // Download the Excel file
-        return Excel::download($export, 'general_ledger.xlsx');
+        return Excel::download($export, 'general_ledger_with_subtotals.xlsx');
     }
 }
