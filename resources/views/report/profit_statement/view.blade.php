@@ -89,6 +89,7 @@
                                         <td style="border: none;"></td>
                                         <th colspan="7" class="center" style="border: none;">
                                             รายได้จากการดำเนินงาน</th>
+
                                     </tr>
                                     @foreach ($query as $entry)
                                         @if (Str::startsWith($entry->gls_account_code, '4'))
