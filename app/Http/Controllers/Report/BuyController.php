@@ -10,6 +10,7 @@ use PDF;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 
 
 class BuyController extends Controller
@@ -185,11 +186,13 @@ class BuyController extends Controller
 
     public function exportExcel($id, $month, $year)
     {
+
+
         $data = $this->getData($id, $month, $year);
 
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {
-            // แปลงวันที่ให้เป็นรูปแบบ dd-mm-yyyy
+            // Format date as dd-mm-yyyy
             $formattedDate = Carbon::parse($item->gl_taxmonth)->format('d-m-Y');
 
             return [
@@ -204,10 +207,27 @@ class BuyController extends Controller
                 'gl_total' => $item->gl_total,
             ];
         });
+        $totalAmount = $mappedData->sum('gl_amount');
+        $totalTax = $mappedData->sum('gl_tax');
+        $totalAll = $mappedData->sum('gl_total');
+
+        $mappedData->push([
+            'id' => '',
+            'gl_document' => '',
+            'gl_taxmonth' => '',
+            'gl_company' => '',
+            'gl_taxid' => '',
+            'gl_branch' => 'รวมทั้งสิ้น', // Label for totals
+            'gl_amount' => $totalAmount,
+            'gl_tax' => $totalTax,
+            'gl_total' => $totalAll,
+        ]);
+
 
 
         // Define an inline class for export
-        $export = new class($mappedData) implements FromArray, WithHeadings {
+        $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths {
+
             protected $data;
 
             public function __construct($data)
@@ -234,7 +254,23 @@ class BuyController extends Controller
                     'Total',
                 ];
             }
+
+            public function columnWidths(): array
+            {
+                return [
+                    'A' => 10,  // ID
+                    'B' => 20,  // Document
+                    'C' => 15,  // Date
+                    'D' => 30,  // Company
+                    'E' => 20,  // TaxID
+                    'F' => 25,  // Branch
+                    'G' => 15,  // Amount
+                    'H' => 15,  // Tax
+                    'I' => 15,  // Total
+                ];
+            }
         };
+
 
         // Download the Excel file
         return Excel::download($export, 'buy.xlsx');

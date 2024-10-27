@@ -75,21 +75,7 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="container-date">
-                                <div class="col-8">
-                                    <small class="text-light fw-semibold d-block mb-1">วันที่</small>
-                                    <div class="input-group input-group-merge speech-to-text">
-                                        <input class="form-control" type="date" id="start-date"
-                                            value="{{ date('Y-m-d', strtotime($startDate)) }}" name="start_date">
-                                    </div>
-                                </div>
 
-                                <input class="form-control" type="text" name="id" style="display: none"
-                                    value="{{ $id }}">
-                                <div>
-                                    <button type="submit" class="btn btn-primary">ค้นหา</button>
-                                </div>
-                            </div> --}}
                         </form>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
