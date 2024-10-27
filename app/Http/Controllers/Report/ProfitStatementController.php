@@ -317,11 +317,11 @@ class ProfitStatementController extends Controller
             'gls_account_code' => '',
             'gls_account_name' => 'รายได้จากการดำเนินงาน',
             'initial_debit' => '',
-            'initial_credit' => $quoted_net_balance4,
+            'initial_credit' => number_format($quoted_net_balance4, 2),
             'current_debit' => '',
-            'current_credit' => $net_balance4,
+            'current_credit' => number_format($net_balance4, 2),
             'cumulative_debit' => '',
-            'cumulative_credit' => $total_balance4,
+            'cumulative_credit' => number_format($total_balance4, 2),
         ]);
 
         // Calculate totals for account code starting with '5'
@@ -333,11 +333,11 @@ class ProfitStatementController extends Controller
         $mappedData->push([
             'gls_account_code' => '',
             'gls_account_name' => 'รายได้จากการดำเนินงาน',
-            'initial_debit' =>  $quoted_net_balance5,
+            'initial_debit' =>  number_format($quoted_net_balance5, 2),
             'initial_credit' => '',
-            'current_debit' => $net_balance5,
+            'current_debit' => number_format($net_balance5, 2),
             'current_credit' => '',
-            'cumulative_debit' =>  $total_balance5,
+            'cumulative_debit' =>  number_format($total_balance5, 2),
             'cumulative_credit' => '',
         ]);
 
