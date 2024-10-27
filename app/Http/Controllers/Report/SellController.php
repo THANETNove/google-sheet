@@ -10,6 +10,12 @@ use PDF;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+
 
 class SellController extends Controller
 {
@@ -41,28 +47,7 @@ class SellController extends Controller
 
     private function getData($id, $startDate = null, $endDate = null)
     {
-        /*  $user = DB::table('users')->find($id);
 
-        $accounting_period = $user->accounting_period;
-        list($day, $month) = explode('/', $accounting_period);
-
-
-
-        // ตรวจสอบว่า $startDate และ $endDate เป็น null หรือไม่
-        if (is_null($endDate)) {
-
-            // ถ้าเป็น null, ตั้ง $endDate ให้เป็นวันที่สิ้นสุดของเดือนที่แล้ว
-            $endDate = Carbon::now()->subMonth()->endOfMonth(); // วันสุดท้ายของเดือนก่อนหน้า
-
-            // ตั้ง $startDate ให้เป็นวันที่ 1 ของเดือนก่อนหน้า
-            $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า
-        } else {
-            // ถ้า $startDate หรือ $endDate ถูกส่งมา ให้ทำงานตามลอจิกเดิม
-            $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
-            $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
-        }
-        $endDate = $endDate->endOfDay();
- */
         $user = DB::table('users')->find($id);
 
         $accounting_period = $user->accounting_period;
@@ -201,9 +186,8 @@ class SellController extends Controller
     {
         $data = $this->getData($id, $start_date, $end_date);
 
-        // Map the query data to match the Excel export structure
+        // Map the query data to match the Excel export structure and format numbers with commas
         $mappedData = $data['query']->map(function ($item) {
-            // แปลงวันที่ให้เป็นรูปแบบ dd-mm-yyyy
             $formattedDate = Carbon::parse($item->gl_date)->format('d-m-Y');
 
             return [
@@ -213,15 +197,64 @@ class SellController extends Controller
                 'gl_company' => $item->gl_company,
                 'gl_taxid' => $item->gl_taxid,
                 'gl_branch' => $item->gl_branch,
-                'gl_amount' => $item->gl_amount,
-                'gl_tax' => $item->gl_tax,
-                'gl_total' => $item->gl_total,
+                'gl_amount' => number_format($item->gl_amount, 2),
+                'gl_tax' => number_format($item->gl_tax, 2),
+                'gl_total' => number_format($item->gl_total, 2),
             ];
         });
 
+        // Calculate totals for summary rows
+        $totalAmount = $mappedData->where('gl_tax', '>', 0)->sum(fn($item) => str_replace(',', '', $item['gl_amount']));
+        $totalTax = $mappedData->where('gl_tax', '>', 0)->sum(fn($item) => str_replace(',', '', $item['gl_tax']));
+        $totalTaxSum = $mappedData->where('gl_tax', '>', 0)->sum(fn($item) => str_replace(',', '', $item['gl_total']));
 
-        // Define an inline class for export
-        $export = new class($mappedData) implements FromArray, WithHeadings {
+        $totalAmountNoTax = $mappedData->where('gl_tax', '=', 0)->sum(fn($item) => str_replace(',', '', $item['gl_amount']));
+        $totalNoTax = $mappedData->where('gl_tax', '=', 0)->sum(fn($item) => str_replace(',', '', $item['gl_tax']));
+        $totalNoTaxSum = $mappedData->where('gl_tax', '=', 0)->sum(fn($item) => str_replace(',', '', $item['gl_total']));
+
+        $totalSum = $totalAmount + $totalAmountNoTax;
+        $totalSumTax = $totalTax + $totalNoTax;
+        $totalSumNoTax = $totalSum + $totalSumTax;
+
+        // Append summary rows with formatted values
+        $mappedData->push([
+            'id' => '',
+            'gl_document' => '',
+            'gl_date' => '',
+            'gl_company' => '',
+            'gl_taxid' => '',
+            'gl_branch' => 'รวมภาษี', // Label for "รวมภาษี"
+            'gl_amount' => number_format($totalAmount, 2),
+            'gl_tax' => number_format($totalTax, 2),
+            'gl_total' => number_format($totalTaxSum, 2),
+        ]);
+
+        $mappedData->push([
+            'id' => '',
+            'gl_document' => '',
+            'gl_date' => '',
+            'gl_company' => '',
+            'gl_taxid' => '',
+            'gl_branch' => 'รวมภาษี 0%', // Label for "รวมภาษี 0%"
+            'gl_amount' => number_format($totalAmountNoTax, 2),
+            'gl_tax' => number_format($totalNoTax, 2),
+            'gl_total' => number_format($totalNoTaxSum, 2),
+        ]);
+
+        $mappedData->push([
+            'id' => '',
+            'gl_document' => '',
+            'gl_date' => '',
+            'gl_company' => '',
+            'gl_taxid' => '',
+            'gl_branch' => 'รวมทั้งสิ้น', // Label for "รวมทั้งสิ้น"
+            'gl_amount' => number_format($totalSum, 2),
+            'gl_tax' => number_format($totalSumTax, 2),
+            'gl_total' => number_format($totalSumNoTax, 2),
+        ]);
+
+        // Define an inline class for export with column widths and styling
+        $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
 
             public function __construct($data)
@@ -231,7 +264,7 @@ class SellController extends Controller
 
             public function array(): array
             {
-                return $this->data->values()->toArray(); // Convert collection to array
+                return $this->data->values()->toArray();
             }
 
             public function headings(): array
@@ -247,6 +280,31 @@ class SellController extends Controller
                     'Tax',
                     'Total',
                 ];
+            }
+
+            public function columnWidths(): array
+            {
+                return [
+                    'A' => 10,  // ID
+                    'B' => 20,  // Document
+                    'C' => 15,  // Date
+                    'D' => 30,  // Company
+                    'E' => 20,  // TaxID
+                    'F' => 25,  // Branch
+                    'G' => 15,  // Amount
+                    'H' => 15,  // Tax
+                    'I' => 15,  // Total
+                ];
+            }
+
+            public function styles(Worksheet $sheet)
+            {
+                // Center align headers and right-align monetary values
+                $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                // Right-align monetary values and set number format for currency columns
+                $sheet->getStyle('G2:I' . ($this->data->count() + 1))
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             }
         };
 

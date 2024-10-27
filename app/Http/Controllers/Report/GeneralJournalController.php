@@ -6,18 +6,18 @@ use Illuminate\Support\Facades\Cache;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 use App\Models\DataGeneralLedgerSub;
 use App\Models\GeneralLedger;
-
-
 use Carbon\Carbon;
 use PDF;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
 class GeneralJournalController extends Controller
@@ -212,8 +212,8 @@ class GeneralJournalController extends Controller
                     'gl_company' => '', // Leave empty for subs rows
                     'gl_description' => '', // Leave empty for subs rows
                     'gls_account_name' => $sub->gls_account_name,
-                    'gls_debit' => $sub->gls_debit,
-                    'gls_credit' => $sub->gls_credit,
+                    'gls_debit' => number_format($sub->gls_debit, 2),
+                    'gls_credit' => number_format($sub->gls_credit, 2),
                 ];
 
                 // Accumulate totals
@@ -221,16 +221,16 @@ class GeneralJournalController extends Controller
                 $subtotalCredit += $sub->gls_credit;
             }
 
-            // Add subtotal row
+            // Add subtotal row with formatted numbers
             $rows[] = [
                 'id' => '',
                 'gl_document' => '',
                 'gl_date' => '',
                 'gl_company' => '',
-                'gl_description' => 'รวม',
+                'gl_description' => 'รวม', // Label for subtotal
                 'gls_account_name' => '',
-                'gls_debit' => $subtotalDebit,
-                'gls_credit' => $subtotalCredit,
+                'gls_debit' => number_format($subtotalDebit, 2),
+                'gls_credit' => number_format($subtotalCredit, 2),
             ];
 
             return $rows;
@@ -239,8 +239,8 @@ class GeneralJournalController extends Controller
         // Flatten the mapped data (since each ledger has multiple rows)
         $flattenedData = collect($mappedData)->flatten(1);
 
-        // Define an inline class for export with column widths
-        $export = new class($flattenedData) implements FromArray, WithHeadings, WithColumnWidths {
+        // Define an inline class for export with column widths and styles
+        $export = new class($flattenedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
 
             public function __construct($data)
@@ -279,6 +279,16 @@ class GeneralJournalController extends Controller
                     'G' => 15,  // Debit
                     'H' => 15,  // Credit
                 ];
+            }
+
+            public function styles(Worksheet $sheet)
+            {
+                // Center-align the headers
+                $sheet->getStyle('A1:H1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                // Right-align the debit and credit columns
+                $sheet->getStyle('G2:H' . ($this->data->count() + 1))
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             }
         };
 

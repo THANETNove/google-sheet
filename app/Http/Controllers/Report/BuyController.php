@@ -11,6 +11,9 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
 class BuyController extends Controller
@@ -192,7 +195,6 @@ class BuyController extends Controller
 
         // Map the query data to match the Excel export structure
         $mappedData = $data['query']->map(function ($item) {
-            // Format date as dd-mm-yyyy
             $formattedDate = Carbon::parse($item->gl_taxmonth)->format('d-m-Y');
 
             return [
@@ -202,15 +204,18 @@ class BuyController extends Controller
                 'gl_company' => $item->gl_company,
                 'gl_taxid' => $item->gl_taxid,
                 'gl_branch' => $item->gl_branch,
-                'gl_amount' => $item->gl_amount,
-                'gl_tax' => $item->gl_tax,
-                'gl_total' => $item->gl_total,
+                'gl_amount' => number_format($item->gl_amount, 2),
+                'gl_tax' => number_format($item->gl_tax, 2),
+                'gl_total' => number_format($item->gl_total, 2),
             ];
         });
-        $totalAmount = $mappedData->sum('gl_amount');
-        $totalTax = $mappedData->sum('gl_tax');
-        $totalAll = $mappedData->sum('gl_total');
 
+        // Calculate totals
+        $totalAmount = $mappedData->sum(fn($item) => str_replace(',', '', $item['gl_amount']));
+        $totalTax = $mappedData->sum(fn($item) => str_replace(',', '', $item['gl_tax']));
+        $totalAll = $mappedData->sum(fn($item) => str_replace(',', '', $item['gl_total']));
+
+        // Append totals row
         $mappedData->push([
             'id' => '',
             'gl_document' => '',
@@ -218,16 +223,13 @@ class BuyController extends Controller
             'gl_company' => '',
             'gl_taxid' => '',
             'gl_branch' => 'รวมทั้งสิ้น', // Label for totals
-            'gl_amount' => $totalAmount,
-            'gl_tax' => $totalTax,
-            'gl_total' => $totalAll,
+            'gl_amount' => number_format($totalAmount, 2),
+            'gl_tax' => number_format($totalTax, 2),
+            'gl_total' => number_format($totalAll, 2),
         ]);
 
-
-
-        // Define an inline class for export
-        $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths {
-
+        // Define an inline class for export with column widths and styles
+        $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
 
             public function __construct($data)
@@ -237,7 +239,7 @@ class BuyController extends Controller
 
             public function array(): array
             {
-                return $this->data->values()->toArray(); // Convert collection to array
+                return $this->data->values()->toArray();
             }
 
             public function headings(): array
@@ -269,8 +271,17 @@ class BuyController extends Controller
                     'I' => 15,  // Total
                 ];
             }
-        };
 
+            public function styles(Worksheet $sheet)
+            {
+                // Center align headers
+                $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                // Right-align monetary columns (Amount, Tax, Total)
+                $sheet->getStyle('G2:I' . ($this->data->count() + 1))
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            }
+        };
 
         // Download the Excel file
         return Excel::download($export, 'buy.xlsx');

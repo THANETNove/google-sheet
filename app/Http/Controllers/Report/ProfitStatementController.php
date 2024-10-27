@@ -12,7 +12,9 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
 class ProfitStatementController extends Controller
@@ -282,12 +284,12 @@ class ProfitStatementController extends Controller
             return [
                 'gls_account_code' => $item->gls_account_code,
                 'gls_account_name' => $item->gls_account_name,
-                'initial_debit' => 0,
-                'initial_credit' => $item->quoted_net_balance ?? 0,
-                'current_debit' => $item->current_debit ?? 0,
-                'current_credit' => $item->net_balance ?? 0,
-                'cumulative_debit' => 0,
-                'cumulative_credit' => ($item->quoted_net_balance ?? 0) + ($item->net_balance ?? 0),
+                'initial_debit' => number_format(0, 2),
+                'initial_credit' => number_format($item->quoted_net_balance ?? 0, 2),
+                'current_debit' => number_format($item->current_debit ?? 0, 2),
+                'current_credit' => number_format($item->net_balance ?? 0, 2),
+                'cumulative_debit' => number_format(0, 2),
+                'cumulative_credit' => number_format(($item->quoted_net_balance ?? 0) + ($item->net_balance ?? 0), 2),
             ];
         });
 
@@ -297,12 +299,12 @@ class ProfitStatementController extends Controller
             return [
                 'gls_account_code' => $item->gls_account_code,
                 'gls_account_name' => $item->gls_account_name,
-                'initial_debit' => $item->quoted_net_balance ?? 0,
-                'initial_credit' =>  0,
-                'current_debit' => $item->net_balance ?? 0,
-                'current_credit' =>  0,
-                'cumulative_debit' => ($item->quoted_net_balance) + ($item->net_balance),
-                'cumulative_credit' => 0,
+                'initial_debit' => number_format($item->quoted_net_balance ?? 0, 2),
+                'initial_credit' => number_format(0, 2),
+                'current_debit' => number_format($item->net_balance ?? 0, 2),
+                'current_credit' => number_format(0, 2),
+                'cumulative_debit' => number_format(($item->quoted_net_balance ?? 0) + ($item->net_balance ?? 0), 2),
+                'cumulative_credit' => number_format(0, 2),
             ];
         });
 
@@ -346,15 +348,15 @@ class ProfitStatementController extends Controller
             'gls_account_name' => 'ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้',
             'initial_debit' => '',
             'initial_credit' => '',
-            'current_debit' => $total_balance4,
+            'current_debit' => number_format($total_balance4, 2),
             'current_credit' => '',
-            'cumulative_debit' => $total_balance5,
-            'cumulative_credit' => $overall_total,
+            'cumulative_debit' => number_format($total_balance5, 2),
+            'cumulative_credit' => number_format($overall_total, 2),
         ]);
 
         // Define an inline class for export
 
-        $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths {
+        $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
 
             protected $data;
 
@@ -371,14 +373,14 @@ class ProfitStatementController extends Controller
             public function headings(): array
             {
                 return [
-                    'Account Code',      // รหัสบัญชี
-                    'Account Name',      // ชื่อบัญชี
-                    'Initial Debit',     // ยอดยกมาต้นงวด เดบิต
-                    'Initial Credit',    // ยอดยกมาต้นงวด เครดิต
-                    'Current Debit',     // ยอดยกมางวดนี้ เดบิต
-                    'Current Credit',    // ยอดยกมางวดนี้ เครดิต
-                    'Cumulative Debit',  // ยอดสะสมคงเหลือ เดบิต
-                    'Cumulative Credit', // ยอดสะสมคงเหลือ เครดิต
+                    'Account Code',
+                    'Account Name',
+                    'Initial Debit',
+                    'Initial Credit',
+                    'Current Debit',
+                    'Current Credit',
+                    'Cumulative Debit',
+                    'Cumulative Credit',
                 ];
             }
 
@@ -395,9 +397,19 @@ class ProfitStatementController extends Controller
                     'H' => 20, // Cumulative Credit
                 ];
             }
+
+            public function styles(Worksheet $sheet)
+            {
+                // Center align headers
+                $sheet->getStyle('A1:H1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                // Right align all monetary columns
+                $sheet->getStyle('C2:H' . ($this->data->count() + 1))
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            }
         };
 
         // Download the Excel file
-        return Excel::download($export, 'account_data.xlsx');
+        return Excel::download($export, 'profit_statement.xlsx');
     }
 }
