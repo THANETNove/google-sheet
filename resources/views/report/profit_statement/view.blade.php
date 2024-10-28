@@ -64,7 +64,7 @@
                                         <th class="text-center-vertical" rowspan="2">ชื่อบัญชี</th>
                                         <th colspan="2">ยอดยกมาต้นงวด</th>
                                         <th colspan="2">ยอดยกมางวดนี้</th>
-                                        <th colspan="2">ยอดสะสมคงเหลือ </th>
+                                        <th colspan="2">ยอดสะสมยกไป </th>
 
                                     </tr>
                                     <tr class="table-secondary">
@@ -115,7 +115,7 @@
                                     <tr>
                                         <td style="border: none;"></td>
                                         <th class="center text-end" style="border: none;">
-                                            รายได้จากการดำเนินงาน</th>
+                                            รวมรายได้จากการดำเนินงาน</th>
                                         <td></td>
 
                                     </tr>
@@ -125,7 +125,7 @@
                                     <tr>
                                         <td style="border: none;"></td>
                                         <th colspan="7" class="center" style="border: none;">
-                                            รายได้จากการดำเนินงาน</th>
+                                            ค่าใช้จ่ายในการขายเเละบริหาร</th>
                                     </tr>
                                     @foreach ($query as $entry)
                                         @if (Str::startsWith($entry->gls_account_code, '5'))
@@ -152,7 +152,7 @@
                                         <td style="border: none;"></td>
 
                                         <th class="center text-end" style="border: none;">
-                                            รายได้จากการดำเนินงาน</th>
+                                            รวมค่าใช้จ่ายในการขายเเละบริหาร</th>
                                         <td>0</td>
 
                                     </tr>
