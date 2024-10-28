@@ -104,7 +104,7 @@ class BuyController extends Controller
             'vat_month' => $monthName2,
             'month' => $month,
             'year' => $year,
-            'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
+            'monthThai' => $monthName,
             'currentYear' => $year
         ];
     }
