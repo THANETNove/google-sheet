@@ -79,10 +79,39 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $quoted_net_balance4 = 0;
-                                        $net_balance4 = 0;
-                                        $quoted_net_balance5 = 0;
-                                        $net_balance5 = 0;
+                                        // ฟังก์ชันสำหรับสะสมผลรวม
+                                        $totals = [
+                                            'before_total_debit_4' => 0,
+                                            'before_total_credit_4' => 0,
+                                            'after_total_debit_4' => 0,
+                                            'after_total_credit_4' => 0,
+                                            'before_total_debit_5' => 0,
+                                            'before_total_credit_5' => 0,
+                                            'after_total_debit_5' => 0,
+                                            'after_total_credit_5' => 0,
+                                        ];
+
+                                        // ฟิลเตอร์และสะสมผลรวมสำหรับรหัสบัญชีที่ขึ้นต้นด้วย '4'
+                                        $filteredEntries4 = $date_query->filter(
+                                            fn($entry) => Str::startsWith($entry->gls_account_code, '4'),
+                                        );
+                                        foreach ($filteredEntries4 as $entry) {
+                                            $totals['before_total_debit_4'] += $entry->before_total_debit ?? 0;
+                                            $totals['before_total_credit_4'] += $entry->before_total_credit ?? 0;
+                                            $totals['after_total_debit_4'] += $entry->after_total_debit ?? 0;
+                                            $totals['after_total_credit_4'] += $entry->after_total_credit ?? 0;
+                                        }
+
+                                        // ฟิลเตอร์และสะสมผลรวมสำหรับรหัสบัญชีที่ขึ้นต้นด้วย '5'
+                                        $filteredEntries5 = $date_query->filter(
+                                            fn($entry) => Str::startsWith($entry->gls_account_code, '5'),
+                                        );
+                                        foreach ($filteredEntries5 as $entry) {
+                                            $totals['before_total_debit_5'] += $entry->before_total_debit ?? 0;
+                                            $totals['before_total_credit_5'] += $entry->before_total_credit ?? 0;
+                                            $totals['after_total_debit_5'] += $entry->after_total_debit ?? 0;
+                                            $totals['after_total_credit_5'] += $entry->after_total_credit ?? 0;
+                                        }
                                     @endphp
 
                                     <tr>
@@ -91,33 +120,46 @@
                                             รายได้จากการดำเนินงาน</th>
 
                                     </tr>
-                                    @foreach ($query as $entry)
-                                        @if (Str::startsWith($entry->gls_account_code, '4'))
-                                            @php
-                                                $quoted_net_balance4 += $entry->quoted_net_balance;
-                                                $net_balance4 += $entry->net_balance;
-                                            @endphp
-
-                                            <tr>
-
-                                                <td class="center">{{ $entry->gls_account_code }}</td>
-                                                <td class="center">{{ $entry->gls_account_name }}</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-
-                                            </tr>
-                                        @endif
+                                    @foreach ($filteredEntries4 as $entry)
+                                        <tr>
+                                            <td class="center">{{ $entry->gls_account_code }}</td>
+                                            <td class="center">{{ $entry->gls_account_name }}</td>
+                                            <td class="text-end color-back">
+                                                {{ number_format($entry->before_total_debit, 2) }}</td>
+                                            <td class="text-end color-back">
+                                                {{ number_format($entry->before_total_credit, 2) }}</td>
+                                            <td class="text-end color-green">
+                                                {{ number_format($entry->after_total_debit, 2) }}</td>
+                                            <td class="text-end color-green">
+                                                {{ number_format($entry->after_total_credit, 2) }}</td>
+                                            <td class="text-end color-blue"></td>
+                                            <td class="text-end color-blue">
+                                                {{ number_format($entry->before_total_credit - $entry->after_total_debit, 2) }}
+                                            </td>
+                                        </tr>
                                     @endforeach
                                     <tr>
-                                        <td style="border: none;"></td>
-                                        <th class="center text-end" style="border: none;">
-                                            รวมรายได้จากการดำเนินงาน</th>
-                                        <td></td>
-
+                                        <td colspan="2" class="text-end">รวมรายได้จากการดำเนินงาน</td>
+                                        <td class="text-end color-back">
+                                            {{ number_format($totals['before_total_debit_4'], 2) }}</td>
+                                        <td class="text-end color-back">
+                                            {{ number_format($totals['before_total_credit_4'], 2) }}</td>
+                                        <td class="text-end color-green">
+                                            {{ number_format($totals['after_total_debit_4'], 2) }}</td>
+                                        <td class="text-end color-green">
+                                            {{ number_format($totals['after_total_credit_4'], 2) }}</td>
+                                        <td class="text-end color-blue"></td>
+                                        <td class="text-end color-blue">
+                                            {{ number_format(
+                                                array_sum([
+                                                    $totals['before_total_debit_4'],
+                                                    $totals['before_total_credit_4'],
+                                                    $totals['after_total_debit_4'],
+                                                    $totals['after_total_credit_4'],
+                                                ]),
+                                                2,
+                                            ) }}
+                                        </td>
                                     </tr>
 
 
@@ -127,34 +169,48 @@
                                         <th colspan="7" class="center" style="border: none;">
                                             ค่าใช้จ่ายในการขายเเละบริหาร</th>
                                     </tr>
-                                    @foreach ($query as $entry)
-                                        @if (Str::startsWith($entry->gls_account_code, '5'))
-                                            @php
-                                                $quoted_net_balance5 += $entry->quoted_net_balance;
-                                                $net_balance5 += $entry->net_balance;
-                                            @endphp
-
-                                            <tr>
-
-                                                <td class="center">{{ $entry->gls_account_code }}</td>
-                                                <td class="center">{{ $entry->gls_account_name }}</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-                                                <td class="text-end">00</td>
-
-                                            </tr>
-                                        @endif
+                                    @foreach ($filteredEntries5 as $entry)
+                                        <tr>
+                                            <td class="center">{{ $entry->gls_account_code }}</td>
+                                            <td class="center">{{ $entry->gls_account_name }}</td>
+                                            <td class="text-end color-back">
+                                                {{ number_format($entry->before_total_debit, 2) }}</td>
+                                            <td class="text-end color-back">
+                                                {{ number_format($entry->before_total_credit, 2) }}</td>
+                                            <td class="text-end color-green">
+                                                {{ number_format($entry->after_total_debit, 2) }}</td>
+                                            <td class="text-end color-green">
+                                                {{ number_format($entry->after_total_credit, 2) }}</td>
+                                            <td class="text-end color-blue">
+                                                {{ number_format($entry->after_total_debit - $entry->before_total_credit, 2) }}
+                                            </td>
+                                            <td class="text-end color-blue"></td>
+                                        </tr>
                                     @endforeach
+
                                     <tr>
-                                        <td style="border: none;"></td>
+                                        <td colspan="2" class="text-end">รวมค่าใช้จ่ายในการขายและบริหาร</td>
+                                        <td class="text-end color-back">
+                                            {{ number_format($totals['before_total_debit_5'], 2) }}</td>
+                                        <td class="text-end color-back">
+                                            {{ number_format($totals['before_total_credit_5'], 2) }}</td>
+                                        <td class="text-end color-green">
+                                            {{ number_format($totals['after_total_debit_5'], 2) }}</td>
+                                        <td class="text-end color-green">
+                                            {{ number_format($totals['after_total_credit_5'], 2) }}</td>
 
-                                        <th class="center text-end" style="border: none;">
-                                            รวมค่าใช้จ่ายในการขายเเละบริหาร</th>
-                                        <td>0</td>
-
+                                        <td class="text-end color-blue">
+                                            {{ number_format(
+                                                array_sum([
+                                                    $totals['before_total_debit_5'],
+                                                    $totals['before_total_credit_5'],
+                                                    $totals['after_total_debit_5'],
+                                                    $totals['after_total_credit_5'],
+                                                ]),
+                                                2,
+                                            ) }}
+                                        </td>
+                                        <td class="text-end color-blue"></td>
                                     </tr>
                                     <tr>
                                         <td colspan="8" style="border: none; height: 32px;"></td>
@@ -167,6 +223,36 @@
                                         <th class="text-end" style="border: none;">ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้</th>
                                         <td style="border: none;"></td>
                                         <td style="border: none;"></td>
+                                        <td style="border: none;"></td>
+                                        <th class="text-end color-green" style="border: none;">
+                                            {{ number_format(
+                                                array_sum([
+                                                    $totals['before_total_debit_4'],
+                                                    $totals['before_total_credit_4'],
+                                                    $totals['after_total_debit_4'],
+                                                    $totals['after_total_credit_4'],
+                                                ]),
+                                                2,
+                                            ) }}
+                                        </th>
+                                        <td style="border: none;"></td>
+                                        <th style="border: none;" class="text-end color-blue">
+                                            {{ number_format(
+                                                array_sum([
+                                                    $totals['before_total_debit_4'],
+                                                    $totals['before_total_credit_4'],
+                                                    $totals['after_total_debit_4'],
+                                                    $totals['after_total_credit_4'],
+                                                ]) -
+                                                    array_sum([
+                                                        $totals['before_total_debit_5'],
+                                                        $totals['before_total_credit_5'],
+                                                        $totals['after_total_debit_5'],
+                                                        $totals['after_total_credit_5'],
+                                                    ]),
+                                                2,
+                                            ) }}
+                                        </th>
 
                                     </tr>
                                 </tbody>

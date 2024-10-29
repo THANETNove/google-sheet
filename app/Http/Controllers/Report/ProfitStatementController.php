@@ -125,8 +125,8 @@ class ProfitStatementController extends Controller
         $carryForwardDate = $startDate->copy()->endOfDay()->subDay(); // Now you can call copy(), endOfDay(), and subDay() on it
 
 
-        // ก่อน starts date
-        $before_date_query = DB::table('general_ledger_subs') // GLS_Credit = 108995
+        // ก่อน start date
+        $before_date_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->where(function ($q) {
@@ -134,17 +134,24 @@ class ProfitStatementController extends Controller
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->select(
-                'general_ledger_subs.*',
-                DB::raw('SUM(gls_debit) as total_debit'),
-                DB::raw('SUM(gls_credit) as total_credit'),
-                DB::raw('SUM(gls_credit) - SUM(gls_debit) as quoted_net_balance')
+                'gls_account_code',
+                'gls_account_name',
+                'gls_gl_date',
+                DB::raw('SUM(gls_debit) as before_total_debit'),
+                DB::raw('SUM(gls_credit) as before_total_credit')
             )
             ->groupBy('gls_account_code')
-            ->orderBy('gls_account_code', 'ASC')
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                $item->before_total_debit = $item->before_total_debit ?? 0;
+                $item->before_total_credit = $item->before_total_credit ?? 0;
+                $item->after_total_debit = 0; // กำหนดค่าเริ่มต้นสำหรับ after_total_debit
+                $item->after_total_credit = 0; // กำหนดค่าเริ่มต้นสำหรับ after_total_credit
+                return $item;
+            });
 
-        // ตั้งเเต่ starts date 262,845.00	
-        $after_query = DB::table('general_ledger_subs') //  GLS_Credit = 153850
+        // หลัง start date
+        $after_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->where(function ($q) {
@@ -152,36 +159,51 @@ class ProfitStatementController extends Controller
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->select(
-                'general_ledger_subs.*',
-                DB::raw('SUM(gls_debit) as total_debit'),
-                DB::raw('SUM(gls_credit) as total_credit'),
-                DB::raw('SUM(gls_credit) - SUM(gls_debit) as net_balance')
+                'gls_account_code',
+                'gls_account_name',
+                'gls_gl_date',
+                DB::raw('SUM(gls_debit) as after_total_debit'),
+                DB::raw('SUM(gls_credit) as after_total_credit')
             )
             ->groupBy('gls_account_code')
-            ->orderBy('gls_account_code', 'ASC')
-            ->get();
-        // dd($before_date_query, $after_query, $startPeriod, $carryForwardDate, $startDate, $endDate);
+            ->get()
+            ->map(function ($item) {
+                $item->before_total_debit = 0; // กำหนดค่าเริ่มต้นสำหรับ before_total_debit
+                $item->before_total_credit = 0; // กำหนดค่าเริ่มต้นสำหรับ before_total_credit
+                $item->after_total_debit = $item->after_total_debit ?? 0;
+                $item->after_total_credit = $item->after_total_credit ?? 0;
+                return $item;
+            });
 
-        $mergedData = $after_query->map(function ($item) use ($before_date_query) {
-            // หาค่า quoted_net_balance จาก query22 ที่มี gls_account_code ตรงกัน
-            $carryForward = $before_date_query->firstWhere('gls_account_code', $item->gls_account_code);
+        // รวมผลลัพธ์จากทั้งสองช่วงเวลา
+        $combined_query = $before_date_query->merge($after_query);
 
-            // ถ้ามียอดยก quoted_net_balance เพิ่มเข้าไป
-            if ($carryForward) {
-                $item->quoted_net_balance = $carryForward->quoted_net_balance;
-            } else {
-                $item->quoted_net_balance = 0; // กรณีไม่มียอดยก
-            }
+        // จัดกลุ่มตาม gls_account_code และรวมยอด
+        $grouped_combined_query = $combined_query
+            ->groupBy('gls_account_code')
+            ->map(function ($items) {
+                return (object) [
+                    'gls_account_code' => $items->first()->gls_account_code,
+                    'gls_account_name' => $items->first()->gls_account_name,
+                    'gls_gl_date' => $items->first()->gls_gl_date,
+                    'before_total_debit' => $items->sum(fn($item) => $item->before_total_debit ?? 0),
+                    'before_total_credit' => $items->sum(fn($item) => $item->before_total_credit ?? 0),
+                    'after_total_debit' => $items->sum(fn($item) => $item->after_total_debit ?? 0),
+                    'after_total_credit' => $items->sum(fn($item) => $item->after_total_credit ?? 0),
+                ];
+            })
+            ->values(); // รีเซ็ต key ของ Collection ให้เป็นตัวเลขเรียงลำดับ
 
-            return $item;
-        });
+        // ตรวจสอบผลลัพธ์
+        //dd($grouped_combined_query);
+
 
 
 
 
 
         return [
-            'query' => $mergedData,
+            'date_query' => $grouped_combined_query,
             'user' => $user,
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -199,7 +221,7 @@ class ProfitStatementController extends Controller
 
 
         return view('report.profit_statement.view', [
-            'query' => $data['query'],
+            'date_query' => $data['date_query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
@@ -219,7 +241,7 @@ class ProfitStatementController extends Controller
         $data = $this->getData($request->id, $startDate, $endDate);
 
         return view('report.profit_statement.view', [
-            'query' => $data['query'],
+            'date_query' => $data['date_query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],

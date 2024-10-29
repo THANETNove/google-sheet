@@ -427,6 +427,17 @@
   height: auto;
 }
 
+.color-back {
+  color: #000000;
+}
+
+.color-green {
+  color: green;
+}
+
+.color-blue {
+  color: blue;
+}
 
 /* 
 th:nth-child(4),
