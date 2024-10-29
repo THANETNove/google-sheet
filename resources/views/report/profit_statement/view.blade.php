@@ -224,7 +224,7 @@
                                         <td style="border: none;"></td>
                                         <td style="border: none;"></td>
                                         <td style="border: none;"></td>
-                                        <th class="text-end color-green" style="border: none;">
+                                        <td class="text-end color-green text-bold" style="border: none;">
                                             {{ number_format(
                                                 array_sum([
                                                     $totals['before_total_debit_4'],
@@ -234,9 +234,9 @@
                                                 ]),
                                                 2,
                                             ) }}
-                                        </th>
+                                        </td>
                                         <td style="border: none;"></td>
-                                        <th style="border: none;" class="text-end color-blue">
+                                        <td style="border: none;" class="text-end color-blue text-bold">
                                             {{ number_format(
                                                 array_sum([
                                                     $totals['before_total_debit_4'],
@@ -252,7 +252,7 @@
                                                     ]),
                                                 2,
                                             ) }}
-                                        </th>
+                                        </td>
 
                                     </tr>
                                 </tbody>

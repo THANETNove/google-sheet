@@ -439,6 +439,10 @@
   color: blue;
 }
 
+.text-bold {
+  font-weight: bold;
+}
+
 /* 
 th:nth-child(4),
 td:nth-child(4) {
