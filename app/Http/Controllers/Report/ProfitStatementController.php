@@ -137,19 +137,14 @@ class ProfitStatementController extends Controller
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
-                DB::raw('SUM(gls_debit) as before_total_debit'),
-                DB::raw('SUM(gls_credit) as before_total_credit')
+                DB::raw("CASE 
+                WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
+                WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
+                ELSE 0
+             END as before_total")
             )
             ->groupBy('gls_account_code')
-            ->get()
-            ->map(function ($item) {
-                $item->before_total_debit = $item->before_total_debit ?? 0;
-                $item->before_total_credit = $item->before_total_credit ?? 0;
-                $item->after_total_debit = 0; // กำหนดค่าเริ่มต้นสำหรับ after_total_debit
-                $item->after_total_credit = 0; // กำหนดค่าเริ่มต้นสำหรับ after_total_credit
-                return $item;
-            });
-
+            ->get();
         // หลัง start date
         $after_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
@@ -162,40 +157,38 @@ class ProfitStatementController extends Controller
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
-                DB::raw('SUM(gls_debit) as after_total_debit'),
-                DB::raw('SUM(gls_credit) as after_total_credit')
+                DB::raw("CASE 
+                WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
+                WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
+                ELSE 0
+             END as after_total")
             )
             ->groupBy('gls_account_code')
-            ->get()
-            ->map(function ($item) {
-                $item->before_total_debit = 0; // กำหนดค่าเริ่มต้นสำหรับ before_total_debit
-                $item->before_total_credit = 0; // กำหนดค่าเริ่มต้นสำหรับ before_total_credit
-                $item->after_total_debit = $item->after_total_debit ?? 0;
-                $item->after_total_credit = $item->after_total_credit ?? 0;
-                return $item;
-            });
+            ->get();
 
-        // รวมผลลัพธ์จากทั้งสองช่วงเวลา
+        // รวม array เข้าด้วยกัน
         $combined_query = $before_date_query->merge($after_query);
 
         // จัดกลุ่มตาม gls_account_code และรวมยอด
-        $grouped_combined_query = $combined_query
+        $combined_result = $combined_query
             ->groupBy('gls_account_code')
             ->map(function ($items) {
                 return (object) [
                     'gls_account_code' => $items->first()->gls_account_code,
                     'gls_account_name' => $items->first()->gls_account_name,
                     'gls_gl_date' => $items->first()->gls_gl_date,
-                    'before_total_debit' => $items->sum(fn($item) => $item->before_total_debit ?? 0),
-                    'before_total_credit' => $items->sum(fn($item) => $item->before_total_credit ?? 0),
-                    'after_total_debit' => $items->sum(fn($item) => $item->after_total_debit ?? 0),
-                    'after_total_credit' => $items->sum(fn($item) => $item->after_total_credit ?? 0),
+                    'after_total_credit' => $items->first()->after_total_credit ?? 0,
+                    'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
+                    'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
+                    'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0))
                 ];
             })
             ->values(); // รีเซ็ต key ของ Collection ให้เป็นตัวเลขเรียงลำดับ
 
+
+
         // ตรวจสอบผลลัพธ์
-        //dd($grouped_combined_query);
+        //dd($combined_result, $before_date_query, $after_query);
 
 
 
@@ -203,7 +196,7 @@ class ProfitStatementController extends Controller
 
 
         return [
-            'date_query' => $grouped_combined_query,
+            'date_query' => $combined_result,
             'user' => $user,
             'startDate' => $startDate,
             'endDate' => $endDate,
