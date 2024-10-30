@@ -107,16 +107,21 @@
                                                 </td>
                                                 <td
                                                     class="text-end color-yellow {{ $entry->before_total < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->before_total, 2) }}</td>
+                                                    {{ $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
+                                                </td>
                                                 <td class="text-end color-green">
                                                 </td>
                                                 <td
                                                     class="text-end color-green {{ $entry->after_total < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->after_total, 2) }}</td>
+
+
+                                                    {{ $entry->after_total != 0 ? number_format($entry->after_total, 2) : '' }}
+
+                                                </td>
                                                 <td class="text-end color-blue"></td>
                                                 <td
                                                     class="text-end color-blue {{ $entry->total < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->total, 2) }}
+                                                    {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
                                                 </td>
                                             </tr>
                                         @endif
@@ -127,16 +132,16 @@
                                         </td>
                                         <td
                                             class="text-end color-yellow text-bold {{ $before_total_4 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($before_total_4, 2) }}</td>
+                                            {{ $before_total_4 != 0 ? number_format($before_total_4, 2) : '' }}</td>
                                         <td class="text-end color-green">
                                         </td>
                                         <td
                                             class="text-end color-green text-bold {{ $after_total_4 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($after_total_4, 2) }}</td>
+                                            {{ $after_total_4 != 0 ? number_format($after_total_4, 2) : '' }}</td>
                                         <td class="text-end color-blue"></td>
                                         <td
                                             class="text-end color-blue text-bold {{ $total_4 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($total_4, 2) }}
+                                            {{ $total_4 != 0 ? number_format($total_4, 2) : '' }}
                                         </td>
                                     </tr>
 
@@ -160,18 +165,20 @@
 
                                                 <td
                                                     class="text-end color-yellow {{ $entry->before_total < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->before_total, 2) }}</td>
+                                                    {{ $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
+                                                </td>
                                                 <td class="text-end color-yellow">
                                                 </td>
 
                                                 <td
                                                     class="text-end color-green  {{ $entry->after_total < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->after_total, 2) }}</td>
+                                                    {{ $entry->after_total != 0 ? number_format($entry->after_total, 2) : '' }}
+                                                </td>
                                                 <td class="text-end color-green">
                                                 </td>
                                                 <td
                                                     class="text-end color-blue {{ $entry->total < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->total, 2) }}
+                                                    {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
                                                 </td>
                                                 <td class="text-end color-blue"></td>
                                             </tr>
@@ -183,19 +190,19 @@
 
                                         <td
                                             class="text-end color-yellow text-bold {{ $before_total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($before_total_5, 2) }}</td>
+                                            {{ $before_total_5 != 0 ? number_format($before_total_5, 2) : '' }}</td>
                                         <td class="text-end color-yellow">
                                         </td>
 
                                         <td
                                             class="text-end color-green text-bold  {{ $after_total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($after_total_5, 2) }}</td>
+                                            {{ $after_total_5 != 0 ? number_format($after_total_5, 2) : '' }}</td>
                                         <td class="text-end color-green">
                                         </td>
 
                                         <td
                                             class="text-end color-blue text-bold {{ $total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($total_5, 2) }}
+                                            {{ $total_5 != 0 ? number_format($total_5, 2) : '' }}
                                         </td>
                                         <td class="text-end color-blue"></td>
                                     </tr>
