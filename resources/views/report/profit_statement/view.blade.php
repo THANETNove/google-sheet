@@ -62,8 +62,8 @@
                                     <tr class="table-secondary">
                                         <th class="text-center-vertical" rowspan="2">รหัสบัญชี</th>
                                         <th class="text-center-vertical" rowspan="2">ชื่อบัญชี</th>
-                                        <th colspan="2">ยอดยกมาต้นงวด</th>
-                                        <th colspan="2">ยอดยกมางวดนี้</th>
+                                        <th colspan="2">ยอดสะสมต้นงวด</th>
+                                        <th colspan="2">ยอดสะสมงวดนี้</th>
                                         <th colspan="2">ยอดสะสมยกไป </th>
 
                                     </tr>
@@ -218,12 +218,14 @@
                                             ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้</th>
                                         <td style="border: none;"></td>
                                         <td style="border: none;"
-                                            class="text-end color-blue  text-bold {{ $before_total_4 - $before_total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($before_total_4 - $before_total_5, 2) }}</td>
+                                            class="text-end color-yellow  text-bold {{ $before_total_4 - $before_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_4 - $before_total_5 != 0 ? number_format($before_total_4 - $before_total_5, 2) : '' }}
+                                        </td>
                                         <td style="border: none;"></td>
                                         <td style="border: none;"
-                                            class="text-end color-blue  text-bold  {{ $after_total_4 - $after_total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($after_total_4 - $after_total_5, 2) }}</td>
+                                            class="text-end color-green  text-bold  {{ $after_total_4 - $after_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_4 - $after_total_5 != 0 ? number_format($after_total_4 - $after_total_5, 2) : '' }}
+                                        </td>
                                         <td style="border: none;"></td>
                                         <td class="text-end color-blue  text-bold {{ $total_4 - $total_5 < 0 ? 'error-message' : '' }}"
                                             style="border: none;">
