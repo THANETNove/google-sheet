@@ -218,12 +218,12 @@
                                             ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้</th>
                                         <td style="border: none;"></td>
                                         <td style="border: none;"
-                                            class="text-end color-blue  text-bold {{ $total_4 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($total_4, 2) }}</td>
+                                            class="text-end color-blue  text-bold {{ $before_total_4 - $before_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ number_format($before_total_4 - $before_total_5, 2) }}</td>
                                         <td style="border: none;"></td>
                                         <td style="border: none;"
-                                            class="text-end color-blue  text-bold  {{ $total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($total_5, 2) }}</td>
+                                            class="text-end color-blue  text-bold  {{ $after_total_4 - $after_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ number_format($after_total_4 - $after_total_5, 2) }}</td>
                                         <td style="border: none;"></td>
                                         <td class="text-end color-blue  text-bold {{ $total_4 - $total_5 < 0 ? 'error-message' : '' }}"
                                             style="border: none;">
