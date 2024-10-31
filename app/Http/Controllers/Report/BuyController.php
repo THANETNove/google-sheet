@@ -57,9 +57,10 @@ class BuyController extends Controller
             $currentDate = Carbon::now();
 
             // ลดลง 1 เดือนจากวันที่ปัจจุบัน
-            $previousMonthDate = $currentDate->subMonth(); // ย้อน 1 เดือน (จากต.ค. เป็น ก.ย.)
 
             // กำหนดเดือนและปีให้เป็นเดือนและปีของเดือนก่อนหน้า
+            $previousMonthDate = Carbon::now()->subMonthNoOverflow();
+
             $month = $previousMonthDate->format('m');  // ใช้เดือนของเดือนก่อนหน้า (กันยายน)
             $year = $previousMonthDate->format('Y');   // ใช้ปีของเดือนก่อนหน้า (2024)
         }

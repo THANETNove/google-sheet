@@ -55,8 +55,11 @@ class SellController extends Controller
 
         // ตรวจสอบและแปลง $startDate และ $endDate ให้เป็น Carbon object หากยังไม่ใช่
         if (is_null($endDate)) {
-            $endDate = Carbon::now()->subMonth()->endOfMonth(); // วันสุดท้ายของเดือนก่อนหน้า
-            $startDate = Carbon::now()->subMonth()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า
+            Carbon::setTestNow(); // รีเซ็ต Carbon::now() ถ้ามีการใช้ mock datetime ก่อนหน้า
+
+            $startDate = Carbon::now()->subMonthNoOverflow()->startOfMonth(); // วันที่ 1 ของเดือนก่อนหน้า (เดือนกันยายน)
+            $endDate = Carbon::now()->subMonthNoOverflow()->endOfMonth(); // วันสุดท้ายของเดือนก่อนหน้า (เดือนกันยายน)
+
         } else {
             // ตรวจสอบว่าถูกส่งมาเป็น string หรือไม่ ถ้าใช่ให้แปลงเป็น Carbon object
             if (!($startDate instanceof Carbon)) {
