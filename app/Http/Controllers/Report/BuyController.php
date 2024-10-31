@@ -307,6 +307,8 @@ class BuyController extends Controller
                 $lastRow = $this->data->count() + 2;
                 $sheet->getStyle("G$lastRow:I$lastRow")
                     ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+                $sheet->mergeCells('B1:C1'); // รหัสบัญชี
             }
 
             public function registerEvents(): array

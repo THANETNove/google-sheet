@@ -270,25 +270,39 @@ class SellController extends Controller
             public function headings(): array
             {
                 return [
-                    'ID',
-                    'Document',
-                    'Date',
-                    'Company',
-                    'TaxID',
-                    'Branch',
-                    'Amount',
-                    'Tax',
-                    'Total',
+                    [
+                        '#',
+                        'ใบกำกับภาษี',
+                        '',
+                        'ชื่อผู้ขายสินค้า/ผู้ให้บริการ',
+                        'เลขประจำตัวผู้เสียภาษีอากรของ ผู้ขายสินค้า/ผู้ให้บริการ',
+                        'สถานประกอบการ',
+                        'มูลค่าสินค้า',
+                        'จำนวนเงิน',
+                        'รวม'
+                    ],
+                    [
+                        '',
+                        'วัน เดือน ปี',
+                        'เล่มที่/เลขที่',
+                        '',
+                        '',
+                        'สำนักงานใหญ่ / สาขา',
+                        'หรือบริการ',
+                        'ภาษีมูลค่าเพิ่ม',
+                        ''
+                    ]
                 ];
             }
+
 
             public function columnWidths(): array
             {
                 return [
                     'A' => 10,  // ID
                     'B' => 20,  // Document
-                    'C' => 15,  // Date
-                    'D' => 30,  // Company
+                    'C' => 30,  // Date
+                    'D' => 50,  // Company
                     'E' => 20,  // TaxID
                     'F' => 25,  // Branch
                     'G' => 15,  // Amount
@@ -299,12 +313,48 @@ class SellController extends Controller
 
             public function styles(Worksheet $sheet)
             {
-                // Center align headers and right-align monetary values
+                // Center align headers
                 $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-                // Right-align monetary values and set number format for currency columns
+                // Left-align columns that need left alignment
+                $sheet->getStyle('C2:C' . ($this->data->count() + 2))
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                // Left-align company column
+                $sheet->getStyle('D2:D' . ($this->data->count() + 1))
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+                // Right-align monetary columns (Amount, Tax, Total) for all rows
                 $sheet->getStyle('G2:I' . ($this->data->count() + 1))
                     ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+                // Right-align total row (for the last row)
+                $lastRow = $this->data->count() + 2;
+                $sheet->getStyle("G$lastRow:I$lastRow")
+                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+                $sheet->mergeCells('B1:C1'); // รหัสบัญชี
+            }
+
+            public function registerEvents(): array
+            {
+                return [
+                    AfterSheet::class => function (AfterSheet $event) {
+                        // Merge cells for multi-line headers
+                        $event->sheet->mergeCells('B1:C1'); // ใบกำกับภาษี
+                        $event->sheet->mergeCells('D1:D2'); // ชื่อผู้ขายสินค้า/ผู้ให้บริการ
+                        $event->sheet->mergeCells('E1:E2'); // เลขประจำตัวผู้เสียภาษี
+                        $event->sheet->mergeCells('F1:F2'); // สถานประกอบการ
+                        $event->sheet->mergeCells('G1:G2'); // มูลค่าสินค้า
+                        $event->sheet->mergeCells('H1:H2'); // จำนวนเงิน
+                        $event->sheet->mergeCells('I1:I2'); // รวม
+
+                        // Center-align and bold the headers
+                        $event->sheet->getStyle('A1:I2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                        $event->sheet->getStyle('A1:I2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                        $event->sheet->getStyle('A1:I2')->getFont()->setBold(true);
+                    },
+                ];
             }
         };
 
