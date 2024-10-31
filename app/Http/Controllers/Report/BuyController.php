@@ -66,10 +66,10 @@ class BuyController extends Controller
         // ใช้ Carbon เพื่อสร้างวันที่จากเดือนและปีที่กำหนด
         $startDate = Carbon::createFromDate($year, $month, 1); // วันที่ 1 ของเดือนที่เลือก
         $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth(); // วันที่สุดท้ายของเดือนที่เลือก
-
+        /* dd($defaultMonth); */
         // แปลงเดือนเป็นชื่อเดือนภาษาไทย
         $vat_month = $startDate->month;
-        $monthName = $this->getMonths()[$vat_month];
+        $monthName = $this->getMonths()[$defaultMonth];
         $monthName2 = "$monthName $year"; // เช่น 'มกราคม 2024'
 
         // ดึงข้อมูลตามเดือนและปีที่เลือก
@@ -95,7 +95,7 @@ class BuyController extends Controller
             )
             ->orderBy('gl_date', 'ASC')
             ->get();
-
+        /*    dd($monthName); */
         return [
             'query' => $query,
             'user' => $user,
