@@ -271,106 +271,99 @@ class ProfitStatementController extends Controller
 
         $data = $this->getData($id, $start_date, $end_date);
 
-        // Calculate sums for each account code grouping
-        // Calculate sums for each account code grouping
-        $quoted_net_balance4 = $data['query']->filter(function ($item) {
-            return Str::startsWith($item->gls_account_code, '4');
-        })->sum('quoted_net_balance');
+        // สร้างข้อมูลที่จัดกลุ่มและคำนวณค่า
+        $combined_result = $data['date_query']
+            ->groupBy('gls_account_code')
+            ->map(function ($items) {
+                return (object) [
+                    'gls_account_code' => $items->first()->gls_account_code,
+                    'gls_account_name' => $items->first()->gls_account_name,
+                    'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
+                    'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
+                    'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
+                ];
+            })
+            ->values();
 
-        $net_balance4 = $data['query']->filter(function ($item) {
-            return Str::startsWith($item->gls_account_code, '4');
-        })->sum('net_balance');
+        // แบ่งข้อมูลเป็นกลุ่มรายได้และค่าใช้จ่าย
+        $group4Data = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'));
+        $group5Data = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'));
 
-        $quoted_net_balance5 = $data['query']->filter(function ($item) {
-            return Str::startsWith($item->gls_account_code, '5');
-        })->sum('quoted_net_balance');
+        // คำนวณยอดรวมสำหรับแต่ละกลุ่ม
+        $before_total_4 = $group4Data->sum('before_total');
+        $after_total_4 = $group4Data->sum('after_total');
+        $total_4 = $group4Data->sum('total');
 
-        $net_balance5 = $data['query']->filter(function ($item) {
-            return Str::startsWith($item->gls_account_code, '5');
-        })->sum('net_balance');
+        $before_total_5 = $group5Data->sum('before_total');
+        $after_total_5 = $group5Data->sum('after_total');
+        $total_5 = $group5Data->sum('total');
 
-        // Debugging to check filtered data
-
+        // สร้างข้อมูลแบบ Excel
         $mappedData = collect();
 
-        $group4Data = $data['query']->filter(function ($item) {
-            return Str::startsWith($item->gls_account_code, '4');
-        })->map(function ($item) {
-            return [
-                'gls_account_code' => $item->gls_account_code,
-                'gls_account_name' => $item->gls_account_name,
-                'initial_debit' => number_format(0, 2),
-                'initial_credit' => number_format($item->quoted_net_balance ?? 0, 2),
-                'current_debit' => number_format($item->current_debit ?? 0, 2),
-                'current_credit' => number_format($item->net_balance ?? 0, 2),
-                'cumulative_debit' => number_format(0, 2),
-                'cumulative_credit' => number_format(($item->quoted_net_balance ?? 0) + ($item->net_balance ?? 0), 2),
-            ];
-        });
-
-        $group5Data = $data['query']->filter(function ($item) {
-            return Str::startsWith($item->gls_account_code, '5');
-        })->map(function ($item) {
-            return [
-                'gls_account_code' => $item->gls_account_code,
-                'gls_account_name' => $item->gls_account_name,
-                'initial_debit' => number_format($item->quoted_net_balance ?? 0, 2),
-                'initial_credit' => number_format(0, 2),
-                'current_debit' => number_format($item->net_balance ?? 0, 2),
-                'current_credit' => number_format(0, 2),
-                'cumulative_debit' => number_format(($item->quoted_net_balance ?? 0) + ($item->net_balance ?? 0), 2),
-                'cumulative_credit' => number_format(0, 2),
-            ];
-        });
-
-
-        $total_balance4 = $quoted_net_balance4 + $net_balance4;
-
-        // Append '4' entries and their total
-        $mappedData = $mappedData->concat($group4Data);
+        // รายได้จากการดำเนินงาน
+        $mappedData->push(['', 'รายได้จากการดำเนินงาน', '', '', '', '', '', '']);
+        foreach ($group4Data as $entry) {
+            $mappedData->push([
+                $entry->gls_account_code,
+                $entry->gls_account_name,
+                '', // Initial Debit
+                number_format($entry->before_total, 2),
+                '', // Current Debit
+                number_format($entry->after_total, 2),
+                '', // Cumulative Debit
+                number_format($entry->total, 2)
+            ]);
+        }
         $mappedData->push([
-            'gls_account_code' => '',
-            'gls_account_name' => 'รายได้จากการดำเนินงาน',
-            'initial_debit' => '',
-            'initial_credit' => number_format($quoted_net_balance4, 2),
-            'current_debit' => '',
-            'current_credit' => number_format($net_balance4, 2),
-            'cumulative_debit' => '',
-            'cumulative_credit' => number_format($total_balance4, 2),
+            '',
+            'รวมรายได้จากการดำเนินงาน',
+            '',
+            number_format($before_total_4, 2),
+            '',
+            number_format($after_total_4, 2),
+            '',
+            number_format($total_4, 2)
         ]);
 
-        // Calculate totals for account code starting with '5'
-
-        $total_balance5 = $quoted_net_balance5 + $net_balance5;
-
-        // Append '5' entries and their total
-        $mappedData = $mappedData->concat($group5Data);
+        // ค่าใช้จ่ายในการขายและบริหาร
+        $mappedData->push(['', 'ค่าใช้จ่ายในการขายและบริหาร', '', '', '', '', '', '']);
+        foreach ($group5Data as $entry) {
+            $mappedData->push([
+                $entry->gls_account_code,
+                $entry->gls_account_name,
+                number_format($entry->before_total, 2), // Initial Debit
+                '',
+                number_format($entry->after_total, 2), // Current Debit
+                '',
+                number_format($entry->total, 2), // Cumulative Debit
+                ''
+            ]);
+        }
         $mappedData->push([
-            'gls_account_code' => '',
-            'gls_account_name' => 'รายได้จากการดำเนินงาน',
-            'initial_debit' =>  number_format($quoted_net_balance5, 2),
-            'initial_credit' => '',
-            'current_debit' => number_format($net_balance5, 2),
-            'current_credit' => '',
-            'cumulative_debit' =>  number_format($total_balance5, 2),
-            'cumulative_credit' => '',
+            '',
+            'รวมค่าใช้จ่ายในการขายและบริหาร',
+            number_format($before_total_5, 2),
+            '',
+            number_format($after_total_5, 2),
+            '',
+            number_format($total_5, 2),
+            ''
         ]);
 
-        // Append overall total
-        $overall_total = $total_balance4 + $total_balance5;
+        // ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้
         $mappedData->push([
-            'gls_account_code' => '',
-            'gls_account_name' => 'ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้',
-            'initial_debit' => '',
-            'initial_credit' => '',
-            'current_debit' => number_format($total_balance4, 2),
-            'current_credit' => '',
-            'cumulative_debit' => number_format($total_balance5, 2),
-            'cumulative_credit' => number_format($overall_total, 2),
+            '',
+            'ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้',
+            '',
+            number_format($before_total_4 - $before_total_5, 2),
+            '',
+            number_format($after_total_4 - $after_total_5, 2),
+            '',
+            number_format($total_4 - $total_5, 2)
         ]);
 
-        // Define an inline class for export
-
+        // การ Export ข้อมูลไปยัง Excel
         $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
 
             protected $data;
@@ -388,43 +381,81 @@ class ProfitStatementController extends Controller
             public function headings(): array
             {
                 return [
-                    'Account Code',
-                    'Account Name',
-                    'Initial Debit',
-                    'Initial Credit',
-                    'Current Debit',
-                    'Current Credit',
-                    'Cumulative Debit',
-                    'Cumulative Credit',
+                    [
+                        'รหัสบัญชี',
+                        'ชื่อบัญชี',
+                        'ยอดสะสมต้นงวด',
+                        '',
+                        'ยอดสะสมงวดนี้',
+                        '',
+                        'ยอดสะสมยกไป',
+                        ''
+                    ],
+                    [
+                        '',
+                        '',
+                        'เดบิต',
+                        'เครดิต',
+                        'เดบิต',
+                        'เครดิต',
+                        'เดบิต',
+                        'เครดิต'
+                    ]
                 ];
             }
 
             public function columnWidths(): array
             {
                 return [
-                    'A' => 20, // Account Code
-                    'B' => 30, // Account Name
-                    'C' => 15, // Initial Debit
-                    'D' => 15, // Initial Credit
-                    'E' => 15, // Current Debit
-                    'F' => 15, // Current Credit
-                    'G' => 20, // Cumulative Debit
-                    'H' => 20, // Cumulative Credit
+                    'A' => 20,
+                    'B' => 40,
+                    'C' => 15,
+                    'D' => 15,
+                    'E' => 15,
+                    'F' => 15,
+                    'G' => 20,
+                    'H' => 20,
                 ];
             }
 
             public function styles(Worksheet $sheet)
             {
-                // Center align headers
-                $sheet->getStyle('A1:H1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                // ตั้งค่าการจัดตรงกลางสำหรับหัวข้อ
+                $sheet->getStyle('A1:H2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A1:H2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle('A1:H2')->getFont()->setBold(true);
 
-                // Right align all monetary columns
-                $sheet->getStyle('C2:H' . ($this->data->count() + 1))
-                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                // รวมเซลล์สำหรับหัวข้อหลัก
+                $sheet->mergeCells('A1:A2'); // รหัสบัญชี
+                $sheet->mergeCells('B1:B2'); // ชื่อบัญชี
+                $sheet->mergeCells('C1:D1'); // ยอดสะสมต้นงวด
+                $sheet->mergeCells('E1:F1'); // ยอดสะสมงวดนี้
+                $sheet->mergeCells('G1:H1'); // ยอดสะสมยกไป
+
+                // ตั้งค่า Auto Filter
+                $sheet->setAutoFilter('A2:H' . ($this->data->count() + 2));
+
+                // การจัดตำแหน่งตัวเลข
+                $sheet->getStyle('C3:H' . ($this->data->count() + 2))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            }
+
+            public function registerEvents(): array
+            {
+                return [
+                    AfterSheet::class => function (AfterSheet $event) {
+                        // การจัดขอบเขตของตารางหัวข้อ
+                        $event->sheet->getStyle('A1:H2')->applyFromArray([
+                            'borders' => [
+                                'allBorders' => [
+                                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                ],
+                            ],
+                        ]);
+                    },
+                ];
             }
         };
 
-        // Download the Excel file
         return Excel::download($export, 'profit_statement.xlsx');
     }
 }
