@@ -30,7 +30,9 @@
                         </div>
                         <div class="table-responsive m-3">
                             <table class="table">
+
                                 <thead>
+
                                     <tr class="table-secondary">
                                         <th class="child-1 text-center-vertical" rowspan="2">#</th>
                                         <th class="text-center" colspan="2">ใบกำกับภาษี</th>
@@ -60,6 +62,7 @@
                                     $totalSum = 0;
 
                                 @endphp
+
                                 <tbody class="table-border-bottom-0">
                                     @foreach ($query as $index => $que)
                                         @php
@@ -71,9 +74,18 @@
 
                                         <tr>
                                             <td>{{ $i++ }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($que->gl_date)) }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($que->gl_date)) }} {{-- <br>
+                                                {{ date('d-m-Y', strtotime($que->gl_taxmonth)) }} --}}</td>
                                             <td>
-                                                {{ $que->gl_document }}
+                                                @if ($que->gl_url)
+                                                    <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
+                                                        rel="noopener noreferrer">
+                                                        {{ $que->gl_document }}
+                                                        <span class="id-message">หน้า {{ $que->gl_page }}</span>
+                                                    </a>
+                                                @else
+                                                    {{ $que->gl_document }}
+                                                @endif
                                             </td>
                                             <td>{{ $que->gl_company }}</td>
                                             <td class="monospace">{{ $que->gl_taxid }}</td>
@@ -101,10 +113,6 @@
                                     </tr>
                                 </tbody>
                             </table>
-
-
-
-
                         </div>
                     </div>
                 </div>

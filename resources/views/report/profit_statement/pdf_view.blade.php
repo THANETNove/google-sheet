@@ -31,15 +31,14 @@
                             <p>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</p>
                         </div>
                         <div class="table-responsive m-3">
-
                             <table class="table">
                                 <thead class="text-center">
                                     <tr class="table-secondary">
                                         <th class="text-center-vertical" rowspan="2">รหัสบัญชี</th>
                                         <th class="text-center-vertical" rowspan="2">ชื่อบัญชี</th>
-                                        <th colspan="2">ยอดยกมาต้นงวด</th>
-                                        <th colspan="2">ยอดยกมางวดนี้ </th>
-                                        <th colspan="2">ยอดสะสมคงเหลือ </th>
+                                        <th colspan="2">ยอดสะสมต้นงวด</th>
+                                        <th colspan="2">ยอดสะสมงวดนี้</th>
+                                        <th colspan="2">ยอดสะสมยกไป </th>
 
                                     </tr>
                                     <tr class="table-secondary">
@@ -54,61 +53,70 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $quoted_net_balance4 = 0;
-                                        $net_balance4 = 0;
-                                        $quoted_net_balance5 = 0;
-                                        $net_balance5 = 0;
+                                        $before_total_4 = 0;
+                                        $after_total_4 = 0;
+                                        $total_4 = 0;
+                                        $before_total_5 = 0;
+                                        $after_total_5 = 0;
+                                        $total_5 = 0;
                                     @endphp
 
                                     <tr>
                                         <td style="border: none;"></td>
                                         <th colspan="7" class="center" style="border: none;">
                                             รายได้จากการดำเนินงาน</th>
+
                                     </tr>
-                                    @foreach ($query as $entry)
+                                    @foreach ($date_query as $entry)
                                         @if (Str::startsWith($entry->gls_account_code, '4'))
                                             @php
-                                                $quoted_net_balance4 += $entry->quoted_net_balance;
-                                                $net_balance4 += $entry->net_balance;
+                                                $before_total_4 += $entry->before_total;
+                                                $after_total_4 += $entry->after_total;
+                                                $total_4 += $entry->total;
                                             @endphp
-
                                             <tr>
-
                                                 <td class="center">{{ $entry->gls_account_code }}</td>
                                                 <td class="center">{{ $entry->gls_account_name }}</td>
-                                                <td class="text-end"></td>
-                                                <td
-                                                    class="text-end {{ $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->quoted_net_balance, 2) }}</td>
-                                                <td class="text-end"></td>
-                                                <td
-                                                    class="text-end {{ $entry->net_balance < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->net_balance, 2) }}</td>
-                                                <td class="text-end"></td>
-                                                <td
-                                                    class="text-end {{ $entry->net_balance + $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->net_balance + $entry->quoted_net_balance, 2) }}
+                                                <td class="text-end color-yellow">
                                                 </td>
+                                                <td
+                                                    class="text-end color-yellow {{ $entry->before_total < 0 ? 'error-message' : '' }}">
+                                                    {{ $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
+                                                </td>
+                                                <td class="text-end color-green">
+                                                </td>
+                                                <td
+                                                    class="text-end color-green {{ $entry->after_total < 0 ? 'error-message' : '' }}">
 
+
+                                                    {{ $entry->after_total != 0 ? number_format($entry->after_total, 2) : '' }}
+
+                                                </td>
+                                                <td class="text-end color-blue"></td>
+                                                <td
+                                                    class="text-end color-blue {{ $entry->total < 0 ? 'error-message' : '' }}">
+                                                    {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
+                                                </td>
                                             </tr>
                                         @endif
                                     @endforeach
                                     <tr>
-                                        <td style="border: none;"></td>
-                                        <td style="border: none;"></td>
-                                        <th class="center text-end" style="border: none;">
-                                            รายได้จากการดำเนินงาน</th>
-                                        <th class="text-end  {{ $quoted_net_balance4 < 0 ? 'error-message' : '' }}"
-                                            style="border: none;">
-                                            {{ number_format($quoted_net_balance4, 2) }}</th>
-                                        <td style="border: none;"></td>
-                                        <th class="text-end {{ $net_balance4 < 0 ? 'error-message' : '' }}"
-                                            style="border: none;">
-                                            {{ number_format($net_balance4, 2) }}</th>
-                                        <td style="border: none;"></td>
-                                        <th class="text-end  {{ $quoted_net_balance4 + $net_balance4 < 0 ? 'error-message' : '' }}"
-                                            style="border: none;">
-                                            {{ number_format($quoted_net_balance4 + $net_balance4, 2) }}</th>
+                                        <td colspan="2" class="text-end text-bold">รวมรายได้จากการดำเนินงาน</td>
+                                        <td class="text-end color-yellow">
+                                        </td>
+                                        <td
+                                            class="text-end color-yellow text-bold {{ $before_total_4 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_4 != 0 ? number_format($before_total_4, 2) : '' }}</td>
+                                        <td class="text-end color-green">
+                                        </td>
+                                        <td
+                                            class="text-end color-green text-bold {{ $after_total_4 < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_4 != 0 ? number_format($after_total_4, 2) : '' }}</td>
+                                        <td class="text-end color-blue"></td>
+                                        <td
+                                            class="text-end color-blue text-bold {{ $total_4 < 0 ? 'error-message' : '' }}">
+                                            {{ $total_4 != 0 ? number_format($total_4, 2) : '' }}
+                                        </td>
                                     </tr>
 
 
@@ -116,85 +124,92 @@
                                     <tr>
                                         <td style="border: none;"></td>
                                         <th colspan="7" class="center" style="border: none;">
-                                            รายได้จากการดำเนินงาน</th>
+                                            ค่าใช้จ่ายในการขายเเละบริหาร</th>
                                     </tr>
-                                    @foreach ($query as $entry)
+                                    @foreach ($date_query as $entry)
                                         @if (Str::startsWith($entry->gls_account_code, '5'))
                                             @php
-                                                $quoted_net_balance5 += $entry->quoted_net_balance;
-                                                $net_balance5 += $entry->net_balance;
+                                                $before_total_5 += $entry->before_total;
+                                                $after_total_5 += $entry->after_total;
+                                                $total_5 += $entry->total;
                                             @endphp
-
                                             <tr>
-
                                                 <td class="center">{{ $entry->gls_account_code }}</td>
                                                 <td class="center">{{ $entry->gls_account_name }}</td>
+
                                                 <td
-                                                    class="text-end {{ $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->quoted_net_balance, 2) }}</td>
-                                                <td class="text-end"></td>
-                                                <td
-                                                    class="text-end {{ $entry->net_balance < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->net_balance, 2) }}</td>
-                                                <td class="text-end"></td>
-                                                <td
-                                                    class="text-end {{ $entry->net_balance + $entry->quoted_net_balance < 0 ? 'error-message' : '' }}">
-                                                    {{ number_format($entry->quoted_net_balance + $entry->net_balance, 2) }}
+                                                    class="text-end color-yellow {{ $entry->before_total < 0 ? 'error-message' : '' }}">
+                                                    {{ $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
                                                 </td>
-                                                <td class="text-end"></td>
+                                                <td class="text-end color-yellow">
+                                                </td>
+
+                                                <td
+                                                    class="text-end color-green  {{ $entry->after_total < 0 ? 'error-message' : '' }}">
+                                                    {{ $entry->after_total != 0 ? number_format($entry->after_total, 2) : '' }}
+                                                </td>
+                                                <td class="text-end color-green">
+                                                </td>
+                                                <td
+                                                    class="text-end color-blue {{ $entry->total < 0 ? 'error-message' : '' }}">
+                                                    {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
+                                                </td>
+                                                <td class="text-end color-blue"></td>
                                             </tr>
                                         @endif
                                     @endforeach
-                                    <tr>
-                                        <td style="border: none;"></td>
-                                        <td style="border: none;"></td>
-                                        <th class="center text-end" style="border: none;">
-                                            รายได้จากการดำเนินงาน</th>
-                                        <th class="text-end {{ $quoted_net_balance5 < 0 ? 'error-message' : '' }}"
-                                            style="border: none;">
-                                            {{ number_format($quoted_net_balance5, 2) }}</th>
 
-                                        <th class="text-end {{ $net_balance5 < 0 ? 'error-message' : '' }}"
-                                            style="border: none;">
-                                            {{ number_format($net_balance5, 2) }}</th>
-                                        <td style="border: none;"></td>
-                                        <th class="text-end {{ $quoted_net_balance5 + $net_balance5 < 0 ? 'error-message' : '' }}"
-                                            style="border: none;">
-                                            {{ number_format($quoted_net_balance5 + $net_balance5, 2) }}</th>
-                                        <td style="border: none;"></td>
+                                    <tr>
+                                        <td colspan="2" class="text-end text-bold">รวมค่าใช้จ่ายในการขายและบริหาร
+                                        </td>
+
+                                        <td
+                                            class="text-end color-yellow text-bold {{ $before_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_5 != 0 ? number_format($before_total_5, 2) : '' }}</td>
+                                        <td class="text-end color-yellow">
+                                        </td>
+
+                                        <td
+                                            class="text-end color-green text-bold  {{ $after_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_5 != 0 ? number_format($after_total_5, 2) : '' }}</td>
+                                        <td class="text-end color-green">
+                                        </td>
+
+                                        <td
+                                            class="text-end color-blue text-bold {{ $total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $total_5 != 0 ? number_format($total_5, 2) : '' }}
+                                        </td>
+                                        <td class="text-end color-blue"></td>
                                     </tr>
                                     <tr>
                                         <td colspan="8" style="border: none; height: 32px;"></td>
                                         <!-- ใช้ height เพิ่มช่องว่าง -->
                                     </tr>
-                                    @php
-                                        $total_balance4 = $quoted_net_balance4 + $net_balance4;
-                                        $total_balance5 = $quoted_net_balance5 + $net_balance5;
-                                        $overall_total = $total_balance4 + $total_balance5;
-                                    @endphp
+
 
                                     <tr style="border: none; margin-top: 64px;">
-                                        <td class="text-end" style="border: none;"></td>
+
+                                        <th class="text-end" style="border: none;" colspan="2">
+                                            ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้</th>
                                         <td style="border: none;"></td>
-                                        <th class="text-end" style="border: none;">ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้</th>
+                                        <td style="border: none;"
+                                            class="text-end color-yellow  text-bold {{ $before_total_4 - $before_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_4 - $before_total_5 != 0 ? number_format($before_total_4 - $before_total_5, 2) : '' }}
+                                        </td>
                                         <td style="border: none;"></td>
-                                        <th style="border: none;"
-                                            class="text-end {{ $total_balance4 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($total_balance4, 2) }}
-                                        </th>
+                                        <td style="border: none;"
+                                            class="text-end color-green  text-bold  {{ $after_total_4 - $after_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_4 - $after_total_5 != 0 ? number_format($after_total_4 - $after_total_5, 2) : '' }}
+                                        </td>
                                         <td style="border: none;"></td>
-                                        <th style="border: none;"
-                                            class="text-end {{ $total_balance5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($total_balance5, 2) }}
-                                        </th>
-                                        <th style="border: none;"
-                                            class="text-end {{ $overall_total < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($overall_total, 2) }}
-                                        </th>
+                                        <td class="text-end color-blue  text-bold {{ $total_4 - $total_5 < 0 ? 'error-message' : '' }}"
+                                            style="border: none;">
+                                            {{ number_format($total_4 - $total_5, 2) }}
+                                        </td>
+
                                     </tr>
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>

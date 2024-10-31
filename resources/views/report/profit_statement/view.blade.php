@@ -55,8 +55,6 @@
                             </a>
                         </div>
                         <div class="table-responsive m-3">
-
-
                             <table class="table">
                                 <thead class="text-center">
                                     <tr class="table-secondary">
@@ -235,7 +233,6 @@
                                     </tr>
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>

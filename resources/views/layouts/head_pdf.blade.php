@@ -254,4 +254,20 @@
         font-size: 0.90rem;
         letter-spacing: 0px;
     }
+
+    .color-yellow {
+        color: #9b8101;
+    }
+
+    .color-green {
+        color: green;
+    }
+
+    .color-blue {
+        color: blue;
+    }
+
+    .text-bold {
+        font-weight: bold;
+    }
 </style>

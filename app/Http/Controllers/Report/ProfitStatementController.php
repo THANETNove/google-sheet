@@ -250,7 +250,7 @@ class ProfitStatementController extends Controller
 
         $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
         $pdf = PDF::loadView('report.profit_statement.pdf_view', [
-            'query' => $data['query'],
+            'date_query' => $data['date_query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
