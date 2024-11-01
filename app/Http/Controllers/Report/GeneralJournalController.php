@@ -62,15 +62,11 @@ class GeneralJournalController extends Controller
 
         // Join the two tables (general_ledgers and general_ledger_subs) in one query
 
-        $generalLedgers = DataGeneralLedgerSub::where('gl_code_company', $id)
+        // ใช้ Eager Loading เพื่อลดจำนวนการคิวรี
+        $generalLedgers = DataGeneralLedgerSub::with('subs')
+            ->where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])
             ->get();
-
-        // For each general ledger, fetch the related subs
-        foreach ($generalLedgers as $ledger) {
-            $subs = $ledger->getSubsByGlCode($ledger->gl_code, $id);  // Call the function from the model
-            $ledger->subs = $subs;  // Attach the subs to the ledger for easy use in the view
-        }
 
 
 
