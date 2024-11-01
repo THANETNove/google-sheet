@@ -19,6 +19,9 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class GeneralJournalController extends Controller
 {
@@ -180,67 +183,131 @@ class GeneralJournalController extends Controller
     public function exportExcel($id, $start_date, $end_date)
     {
 
-        $data = session()->get('generalLedgers');
+        $data = collect(session()->get('generalLedgers'));
+        $query =  $data['query'];
+        // ตรวจสอบว่า $query มีข้อมูลหรือไม่
+        if ($query->isEmpty()) {
+            return back()->with('error', 'ไม่มีข้อมูลสำหรับการส่งออก');
+        }
 
-        // Map the query data to include subs information and calculate subtotals
-        $mappedData = $data['query']->map(function ($ledger) {
-            $rows = [];
+        $data = collect();
+        $i = 1;
 
-            // Format the main row
-            $formattedDate = Carbon::parse($ledger->gl_date)->format('d-m-Y');
-            $rows[] = [
-                'id' => $ledger->id,
-                'gl_document' => $ledger->gl_document,
-                'gl_date' => $formattedDate,
-                'gl_company' => $ledger->gl_company,
-                'gl_description' => $ledger->gl_description,
-                'gls_account_name' => '', // Leave empty for the main row
-                'gls_debit' => '', // Leave empty for the main row
-                'gls_credit' => '', // Leave empty for the main row
-            ];
-
-            // Calculate subtotal for each document
-            $subtotalDebit = 0;
-            $subtotalCredit = 0;
-
-            // Loop through subs and add them to the rows
-            foreach ($ledger->subs as $sub) {
-                $rows[] = [
-                    'id' => '', // Leave empty for subs rows
-                    'gl_document' => '', // Leave empty for subs rows
-                    'gl_date' => '', // Leave empty for subs rows
-                    'gl_company' => '', // Leave empty for subs rows
-                    'gl_description' => '', // Leave empty for subs rows
-                    'gls_account_name' => $sub->gls_account_name,
-                    'gls_debit' => number_format($sub->gls_debit, 2),
-                    'gls_credit' => number_format($sub->gls_credit, 2),
-                ];
-
-                // Accumulate totals
-                $subtotalDebit += $sub->gls_debit;
-                $subtotalCredit += $sub->gls_credit;
+        // จัดเตรียมข้อมูล
+        foreach ($query as $ledger) {
+            if (!isset($ledger->gl_date, $ledger->gl_document, $ledger->gl_company, $ledger->gl_description, $ledger->subs)) {
+                continue; // ข้ามถ้าข้อมูลไม่ครบ
             }
 
-            // Add subtotal row with formatted numbers
-            $rows[] = [
-                'id' => '',
-                'gl_document' => '',
-                'gl_date' => '',
-                'gl_company' => '',
-                'gl_description' => 'รวม', // Label for subtotal
-                'gls_account_name' => '',
-                'gls_debit' => number_format($subtotalDebit, 2),
-                'gls_credit' => number_format($subtotalCredit, 2),
-            ];
+            $totalDebit = 0;
+            $totalCredit = 0;
 
-            return $rows;
-        });
+            // ข้อมูลแถวหลักของแต่ละเอกสาร
+            $data->push([
+                $i++, // คอลัมน์ A
+                date('d-m-Y', strtotime($ledger->gl_date)), // คอลัมน์ B
+                $ledger->gl_document, // คอลัมน์ C
+                $ledger->gl_company . ' - ' . $ledger->gl_description, // คอลัมน์ D
+                '', // Placeholder for Debit (คอลัมน์ E)
+                '', // Placeholder for Credit (คอลัมน์ F)
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '' // Placeholder for G-Z
+            ]);
 
-        // Flatten the mapped data (since each ledger has multiple rows)
-        $flattenedData = collect($mappedData)->flatten(1);
+            // เพิ่มข้อมูล subs ที่เกี่ยวข้อง
+            foreach ($ledger->subs as $sub) {
+                if (!isset($sub->gls_account_code, $sub->gls_account_name, $sub->gls_debit, $sub->gls_credit)) {
+                    continue; // ข้ามถ้าข้อมูลไม่ครบ
+                }
 
-        // Define an inline class for export with column widths and styles
-        $export = new class($flattenedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
+                $data->push([
+                    '', // Placeholder for #
+                    '', // Placeholder for Date
+                    '', // Placeholder for Document Number
+                    "{$sub->gls_account_code} {$sub->gls_account_name}", // Company - Description
+                    number_format($sub->gls_debit, 2), // Debit
+                    number_format($sub->gls_credit, 2), // Credit
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '' // Placeholder for G-Z
+                ]);
+
+                $totalDebit += $sub->gls_debit;
+                $totalCredit += $sub->gls_credit;
+            }
+
+            // สรุปผลรวมสำหรับแต่ละ ledger
+            $isEqual = number_format($totalDebit, 2) == number_format($totalCredit, 2);
+            $data->push([
+                '',
+                '',
+                '',
+                'รวม', // รวมข้อความในคอลัมน์ D
+                number_format($totalDebit, 2), // คอลัมน์ E
+                number_format($totalCredit, 2), // คอลัมน์ F
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '' // Placeholder for G-Z
+            ]);
+
+            if (!$isEqual) {
+                $data->last()[0] = 'style:background-color:#FFCCCC;';
+            }
+        }
+
+        $export = new class($data) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
 
             public function __construct($data)
@@ -250,49 +317,72 @@ class GeneralJournalController extends Controller
 
             public function array(): array
             {
-                return $this->data->values()->toArray(); // Convert collection to array
+                return $this->data->toArray();
             }
 
             public function headings(): array
             {
                 return [
-                    'ID',
-                    'Document',
-                    'Date',
-                    'Company',
-                    'Description',
-                    'Account Name',
-                    'Debit',
-                    'Credit',
+                    ['#', 'วันที่', 'เลขที่เอกสาร', 'บริษัท', 'เดบิต', 'เครดิต', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
                 ];
             }
 
             public function columnWidths(): array
             {
                 return [
-                    'A' => 10,  // ID
-                    'B' => 20,  // Document
-                    'C' => 15,  // Date
-                    'D' => 40,  // Company
-                    'E' => 25,  // Description
-                    'F' => 30,  // Account Name
-                    'G' => 15,  // Debit
-                    'H' => 15,  // Credit
+                    'A' => 10,
+                    'B' => 15,
+                    'C' => 20,
+                    'D' => 50,
+                    'E' => 15,
+                    'F' => 15,
+                    'G' => 10,
+                    'H' => 10,
+                    'I' => 10,
+                    'J' => 10,
+                    'K' => 10,
+                    'L' => 10,
+                    'M' => 10,
+                    'N' => 10,
+                    'O' => 10,
+                    'P' => 10,
+                    'Q' => 10,
+                    'R' => 10,
+                    'S' => 10,
+                    'T' => 10,
+                    'U' => 10,
+                    'V' => 10,
+                    'W' => 10,
+                    'X' => 10,
+                    'Y' => 10,
+                    'Z' => 10
                 ];
             }
 
             public function styles(Worksheet $sheet)
             {
-                // Center-align the headers
-                $sheet->getStyle('A1:H1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                // ตั้งค่าการจัดตรงกลางและตัวหนา
+                $sheet->getStyle('A1:Z1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A1:Z1')->getFont()->setBold(true);
+                $dataRowCount = $this->data->count() + 1; // จำนวนแถวของข้อมูลบวกกับหัวตาราง
+                $sheet->getStyle("C2:C$dataRowCount")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("E2:E$dataRowCount")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("F2:F$dataRowCount")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
-                // Right-align the debit and credit columns
-                $sheet->getStyle('G2:H' . ($this->data->count() + 1))
-                    ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+                // กำหนดสีพื้นหลังสำหรับแถวที่มียอดไม่เท่ากัน
+                foreach ($this->data as $rowNumber => $row) {
+                    if (isset($row[0]) && strpos($row[0], 'style:background-color') !== false) {
+                        $sheet->getStyle("A" . ($rowNumber + 2) . ":Z" . ($rowNumber + 2))
+                            ->getFill()
+                            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('FFFFCCCC');
+                    }
+                }
             }
         };
 
-        // Download the Excel file
-        return Excel::download($export, 'general_ledger_with_subtotals.xlsx');
+        return Excel::download($export, 'GeneralLedger.xlsx');
     }
 }
