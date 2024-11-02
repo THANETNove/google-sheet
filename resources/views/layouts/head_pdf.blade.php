@@ -19,7 +19,7 @@
 
         font-weight: 400;
         font-style: normal !important;
-        margin-left: -16px !important;
+
     }
 
 
@@ -208,9 +208,27 @@
 
     .child-2 {
         width: 80px !important;
-        word-wrap: break-word !important;
+        word-break: break-all;
+        /* ตัดคำเมื่อเกินขนาดที่กำหนด */
         white-space: normal !important;
+        overflow-wrap: break-word;
+        /* รองรับการตัดบรรทัดเพิ่มเติม */
 
+    }
+
+    .child-2-1 {
+
+        /* บังคับให้ตัดบรรทัด */
+        max-width: 80px;
+        /* กำหนดความกว้างสูงสุด */
+        word-wrap: break-word;
+        /* ตัดคำเมื่อเกินขนาด */
+        white-space: normal;
+        /* อนุญาตให้ตัดบรรทัด */
+        overflow-wrap: break-word;
+        /* ช่วยให้การตัดคำทำงานดีขึ้น */
+        word-break: break-all;
+        /* บังคับให้ตัดคำ */
     }
 
 
