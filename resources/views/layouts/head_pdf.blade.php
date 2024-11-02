@@ -14,11 +14,12 @@
 
 <style>
     body {
-        font-size: 9pt !important;
+        font-size: 8pt !important;
         font-family: 'Sarabun', sans-serif;
 
         font-weight: 400;
         font-style: normal !important;
+        margin-left: -16px !important;
     }
 
 
@@ -113,7 +114,10 @@
     }
 
 
-
+    .table {
+        margin-top: 10px;
+        padding: 10px;
+    }
 
     thead,
     tbody,
