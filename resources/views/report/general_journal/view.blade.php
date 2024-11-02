@@ -1,11 +1,11 @@
 @extends('layouts.appHome')
 
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y" id="printableArea">
         <div class="row">
             <div class="col-lg-12 mb-4 order-0">
 
-                <div id="printableArea">
+                <div>
                     <div class="card">
 
                         <div class="container-company">
@@ -50,14 +50,12 @@
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
 
-                            {{--      <a href="{{ url('/export-pdf', $id, [$startDate, $endDate]) }}" target="_blank"
-                                class="btn btn-primary">
-                                <i class='bx bxs-file-pdf'></i>&nbsp; PDF
-                            </a> --}}
+
                             <a href="{{ url('/export-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
                                 target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
+
                             <a href="{{ url('/export-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
                                 class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
@@ -177,5 +175,56 @@
 
         // สมมุติว่าคุณต้องการแสดงค่า company ของผู้ใช้คนแรก
         document.getElementById('navbar-company').textContent = "บริษัท " + user[0].company; // แสดงค่าใน <strong> tag
+
+
+
+        function viewPDF() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const content = document.getElementById('printableArea');
+
+            html2canvas(content, {
+                scale: 2,
+                useCORS: true
+            }).then((canvas) => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                const pdfBlob = pdf.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+
+                // เปิด PDF ในหน้าต่างใหม่
+                window.open(pdfUrl);
+
+                // สร้างปุ่มสำหรับพิมพ์และดาวน์โหลด
+                const optionsDiv = document.createElement('div');
+                optionsDiv.innerHTML = `
+                    <button onclick="downloadPDF('${pdfUrl}')">Download PDF</button>
+                    <button onclick="printPDF('${pdfUrl}')">Print PDF</button>
+                `;
+                document.body.appendChild(optionsDiv);
+            }).catch((error) => {
+                console.error("Error generating PDF:", error);
+            });
+        }
+
+        function downloadPDF(pdfUrl) {
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = 'document.pdf';
+            link.click();
+        }
+
+        function printPDF(pdfUrl) {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = pdfUrl;
+            document.body.appendChild(iframe);
+            iframe.contentWindow.print();
+        }
     </script>
 @endsection

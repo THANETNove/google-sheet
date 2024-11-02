@@ -58,7 +58,8 @@ class GeneralJournalController extends Controller
         list($day, $month) = explode('/', $accounting_period);
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
         $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
-        $endDate = $endDate->endOfDay();
+        $endDate = Carbon::parse($endDate)->endOfDay();
+
 
         // Join the two tables (general_ledgers and general_ledger_subs) in one query
 
@@ -71,7 +72,7 @@ class GeneralJournalController extends Controller
 
 
         // แสดงผล
-        //dd($generalLedgers, $glCodes);
+        // dd($generalLedgers);
 
 
 
@@ -152,13 +153,16 @@ class GeneralJournalController extends Controller
 
 
         set_time_limit(600); // เพิ่มเวลาในการทำงาน
-        ini_set('memory_limit', '1024M'); // เพิ่มหน่วยความจำเป็น 1GB
+        ini_set('memory_limit', '4096M');
+
+
+
         $data = session()->get('generalLedgers');
 
-
+        $chunks = collect($data['query'])->chunk(100); // แบ่งข้อมูลเป็นชุดละ 100 รายการ
 
         $pdf = PDF::loadView('report.general_journal.pdf_view', [
-            'query' => $data['query'],
+            'chunks' => $chunks, // ส่ง chunks ของข้อมูล
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
@@ -166,11 +170,11 @@ class GeneralJournalController extends Controller
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
         ]);
-
         $pdf->setPaper('a4', 'portrait')
             ->setOption('margin-top', 15)
             ->setOption('margin-bottom', 15)
-            ->setOption('isRemoteEnabled', true); // อนุญาตให้ใช้ไฟล์จากภายนอก เช่น รูปภาพ
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isPhpEnabled', true); // อนุญาตให้ใช้ไฟล์จากภายนอก เช่น รูปภาพ
 
         return $pdf->stream(); // โหลดไฟล์ PDF
     }
