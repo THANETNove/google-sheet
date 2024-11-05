@@ -9,6 +9,7 @@ use App\Http\Controllers\Report\GeneralJournalController;
 use App\Http\Controllers\Report\BuyController;
 use App\Http\Controllers\Report\SellController;
 use App\Http\Controllers\Report\ProfitStatementController;
+use App\Http\Controllers\Report\TrialBalanceBeforeClosingController;
 
 
 Route::get('/', function () {
@@ -56,6 +57,10 @@ Route::get('report/profit-statement/{id}', [ProfitStatementController::class, 's
 Route::post('report/search-profit-statement', [ProfitStatementController::class, 'search'])->name('report/search-profit-statement');
 Route::get('profit-statement-pdf/{id}/{month}/{year}', [ProfitStatementController::class, 'exportPDF'])->name('profit-statement-pdf');
 Route::get('profit-statement-excel/{id}/{start_date}/{end_date}', [ProfitStatementController::class, 'exportExcel'])->name('profit-statement-excel');
+
+// งบทดลองก่อนปิดบัญชี
+Route::get('report/trial-balance-before-closing/{id}', [TrialBalanceBeforeClosingController::class, 'show'])->name('report/trial-balance-before-closing');
+Route::post('report/search-trial-balance-before-closing', [TrialBalanceBeforeClosingController::class, 'search'])->name('report/search-trial-balance-before-closing');
 
 
 
