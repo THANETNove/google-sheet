@@ -61,7 +61,7 @@ class TrialBalanceBeforeClosingController extends Controller
                 'gls_gl_date',
                 DB::raw("CASE 
                 WHEN gls_account_code LIKE '1%' THEN SUM(gls_debit - gls_credit)
-                WHEN gls_account_code LIKE '2%' THEN SUM(gls_debit - gls_credit)
+                WHEN gls_account_code LIKE '2%' THEN SUM(gls_credit - gls_debit)
                 WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
                 WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
                 WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
@@ -87,7 +87,7 @@ class TrialBalanceBeforeClosingController extends Controller
                 'gls_gl_date',
                 DB::raw("CASE 
                 WHEN gls_account_code LIKE '1%' THEN SUM(gls_debit - gls_credit)
-                WHEN gls_account_code LIKE '2%' THEN SUM(gls_debit - gls_credit)
+                WHEN gls_account_code LIKE '2%' THEN SUM(gls_credit - gls_debit)
                 WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
                 WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
                 WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)

@@ -420,6 +420,54 @@
                                         <td class="text-end color-blue"></td>
                                     </tr>
                                     <tr>
+                                        <td colspan="2" class="text-end text-bold">ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้
+                                        </td>
+                                        <td class="text-end color-yellow">
+                                        </td>
+                                        <td
+                                            class="text-end color-yellow text-bold {{ $before_total_4 - $before_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_4 - $before_total_5 != 0 ? number_format($before_total_4 - $before_total_5, 2) : '' }}
+                                        </td>
+
+                                        <td class="text-end color-green">
+                                        </td>
+                                        <td
+                                            class="text-end color-green text-bold  {{ $after_total_4 - $after_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_4 - $after_total_5 != 0 ? number_format($after_total_4 - $after_total_5, 2) : '' }}
+                                        </td>
+
+                                        <td class="text-end color-blue"></td>
+                                        <td
+                                            class="text-end color-blue text-bold {{ $total_4 - $total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $total_4 - $total_5 != 0 ? number_format($total_4 - $total_5, 2) : '' }}
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="text-end text-bold">กำไร(ขาดทุน)สะสมยกไป</td>
+                                        <td class="text-end color-yellow">
+                                        </td>
+                                        <td
+                                            class="text-end color-yellow text-bold {{ $before_total_3 + ($before_total_4 - $before_total_5) < 0 ? 'error-message' : '' }}">
+
+                                            {{ $before_total_3 + ($before_total_4 - $before_total_5) != 0 ? number_format($before_total_3 + ($before_total_4 - $before_total_5), 2) : '' }}
+                                        </td>
+
+                                        <td class="text-end color-green">
+                                        </td>
+                                        <td
+                                            class="text-end color-green text-bold  {{ $after_total_3 + ($after_total_4 - $after_total_5) < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_3 + ($total_1 + $total_5) != 0 ? number_format($after_total_3 + ($after_total_4 - $after_total_5), 2) : '' }}
+                                        </td>
+
+                                        <td class="text-end color-blue"></td>
+                                        <td
+                                            class="text-end color-blue text-bold {{ $total_3 + ($total_4 - $total_5) < 0 ? 'error-message' : '' }}">
+                                            {{ $total_3 + ($total_4 - $total_5) != 0 ? number_format($total_3 + ($total_4 - $total_5), 2) : '' }}
+                                        </td>
+
+                                    </tr>
+                                    <tr>
                                         <td colspan="8" style="border: none; height: 32px;"></td>
                                         <!-- ใช้ height เพิ่มช่องว่าง -->
                                     </tr>
@@ -428,21 +476,29 @@
                                     <tr style="border: none; margin-top: 64px;">
 
                                         <th class="text-end" style="border: none;" colspan="2">
-                                            ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้</th>
-                                        <td style="border: none;"></td>
+                                        </th>
                                         <td style="border: none;"
-                                            class="text-end color-yellow  text-bold {{ $before_total_4 - $before_total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ $before_total_4 - $before_total_5 != 0 ? number_format($before_total_4 - $before_total_5, 2) : '' }}
+                                            class="text-end color-yellow  text-bold {{ $before_total_2 + $before_total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_2 + $before_total_5 != 0 ? number_format($before_total_2 + $before_total_5, 2) : '' }}
                                         </td>
-                                        <td style="border: none;"></td>
                                         <td style="border: none;"
-                                            class="text-end color-green  text-bold  {{ $after_total_4 - $after_total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ $after_total_4 - $after_total_5 != 0 ? number_format($after_total_4 - $after_total_5, 2) : '' }}
+                                            class="text-end color-yellow  text-bold {{ $before_total_2 + $before_total_3 + $before_total_4 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_2 + $before_total_3 + $before_total_4 != 0 ? number_format($before_total_2 + $before_total_3 + $before_total_4, 2) : '' }}
                                         </td>
-                                        <td style="border: none;"></td>
-                                        <td class="text-end color-blue  text-bold {{ $total_4 - $total_5 < 0 ? 'error-message' : '' }}"
+                                        <td style="border: none;"
+                                            class="text-end color-green  text-bold  {{ $after_total_1 + ($after_total_4 - $after_total_5) < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_1 + ($after_total_4 - $after_total_5) != 0 ? number_format($after_total_1 + ($after_total_4 - $after_total_5), 2) : '' }}
+                                        </td>
+                                        <td style="border: none;"
+                                            class="text-end color-green  text-bold  {{ $after_total_2 + $after_total_3 + $after_total_4 < 0 ? 'error-message' : '' }}">
+                                            {{ $after_total_2 + $after_total_3 + $after_total_4 != 0 ? number_format($after_total_2 + $after_total_3 + $after_total_4, 2) : '' }}
+                                        </td>
+                                        <td style="border: none;"
+                                            class="text-end color-blue  text-bold {{ $total_1 + $total_5 < 0 ? 'error-message' : '' }}">
+                                            {{ number_format($total_1 + $total_5, 2) }}</td>
+                                        <td class="text-end color-blue  text-bold {{ $total_2 + $total_3 + $total_4 < 0 ? 'error-message' : '' }}"
                                             style="border: none;">
-                                            {{ number_format($total_4 - $total_5, 2) }}
+                                            {{ number_format($total_2 + $total_3 + $total_4, 2) }}
                                         </td>
 
                                     </tr>
