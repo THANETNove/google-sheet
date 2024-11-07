@@ -85,6 +85,7 @@
                                         $after_total_2 = 0;
                                         $total_2 = 0;
                                         $before_total_3 = 0;
+                                        $total_result_3 = 0;
                                         $after_total_3 = 0;
                                         $total_3 = 0;
                                         $before_total_4 = 0;
@@ -244,6 +245,7 @@
                                         @if (Str::startsWith($entry->gls_account_code, '3'))
                                             @php
                                                 $before_total_3 += $entry->before_total;
+                                                $total_result_3 += $entry->total_result;
                                                 $after_total_3 += $entry->after_total;
                                                 $total_3 += $entry->total;
                                             @endphp
@@ -253,8 +255,15 @@
                                                 <td class="text-end color-yellow">
                                                 </td>
                                                 <td
-                                                    class="text-end color-yellow {{ $entry->before_total < 0 ? 'error-message' : '' }}">
-                                                    {{ $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
+                                                    class="text-end color-yellow {{ $entry->before_total < 0 || $entry->total_result < 0 ? 'error-message' : '' }}">
+                                                    @if ($entry->gls_account_code == '32-1001-01')
+                                                        {{-- แสดง total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
+                                                        {{ isset($entry->total_result) && $entry->total_result != 0 ? number_format($entry->total_result, 2) : '' }}
+                                                    @else
+                                                        {{-- แสดง before_total สำหรับบัญชีอื่น --}}
+                                                        {{ isset($entry->before_total) && $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
+                                                    @endif
+
                                                 </td>
 
                                                 <td class="text-end color-green">
@@ -280,8 +289,9 @@
                                         </td>
 
                                         <td
-                                            class="text-end color-yellow text-bold {{ $before_total_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $before_total_3 != 0 ? number_format($before_total_3, 2) : '' }}</td>
+                                            class="text-end color-yellow text-bold {{ $before_total_3 + $total_result_3 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_3 + $total_result_3 != 0 ? number_format($before_total_3 + $total_result_3, 2) : '' }}
+                                        </td>
                                         <td class="text-end color-green">
                                         </td>
                                         <td
