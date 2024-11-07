@@ -273,10 +273,20 @@
                                                     {{ $entry->after_total != 0 ? number_format($entry->after_total, 2) : '' }}
                                                 </td>
 
-                                                <td class="text-end color-blue"></td>
+                                                <td class="text-end color-blue">
+
+                                                </td>
                                                 <td
-                                                    class="text-end color-blue {{ $entry->total < 0 ? 'error-message' : '' }}">
-                                                    {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
+                                                    class="text-end color-blue {{ $entry->total < 0 || $entry->total_result + $entry->after_total < 0 ? 'error-message' : '' }}">
+
+                                                    @if ($entry->gls_account_code == '32-1001-01')
+                                                        {{-- แสดง total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
+                                                        {{ $entry->total_result + $entry->after_total != 0 ? number_format($entry->total_result + $entry->after_total, 2) : '' }}
+                                                    @else
+                                                        {{-- แสดง before_total สำหรับบัญชีอื่น --}}
+                                                        {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
+                                                    @endif
+
                                                 </td>
 
                                             </tr>
