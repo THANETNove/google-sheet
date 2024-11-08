@@ -301,17 +301,18 @@
                                         <td
                                             class="text-end color-yellow text-bold {{ $before_total_3 + $total_result_3 < 0 ? 'error-message' : '' }}">
                                             {{ $before_total_3 + $total_result_3 != 0 ? number_format($before_total_3 + $total_result_3, 2) : '' }}
+
                                         </td>
                                         <td class="text-end color-green">
                                         </td>
                                         <td
                                             class="text-end color-green text-bold {{ $after_total_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $after_total_3 != 0 ? number_format($after_total_3, 2) : '' }}</td>
+                                            {{ $after_total_3 != 0 ? number_format($after_total_3, 2) : '' }} </td>
 
-                                        <td class="text-end color-blue"></td>
+                                        <td class="text-end color-blue"></td>$total_3
                                         <td
-                                            class="text-end color-blue text-bold {{ $total_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $total_3 != 0 ? number_format($total_3, 2) : '' }}
+                                            class="text-end color-blue text-bold {{ $total_3 + $total_result_3 < 0 ? 'error-message' : '' }}">
+                                            {{ $total_3 + $total_result_3 != 0 ? number_format($entry->total_result + $total_3, 2) : '' }}
                                         </td>
 
                                     </tr>
@@ -468,9 +469,9 @@
                                         <td class="text-end color-yellow">
                                         </td>
                                         <td
-                                            class="text-end color-yellow text-bold {{ $before_total_3 + ($before_total_4 - $before_total_5) < 0 ? 'error-message' : '' }}">
+                                            class="text-end color-yellow text-bold {{ $entry->total_result + ($before_total_4 - $before_total_5) < 0 ? 'error-message' : '' }}">
 
-                                            {{ $before_total_3 + ($before_total_4 - $before_total_5) != 0 ? number_format($before_total_3 + ($before_total_4 - $before_total_5), 2) : '' }}
+                                            {{ $entry->total_result + ($before_total_4 - $before_total_5) != 0 ? number_format($entry->total_result + ($before_total_4 - $before_total_5), 2) : '' }}
                                         </td>
 
                                         <td class="text-end color-green">
@@ -481,9 +482,15 @@
                                         </td>
 
                                         <td class="text-end color-blue"></td>
+                                        @php
+                                            $totalProfitLoss =
+                                                $entry->total_result +
+                                                ($before_total_4 - $before_total_5) +
+                                                ($after_total_3 + ($after_total_4 - $after_total_5));
+                                        @endphp
                                         <td
-                                            class="text-end color-blue text-bold {{ $total_3 + ($total_4 - $total_5) < 0 ? 'error-message' : '' }}">
-                                            {{ $total_3 + ($total_4 - $total_5) != 0 ? number_format($total_3 + ($total_4 - $total_5), 2) : '' }}
+                                            class="text-end color-blue text-bold {{ $totalProfitLoss < 0 ? 'error-message' : '' }}">
+                                            {{ $totalProfitLoss != 0 ? number_format($totalProfitLoss, 2) : '' }}
                                         </td>
 
                                     </tr>
@@ -491,34 +498,42 @@
                                         <td colspan="8" style="border: none; height: 32px;"></td>
                                         <!-- ใช้ height เพิ่มช่องว่าง -->
                                     </tr>
-
+                                    @php
+                                        $toatalSum_1 = $before_total_1 + $before_total_5;
+                                        $toatalSum_2 =
+                                            $before_total_2 + $before_total_3 + $total_result_3 + $before_total_4;
+                                        $toatalSum_3 = $after_total_1 + $after_total_5;
+                                        $toatalSum_4 = $after_total_2 + $after_total_3 + $after_total_4;
+                                        $toatalSum_5 = $total_1 + $total_5;
+                                        $toatalSum_6 = $total_2 + $entry->total_result + $total_3 + $total_4;
+                                    @endphp
 
                                     <tr style="border: none; margin-top: 64px;">
 
                                         <th class="text-end" style="border: none;" colspan="2">
                                         </th>
                                         <td style="border: none;"
-                                            class="text-end color-yellow  text-bold {{ $before_total_2 + $before_total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ $before_total_2 + $before_total_5 != 0 ? number_format($before_total_2 + $before_total_5, 2) : '' }}
+                                            class="text-end color-yellow  text-bold {{ $toatalSum_1 < 0 ? 'error-message' : '' }}">
+                                            {{ $toatalSum_1 != 0 ? number_format($toatalSum_1, 2) : '' }}
                                         </td>
                                         <td style="border: none;"
-                                            class="text-end color-yellow  text-bold {{ $before_total_2 + $before_total_3 + $before_total_4 < 0 ? 'error-message' : '' }}">
-                                            {{ $before_total_2 + $before_total_3 + $before_total_4 != 0 ? number_format($before_total_2 + $before_total_3 + $before_total_4, 2) : '' }}
+                                            class="text-end color-yellow  text-bold {{ $toatalSum_2 < 0 ? 'error-message' : '' }}">
+                                            {{ $toatalSum_2 != 0 ? number_format($toatalSum_2, 2) : '' }}
                                         </td>
                                         <td style="border: none;"
-                                            class="text-end color-green  text-bold  {{ $after_total_1 + ($after_total_4 - $after_total_5) < 0 ? 'error-message' : '' }}">
-                                            {{ $after_total_1 + ($after_total_4 - $after_total_5) != 0 ? number_format($after_total_1 + ($after_total_4 - $after_total_5), 2) : '' }}
+                                            class="text-end color-green  text-bold  {{ $toatalSum_3 < 0 ? 'error-message' : '' }}">
+                                            {{ $toatalSum_3 != 0 ? number_format($toatalSum_3, 2) : '' }}
                                         </td>
                                         <td style="border: none;"
-                                            class="text-end color-green  text-bold  {{ $after_total_2 + $after_total_3 + $after_total_4 < 0 ? 'error-message' : '' }}">
-                                            {{ $after_total_2 + $after_total_3 + $after_total_4 != 0 ? number_format($after_total_2 + $after_total_3 + $after_total_4, 2) : '' }}
+                                            class="text-end color-green  text-bold  {{ $toatalSum_4 < 0 ? 'error-message' : '' }}">
+                                            {{ $toatalSum_4 != 0 ? number_format($toatalSum_4, 2) : '' }}
                                         </td>
                                         <td style="border: none;"
-                                            class="text-end color-blue  text-bold {{ $total_1 + $total_5 < 0 ? 'error-message' : '' }}">
-                                            {{ number_format($total_1 + $total_5, 2) }}</td>
-                                        <td class="text-end color-blue  text-bold {{ $total_2 + $total_3 + $total_4 < 0 ? 'error-message' : '' }}"
+                                            class="text-end color-blue  text-bold {{ $toatalSum_5 < 0 ? 'error-message' : '' }}">
+                                            {{ $toatalSum_5 != 0 ? number_format($toatalSum_5, 2) : '' }}</td>
+                                        <td class="text-end color-blue  text-bold {{ $toatalSum_6 < 0 ? 'error-message' : '' }}"
                                             style="border: none;">
-                                            {{ number_format($total_2 + $total_3 + $total_4, 2) }}
+                                            {{ $toatalSum_6 != 0 ? number_format($toatalSum_6, 2) : '' }}
                                         </td>
 
                                     </tr>

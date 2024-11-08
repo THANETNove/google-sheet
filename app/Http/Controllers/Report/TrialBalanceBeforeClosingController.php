@@ -117,10 +117,9 @@ class TrialBalanceBeforeClosingController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
-
         $after_date_query1_3 = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '1%')
                     ->orWhere('gls_account_code', 'like', '2%')
