@@ -117,6 +117,7 @@ class TrialBalanceBeforeClosingController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
+        // dd($startOfYearDate->toDateString(), $endOfYearDate->toDateString());
         $after_date_query1_3 = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
@@ -134,11 +135,13 @@ class TrialBalanceBeforeClosingController extends Controller
             WHEN gls_account_code LIKE '2%' THEN SUM(gls_credit - gls_debit)
             WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
             ELSE 0
-         END as after_total")
+         END as after_total"),
+                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32"),
             )
             ->groupBy('gls_account_code')
+            ->orderBy('gls_account_code', 'ASC')
             ->get();
-
+        dd($after_date_query1_3);
 
         $query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)

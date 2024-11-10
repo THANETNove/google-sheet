@@ -67,7 +67,9 @@ class GeneralJournalController extends Controller
         $generalLedgers = DataGeneralLedgerSub::with('subs')
             ->where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])
-            ->get();
+            ->get()
+            ->sortBy('gls_account_code'); // เรียงลำดับหลังจากดึงข้อมูล
+
 
 
 
@@ -233,7 +235,7 @@ class GeneralJournalController extends Controller
             ]);
 
             // เพิ่มข้อมูล subs ที่เกี่ยวข้อง
-            foreach ($ledger->subs as $sub) {
+            foreach ($ledger->subs->sortBy('gls_account_code') as $sub) {
                 if (!isset($sub->gls_account_code, $sub->gls_account_name, $sub->gls_debit, $sub->gls_credit)) {
                     continue; // ข้ามถ้าข้อมูลไม่ครบ
                 }
