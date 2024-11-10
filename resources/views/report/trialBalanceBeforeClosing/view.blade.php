@@ -309,10 +309,12 @@
                                             class="text-end color-green text-bold {{ $after_total_3 < 0 ? 'error-message' : '' }}">
                                             {{ $after_total_3 != 0 ? number_format($after_total_3, 2) : '' }} </td>
 
-                                        <td class="text-end color-blue"></td>$total_3
+                                        <td class="text-end color-blue">
+
+                                        </td>
                                         <td
                                             class="text-end color-blue text-bold {{ $total_3 + $total_result_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $total_3 + $total_result_3 != 0 ? number_format($entry->total_result + $total_3, 2) : '' }}
+                                            {{ $total_3 + $total_result_3 != 0 ? number_format($total_result_3 + $total_3, 2) : '' }}
                                         </td>
 
                                     </tr>

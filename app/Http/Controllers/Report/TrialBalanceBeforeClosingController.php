@@ -202,7 +202,8 @@ class TrialBalanceBeforeClosingController extends Controller
                     'total_result' => $items->sum(fn($item) => $item->total_result ?? 0), // ตรวจสอบค่า total_result จาก $firstItem
                 ];
             })
-            ->values();
+            ->values()
+            ->sortBy('gls_account_code');
 
 
 

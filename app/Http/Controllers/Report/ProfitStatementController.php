@@ -183,8 +183,8 @@ class ProfitStatementController extends Controller
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0))
                 ];
             })
-            ->values(); // รีเซ็ต key ของ Collection ให้เป็นตัวเลขเรียงลำดับ
-
+            ->values() // รีเซ็ต key ของ Collection ให้เป็นตัวเลขเรียงลำดับ
+            ->sortBy('gls_account_code');
 
 
         // ตรวจสอบผลลัพธ์
