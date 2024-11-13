@@ -88,11 +88,11 @@ class TrialBalanceBeforeClosingController extends Controller
             WHEN gls_account_code LIKE '2%' THEN SUM(gls_credit - gls_debit)
             WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
             ELSE 0
-         END as before_total")
+         END as before_total"),
+                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as before_total_result"),
             )
             ->groupBy('gls_account_code')
             ->get();
-
 
 
 
@@ -136,12 +136,12 @@ class TrialBalanceBeforeClosingController extends Controller
             WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
             ELSE 0
          END as after_total"),
-                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32"),
+                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as after_total_result"),
             )
             ->groupBy('gls_account_code')
             ->orderBy('gls_account_code', 'ASC')
             ->get();
-        dd($after_date_query1_3);
+
 
         $query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
@@ -202,11 +202,13 @@ class TrialBalanceBeforeClosingController extends Controller
                     'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
                     'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
-                    'total_result' => $items->sum(fn($item) => $item->total_result ?? 0), // ตรวจสอบค่า total_result จาก $firstItem
+                    'before_total_result' => $items->sum(fn($item) => $item->total_result ?? 0), // ตรวจสอบค่า total_result จาก $firstItem
+                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0), // ตรวจสอบค่า after_total_result จาก $firstItem
                 ];
             })
             ->values()
             ->sortBy('gls_account_code');
+
 
 
 
@@ -228,7 +230,6 @@ class TrialBalanceBeforeClosingController extends Controller
     {
 
         $data = $this->getData($id); // รับค่ากลับมา
-
 
 
         return view('report.trialBalanceBeforeClosing.view', [

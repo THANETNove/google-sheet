@@ -85,7 +85,8 @@
                                         $after_total_2 = 0;
                                         $total_2 = 0;
                                         $before_total_3 = 0;
-                                        $total_result_3 = 0;
+                                        $before_total_result_3 = 0;
+                                        $after_total_result_3 = 0;
                                         $after_total_3 = 0;
                                         $total_3 = 0;
                                         $before_total_4 = 0;
@@ -245,7 +246,8 @@
                                         @if (Str::startsWith($entry->gls_account_code, '3'))
                                             @php
                                                 $before_total_3 += $entry->before_total;
-                                                $total_result_3 += $entry->total_result;
+                                                $before_total_result_3 += $entry->before_total_result;
+                                                $after_total_result_3 += $entry->after_total_result;
                                                 $after_total_3 += $entry->after_total;
                                                 $total_3 += $entry->total;
                                             @endphp
@@ -255,10 +257,10 @@
                                                 <td class="text-end color-yellow">
                                                 </td>
                                                 <td
-                                                    class="text-end color-yellow {{ $entry->before_total < 0 || $entry->total_result < 0 ? 'error-message' : '' }}">
+                                                    class="text-end color-yellow {{ $entry->before_total < 0 || $entry->before_total_result < 0 ? 'error-message' : '' }}">
                                                     @if ($entry->gls_account_code == '32-1001-01')
-                                                        {{-- แสดง total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
-                                                        {{ isset($entry->total_result) && $entry->total_result != 0 ? number_format($entry->total_result, 2) : '' }}
+                                                        {{-- แสดง before_total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
+                                                        {{ isset($entry->before_total_result) && $entry->before_total_result != 0 ? number_format($entry->before_total_result, 2) : '' }}
                                                     @else
                                                         {{-- แสดง before_total สำหรับบัญชีอื่น --}}
                                                         {{ isset($entry->before_total) && $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
@@ -269,19 +271,26 @@
                                                 <td class="text-end color-green">
                                                 </td>
                                                 <td
-                                                    class="text-end color-green {{ $entry->after_total < 0 ? 'error-message' : '' }}">
-                                                    {{ $entry->after_total != 0 ? number_format($entry->after_total, 2) : '' }}
+                                                    class="text-end color-green {{ $entry->after_total < 0 || $entry->after_total_result < 0 ? 'error-message' : '' }}">
+                                                    @if ($entry->gls_account_code == '32-1001-01')
+                                                        {{ $entry->after_total_result != 0 ? number_format($entry->after_total_result, 2) : '' }}
+                                                    @else
+                                                        {{ $entry->after_total != 0 ? number_format($entry->after_total, 2) : '' }}
+                                                    @endif
+
+
+
                                                 </td>
 
                                                 <td class="text-end color-blue">
 
                                                 </td>
                                                 <td
-                                                    class="text-end color-blue {{ $entry->total < 0 || $entry->total_result + $entry->after_total < 0 ? 'error-message' : '' }}">
+                                                    class="text-end color-blue {{ $entry->total < 0 || $entry->after_total_result + $entry->after_total < 0 ? 'error-message' : '' }}">
 
                                                     @if ($entry->gls_account_code == '32-1001-01')
-                                                        {{-- แสดง total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
-                                                        {{ $entry->total_result + $entry->after_total != 0 ? number_format($entry->total_result + $entry->after_total, 2) : '' }}
+                                                        {{-- แสดง before_total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
+                                                        {{ $entry->after_total_result + $entry->after_total != 0 ? number_format($entry->after_total_result + $entry->after_total, 2) : '' }}
                                                     @else
                                                         {{-- แสดง before_total สำหรับบัญชีอื่น --}}
                                                         {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
@@ -299,22 +308,24 @@
                                         </td>
 
                                         <td
-                                            class="text-end color-yellow text-bold {{ $before_total_3 + $total_result_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $before_total_3 + $total_result_3 != 0 ? number_format($before_total_3 + $total_result_3, 2) : '' }}
+                                            class="text-end color-yellow text-bold {{ $before_total_3 + $before_total_result_3 < 0 ? 'error-message' : '' }}">
+                                            {{ $before_total_3 + $before_total_result_3 != 0 ? number_format($before_total_3 + $before_total_result_3, 2) : '' }}
 
                                         </td>
                                         <td class="text-end color-green">
                                         </td>
                                         <td
-                                            class="text-end color-green text-bold {{ $after_total_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $after_total_3 != 0 ? number_format($after_total_3, 2) : '' }} </td>
+                                            class="text-end color-green text-bold {{ $after_total_3 + $after_total_result_3 < 0 ? 'error-message' : '' }}">
+
+                                            {{ $after_total_3 + $after_total_result_3 != 0 ? number_format($after_total_3 + $after_total_result_3, 2) : '' }}
+                                        </td>
 
                                         <td class="text-end color-blue">
 
                                         </td>
                                         <td
-                                            class="text-end color-blue text-bold {{ $total_3 + $total_result_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $total_3 + $total_result_3 != 0 ? number_format($total_result_3 + $total_3, 2) : '' }}
+                                            class="text-end color-blue text-bold {{ $total_3 + $before_total_result_3 < 0 ? 'error-message' : '' }}">
+                                            {{ $total_3 + $after_total_result_3 != 0 ? number_format($after_total_result_3 + $total_3, 2) : '' }}
                                         </td>
 
                                     </tr>
@@ -471,9 +482,9 @@
                                         <td class="text-end color-yellow">
                                         </td>
                                         <td
-                                            class="text-end color-yellow text-bold {{ $entry->total_result + ($before_total_4 - $before_total_5) < 0 ? 'error-message' : '' }}">
+                                            class="text-end color-yellow text-bold {{ $entry->before_total_result + ($before_total_4 - $before_total_5) < 0 ? 'error-message' : '' }}">
 
-                                            {{ $entry->total_result + ($before_total_4 - $before_total_5) != 0 ? number_format($entry->total_result + ($before_total_4 - $before_total_5), 2) : '' }}
+                                            {{ $entry->before_total_result + ($before_total_4 - $before_total_5) != 0 ? number_format($entry->before_total_result + ($before_total_4 - $before_total_5), 2) : '' }}
                                         </td>
 
                                         <td class="text-end color-green">
@@ -486,7 +497,7 @@
                                         <td class="text-end color-blue"></td>
                                         @php
                                             $totalProfitLoss =
-                                                $entry->total_result +
+                                                $entry->before_total_result +
                                                 ($before_total_4 - $before_total_5) +
                                                 ($after_total_3 + ($after_total_4 - $after_total_5));
                                         @endphp
@@ -503,11 +514,14 @@
                                     @php
                                         $toatalSum_1 = $before_total_1 + $before_total_5;
                                         $toatalSum_2 =
-                                            $before_total_2 + $before_total_3 + $total_result_3 + $before_total_4;
+                                            $before_total_2 +
+                                            $before_total_3 +
+                                            $before_total_result_3 +
+                                            $before_total_4;
                                         $toatalSum_3 = $after_total_1 + $after_total_5;
                                         $toatalSum_4 = $after_total_2 + $after_total_3 + $after_total_4;
                                         $toatalSum_5 = $total_1 + $total_5;
-                                        $toatalSum_6 = $total_2 + $entry->total_result + $total_3 + $total_4;
+                                        $toatalSum_6 = $total_2 + $entry->before_total_result + $total_3 + $total_4;
                                     @endphp
 
                                     <tr style="border: none; margin-top: 64px;">
