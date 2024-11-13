@@ -10,6 +10,7 @@ use App\Http\Controllers\Report\BuyController;
 use App\Http\Controllers\Report\SellController;
 use App\Http\Controllers\Report\ProfitStatementController;
 use App\Http\Controllers\Report\TrialBalanceBeforeClosingController;
+use App\Http\Controllers\Report\AccountBalanceSheetController;
 
 
 Route::get('/', function () {
@@ -63,6 +64,10 @@ Route::get('report/trial-balance-before-closing/{id}', [TrialBalanceBeforeClosin
 Route::post('report/search-trial-balance-before-closing', [TrialBalanceBeforeClosingController::class, 'search'])->name('report/search-trial-balance-before-closing');
 Route::get('trial-balance-before-closing-pdf/{id}/{month}/{year}', [TrialBalanceBeforeClosingController::class, 'exportPDF'])->name('trial-balance-before-closing-pdf');
 Route::get('trial-balance-before-closing-excel/{id}/{month}/{year}', [TrialBalanceBeforeClosingController::class, 'exportExcel'])->name('trial-balance-before-closing-pdf');
+
+//งบดุลบัญชี
+Route::get('report/account-balance-sheet/{id}', [AccountBalanceSheetController::class, 'show'])->name('report/account-balance-sheet');
+Route::post('report/search-account-balance-sheet', [AccountBalanceSheetController::class, 'search'])->name('report/search-account-balance-sheet');
 
 
 

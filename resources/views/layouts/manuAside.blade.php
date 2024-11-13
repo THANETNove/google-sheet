@@ -73,8 +73,9 @@
                                 <div data-i18n="Without menu">รายงานภาษีขาย</div>
                             </a>
                         </li>
-                        <li class="menu-item {{ Request::is('repor/account-balance-sheet/*') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/account-balance-shee', session()->get('company_id')) }} @else # @endif"
+                        <li
+                            class="menu-item {{ Request::is('report/account-balance-sheet/*') || Request::is('report/search-account-balance-sheet') ? 'active' : '' }} ">
+                            <a href="@if (session()->has('company_id')) {{ url('report/account-balance-sheet', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
                                 <div data-i18n="Without menu">งบดุลบัญชี</div>
                             </a>

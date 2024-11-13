@@ -103,6 +103,27 @@ class AccountBalanceSheetController extends Controller
             ->get();
 
 
+        // ก่อน start date
+        $before_3 = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->where(function ($q) {
+                $q->where('gls_account_code', 'like', '3%');
+            })
+            ->select(
+                'gls_account_code',
+                'gls_account_name',
+                'gls_gl_date',
+                DB::raw("CASE 
+        WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
+        ELSE 0
+     END as before_total"),
+                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as before_total_result"),
+            )
+            ->groupBy('gls_account_code')
+            ->get();
+
+
 
         // หลัง start date
         $after_query = DB::table('general_ledger_subs')
@@ -150,6 +171,14 @@ class AccountBalanceSheetController extends Controller
             ->orderBy('gls_account_code', 'ASC')
             ->get();
 
+        $sum_after_total_1 = $after_date_query1_3
+            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))
+            ->sum('after_total');
+        $sum_before_total_1 = $after_date_query1_3
+            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))
+            ->sum('before_total');
+
+
 
         $query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
@@ -165,9 +194,10 @@ class AccountBalanceSheetController extends Controller
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5")
             )
             ->get();
+
         // รวมผลลัพธ์
         $totalResult = $query->first()->acc_total_32 + ($query->first()->acc_total_4 - $query->first()->acc_total_5);
-
+        //dd(number_format($query->first()->acc_total_4, 2), $query->first()->acc_total_5);
         // 2. สร้าง $finalResult และตรวจสอบว่ามี total_result จริง
         $finalResult = collect([
             (object) [
@@ -239,7 +269,7 @@ class AccountBalanceSheetController extends Controller
         $data = $this->getData($id); // รับค่ากลับมา
 
 
-        return view('report.trialBalanceBeforeClosing.view', [
+        return view('report.account_balance_sheet.view', [
             'date_query' => $data['date_query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
@@ -248,6 +278,25 @@ class AccountBalanceSheetController extends Controller
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
             'id' => $id
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+        $data = $this->getData($request->id, $startDate, $endDate);
+
+        return view('report.account_balance_sheet.view', [
+            'date_query' => $data['date_query'],
+            'user' => $data['user'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate'],
+            'day' => $data['day'],
+            'monthThai' => $data['monthThai'],
+            'currentYear' => $data['currentYear'],
+            'id' => $request->id
         ]);
     }
 }
