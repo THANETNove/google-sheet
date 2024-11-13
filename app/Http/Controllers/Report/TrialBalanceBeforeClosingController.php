@@ -241,7 +241,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $data = $this->getData($id); // รับค่ากลับมา
 
 
-        return view('report.trialBalanceBeforeClosing.view', [
+        return view('report.trial_balance_before_closing.view', [
             'date_query' => $data['date_query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
@@ -260,7 +260,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $endDate = Carbon::parse($request->end_date);
         $data = $this->getData($request->id, $startDate, $endDate);
 
-        return view('report.trialBalanceBeforeClosing.view', [
+        return view('report.trial_balance_before_closing.view', [
             'date_query' => $data['date_query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
@@ -279,7 +279,7 @@ class TrialBalanceBeforeClosingController extends Controller
 
         $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
 
-        $pdf = PDF::loadView('report.trialBalanceBeforeClosing.pdf_view', [
+        $pdf = PDF::loadView('report.trial_balance_before_closing.pdf_view', [
             'date_query' => $data['date_query'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
