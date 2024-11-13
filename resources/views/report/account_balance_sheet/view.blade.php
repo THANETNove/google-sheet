@@ -46,14 +46,14 @@
                         </form>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-                            <a href="{{ url('/trial-balance-before-closing-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
+                            {{--  <a href="{{ url('/trial-balance-before-closing-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
                                 target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
                             <a href="{{ url('/trial-balance-before-closing-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
                                 class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
-                            </a>
+                            </a> --}}
                         </div>
                         <div class="table-responsive m-3">
                             <table class="table">
