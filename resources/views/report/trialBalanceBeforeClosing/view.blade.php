@@ -46,14 +46,14 @@
                         </form>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-                            {{--  <a href="{{ url('/profit-statement-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
+                            <a href="{{ url('/trial-balance-before-closing-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
                                 target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
-                            <a href="{{ url('/profit-statement-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
+                            <a href="{{ url('/trial-balance-before-closing-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
                                 class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
-                            </a> --}}
+                            </a>
                         </div>
                         <div class="table-responsive m-3">
                             <table class="table">
@@ -493,7 +493,7 @@
                                         <td
                                             class="text-end color-yellow text-bold {{ $entry->before_total_result + ($before_total_4 - $before_total_5) < 0 ? 'error-message' : '' }}">
 
-                                            {{ $entry->before_total_result + ($before_total_4 - $before_total_5) != 0 ? number_format($entry->before_total_result + ($before_total_4 - $before_total_5), 2) : '' }}
+                                            {{ $before_total_result_3 + ($before_total_4 - $before_total_5) != 0 ? number_format($before_total_result_3 + ($before_total_4 - $before_total_5), 2) : '' }}
                                         </td>
 
                                         <td class="text-end color-green">
@@ -506,7 +506,7 @@
                                         <td class="text-end color-blue"></td>
                                         @php
                                             $totalProfitLoss =
-                                                $entry->before_total_result +
+                                                $before_total_result_3 +
                                                 ($before_total_4 - $before_total_5) +
                                                 ($after_total_3 + ($after_total_4 - $after_total_5));
                                         @endphp

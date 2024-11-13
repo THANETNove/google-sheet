@@ -61,6 +61,8 @@ Route::get('profit-statement-excel/{id}/{start_date}/{end_date}', [ProfitStateme
 // งบทดลองก่อนปิดบัญชี
 Route::get('report/trial-balance-before-closing/{id}', [TrialBalanceBeforeClosingController::class, 'show'])->name('report/trial-balance-before-closing');
 Route::post('report/search-trial-balance-before-closing', [TrialBalanceBeforeClosingController::class, 'search'])->name('report/search-trial-balance-before-closing');
+Route::get('trial-balance-before-closing-pdf/{id}/{month}/{year}', [TrialBalanceBeforeClosingController::class, 'exportPDF'])->name('trial-balance-before-closing-pdf');
+Route::get('trial-balance-before-closing-excel/{id}/{month}/{year}', [TrialBalanceBeforeClosingController::class, 'exportExcel'])->name('trial-balance-before-closing-pdf');
 
 
 
