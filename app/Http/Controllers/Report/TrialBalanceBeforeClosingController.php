@@ -330,6 +330,8 @@ class TrialBalanceBeforeClosingController extends Controller
 
         // Calculate overall totals for summary rows
         $before_total_1 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))->sum('before_total');
+
+
         $before_total_2 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '2'))->sum('before_total');
         $before_total_3 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('before_total');
         $before_total_result_3 = $combined_result->filter(fn($item) => $item->gls_account_code == '32-1001-01')->sum('before_total_result');
@@ -345,7 +347,7 @@ class TrialBalanceBeforeClosingController extends Controller
 
         $total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('total');
         $total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('total');
-
+        // dd(number_format($after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4, 2));
         // Add "ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้" row
         $mappedData->push([
             '',
@@ -376,19 +378,19 @@ class TrialBalanceBeforeClosingController extends Controller
         ]);
 
         // Add final cumulative total row
-        $totalSumBeforeDebit = $combined_result->sum('before_total');
-        $totalSumAfterDebit = $combined_result->sum('after_total');
-        $cumulativeTotal = $combined_result->sum('total');
+
+        $cumulativeTotal = $after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4;
 
         $mappedData->push([
             '',
             'ยอดรวมทั้งหมด',
-            number_format($before_total_1 + $before_total_5 + $before_total_result_3, 2),
-            number_format($before_total_2 + $before_total_3 + $before_total_4, 2),
-            number_format($after_total_1 + $after_total_5 + $after_total_result_3, 2),
+            number_format($before_total_1 + $before_total_5, 2),
+            number_format($before_total_2 + $before_total_3 + $before_total_result_3 + $before_total_4, 2),
+            number_format($after_total_1 + $after_total_5, 2),
             number_format($after_total_2 + $after_total_3 + $after_total_4, 2),
+            number_format($total_5 + $after_total_1 + $before_total_1, 2),
             number_format($cumulativeTotal, 2),
-            ''
+
         ]);
         // Export to Excel
         $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
@@ -462,6 +464,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $displayed_before_total = 0;
         $displayed_after_total = 0;
         // Add rows for each entry in the group
+
         foreach ($groupData as $entry) {
 
             $displayed_before  = ($entry->gls_account_code == '32-1001-01') ? $before_total_result_3 : $entry->before_total;
