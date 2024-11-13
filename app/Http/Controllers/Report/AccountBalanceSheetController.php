@@ -77,7 +77,6 @@ class AccountBalanceSheetController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
-
         // ก่อน start date
         $before_date_query1_3 = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
@@ -103,25 +102,11 @@ class AccountBalanceSheetController extends Controller
             ->get();
 
 
-        // ก่อน start date
-        $before_3 = DB::table('general_ledger_subs')
-            ->where('gls_code_company', $id)
-            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
-            ->where(function ($q) {
-                $q->where('gls_account_code', 'like', '3%');
-            })
-            ->select(
-                'gls_account_code',
-                'gls_account_name',
-                'gls_gl_date',
-                DB::raw("CASE 
-        WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
-        ELSE 0
-     END as before_total"),
-                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as before_total_result"),
-            )
-            ->groupBy('gls_account_code')
-            ->get();
+
+
+
+
+
 
 
 
@@ -171,12 +156,8 @@ class AccountBalanceSheetController extends Controller
             ->orderBy('gls_account_code', 'ASC')
             ->get();
 
-        $sum_after_total_1 = $after_date_query1_3
-            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))
-            ->sum('after_total');
-        $sum_before_total_1 = $after_date_query1_3
-            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))
-            ->sum('before_total');
+
+
 
 
 
@@ -195,8 +176,27 @@ class AccountBalanceSheetController extends Controller
             )
             ->get();
 
-        // รวมผลลัพธ์
+        $sum_after_total_4 = $after_query
+            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))
+            ->sum('after_total');
+        $sum_after_total_5 = $after_query
+            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))
+            ->sum('after_total');
+        // dd($sum_after_total_4 - $sum_after_total_5);
+
+
+        $sum_before_total_4 = $before_date_query
+            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))
+            ->sum('before_total');
+        $sum_before_total_5 = $before_date_query
+            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))
+            ->sum('before_total');
         $totalResult = $query->first()->acc_total_32 + ($query->first()->acc_total_4 - $query->first()->acc_total_5);
+        $totalResult = ($sum_before_total_4 - $sum_before_total_5) + $totalResult;
+        $afterTotalResult = $sum_after_total_4 - $sum_after_total_5;
+
+        // รวมผลลัพธ์
+
         //dd(number_format($query->first()->acc_total_4, 2), $query->first()->acc_total_5);
         // 2. สร้าง $finalResult และตรวจสอบว่ามี total_result จริง
         $finalResult = collect([
@@ -209,6 +209,7 @@ class AccountBalanceSheetController extends Controller
                 'after_total' => 0,
                 'total' => 0,
                 'total_result' => $totalResult,
+                'after_total_result' =>  $afterTotalResult,
             ]
         ]);
 
