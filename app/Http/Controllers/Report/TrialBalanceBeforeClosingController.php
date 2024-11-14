@@ -379,7 +379,7 @@ class TrialBalanceBeforeClosingController extends Controller
 
         // Add final cumulative total row
 
-        $cumulativeTotal = $after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4;
+        $cumulativeTotal = $after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4  + $after_total_result_3 + $before_total_result_3;
 
         $mappedData->push([
             '',
@@ -387,7 +387,7 @@ class TrialBalanceBeforeClosingController extends Controller
             number_format($before_total_1 + $before_total_5, 2),
             number_format($before_total_2 + $before_total_3 + $before_total_result_3 + $before_total_4, 2),
             number_format($after_total_1 + $after_total_5, 2),
-            number_format($after_total_2 + $after_total_3 + $after_total_4, 2),
+            number_format($after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3, 2),
             number_format($total_5 + $after_total_1 + $before_total_1, 2),
             number_format($cumulativeTotal, 2),
 
