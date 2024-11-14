@@ -216,6 +216,10 @@
 
     }
 
+    .text-left {
+        text-align: left !important;
+    }
+
     .child-2-1 {
 
         /* บังคับให้ตัดบรรทัด */

@@ -341,8 +341,8 @@
 
                                     {{-- 4% --}}
                                     <tr>
-                                        <td style="border: none;"></td>
-                                        <th colspan="7" class="center" style="border: none;">
+
+                                        <th colspan="8" class="center" style="border: none;">
                                             รายได้จากการดำเนินงาน</th>
 
                                     </tr>
@@ -404,8 +404,8 @@
 
                                     {{-- 5% --}}
                                     <tr>
-                                        <td style="border: none;"></td>
-                                        <th colspan="7" class="center" style="border: none;">
+
+                                        <th colspan="8" class="center" style="border: none;">
                                             ค่าใช้จ่ายในการขายเเละบริหาร</th>
                                     </tr>
                                     @foreach ($date_query as $entry)
