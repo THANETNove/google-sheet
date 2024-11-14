@@ -161,7 +161,7 @@ class GeneralJournalController extends Controller
 
         $data = session()->get('generalLedgers');
 
-        $chunks = collect($data['query'])->chunk(100); // แบ่งข้อมูลเป็นชุดละ 100 รายการ
+        $chunks = collect($data['query'])->chunk(50); // แบ่งข้อมูลเป็นชุดละ 100 รายการ
 
         $pdf = PDF::loadView('report.general_journal.pdf_view', [
             'chunks' => $chunks, // ส่ง chunks ของข้อมูล
@@ -175,9 +175,8 @@ class GeneralJournalController extends Controller
         $pdf->setPaper('a4', 'portrait')
             ->setOption('margin-top', 15)
             ->setOption('margin-bottom', 15)
-            ->setOption('isHtml5ParserEnabled', true)
-            ->setOption('isPhpEnabled', true); // อนุญาตให้ใช้ไฟล์จากภายนอก เช่น รูปภาพ
-
+            ->setOption('isHtml5ParserEnabled', false)  // ปิด HTML5 parser
+            ->setOption('isPhpEnabled', false);
         return $pdf->stream(); // โหลดไฟล์ PDF
     }
 
