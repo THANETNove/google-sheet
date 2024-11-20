@@ -54,8 +54,10 @@
                                 <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
                             </a>
                         </li>
-                        <li class="menu-item {{ Request::is('report/ledger-book') ? 'active' : '' }} ">
-                            <a href="{{ url('company') }} " class="menu-link">
+                        <li
+                            class="menu-item {{ Request::is('report/ledger/*') || Request::is('report/search-ledger') ? 'active' : '' }} ">
+                            <a href="@if (session()->has('company_id')) {{ url('report/ledger', session()->get('company_id')) }} @else # @endif "
+                                class="menu-link">
                                 <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
                             </a>
                         </li>

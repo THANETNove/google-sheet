@@ -11,6 +11,7 @@ use App\Http\Controllers\Report\SellController;
 use App\Http\Controllers\Report\ProfitStatementController;
 use App\Http\Controllers\Report\TrialBalanceBeforeClosingController;
 use App\Http\Controllers\Report\AccountBalanceSheetController;
+use App\Http\Controllers\Report\LedgerController;
 
 
 Route::get('/', function () {
@@ -68,6 +69,9 @@ Route::get('trial-balance-before-closing-excel/{id}/{month}/{year}', [TrialBalan
 //งบดุลบัญชี
 Route::get('report/account-balance-sheet/{id}', [AccountBalanceSheetController::class, 'show'])->name('report/account-balance-sheet');
 Route::post('report/search-account-balance-sheet', [AccountBalanceSheetController::class, 'search'])->name('report/search-account-balance-sheet');
+
+//งบดุลบัญชี
+Route::get('report/ledger/{id}', [LedgerController::class, 'show'])->name('report/ledger');
 
 
 

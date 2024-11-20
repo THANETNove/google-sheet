@@ -18,6 +18,13 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class AccountBalanceSheetController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+
     private function getMonths()
     {
         return [
