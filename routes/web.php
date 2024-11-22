@@ -72,6 +72,7 @@ Route::post('report/search-account-balance-sheet', [AccountBalanceSheetControlle
 
 //งบดุลบัญชี
 Route::get('report/ledger/{id}', [LedgerController::class, 'show'])->name('report/ledger');
+Route::post('report/search-ledger', [LedgerController::class, 'search'])->name('report/search-ledger');
 
 
 
