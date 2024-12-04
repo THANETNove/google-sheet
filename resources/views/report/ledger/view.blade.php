@@ -101,7 +101,7 @@
                                             <tr>
                                                 <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
                                                 <td>{{ $query->gls_gl_document }}</td>
-                                                <td>{{ $query->gls_account_name }}</td>
+                                                <td>{{ $query->gl_company }}</td>
                                                 <td class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
                                                     {{ $query->gls_debit > 0 ? number_format($query->gls_debit, 2) : '' }}
                                                 </td>

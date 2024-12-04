@@ -69,6 +69,7 @@ class LedgerController extends Controller
 
 
         $before_date_query = DB::table('general_ledger_subs')
+            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
             ->where('gls_code_company', $id)
             ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
             ->where(function ($q) {
@@ -77,6 +78,7 @@ class LedgerController extends Controller
                     ->orWhere('gls_account_code', 'like', '3%');
             })
             ->select(
+                'general_ledgers.gl_company',
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
@@ -94,6 +96,8 @@ class LedgerController extends Controller
         //   dd($before_date_query);
 
         $before_date_query_2 = DB::table('general_ledger_subs')
+            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
+
             ->where('gls_code_company', $id)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->where(function ($q) {
@@ -101,6 +105,7 @@ class LedgerController extends Controller
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->select(
+                'general_ledgers.gl_company',
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
@@ -123,9 +128,12 @@ class LedgerController extends Controller
 
 
         $date_query = DB::table('general_ledger_subs')
+            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
+
             ->where('gls_code_company', $id)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->select(
+                'general_ledgers.gl_company',
                 'gls_gl_date',
                 'gls_account_code',
                 'gls_gl_document',
