@@ -95,12 +95,13 @@ class LedgerController extends Controller
 
         //   dd($before_date_query);
         //   dd($startPeriod->toDateString(), $carryForwardDate->toDateString());
-
+        //  dd([$startDate->toDateString(), $endDate->toDateString()], [$startPeriod->toDateString(), $carryForwardDate->toDateString()]);
         $before_date_query_2 = DB::table('general_ledger_subs')
             ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
 
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
@@ -144,11 +145,6 @@ class LedgerController extends Controller
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
-                /*   DB::raw("CASE 
-                WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit) 
-                WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
-                ELSE 0
-             END as gls_credit") */
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit"),
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit")
             )
@@ -156,7 +152,6 @@ class LedgerController extends Controller
 
             ->groupBy('gls_account_code')
             ->get();
-
 
 
 
@@ -171,19 +166,21 @@ class LedgerController extends Controller
             return  $beforeItem;
         }); */
 
-        $after_date_query = $before_date_query_2->merge($after_date_query)
-            ->groupBy('gls_account_code')
-            ->map(function ($items) {
-                return (object) [
-                    'gls_gl_date' => $items->first()->gls_gl_date,
-                    'gls_account_code' => $items->first()->gls_account_code,
-                    'gls_credit' => $items->sum(fn($item) => $item->gls_credit),
-                    'gls_debit' => $items->sum(fn($item) => $item->gls_debit),
-                    'gls_account_name' => $items->first()->gls_account_name, // ใช้ข้อมูลจากรายการแรก
-                    'gl_company' => $items->first()->gl_company, // ใช้ข้อมูลจากรายการแรก
-                ];
-            })
-            ->values(); // รีเซ็ต key ของ collection
+        /*    dd($after_date_query, $before_date_query_2); */
+
+        $after_date_query = $after_date_query->map(function ($beforeItem) use ($before_date_query_2) {
+            $matchingItem = $before_date_query_2->firstWhere('gls_account_code', $beforeItem->gls_account_code);
+
+            return (object) [
+                'gls_account_code' => $beforeItem->gls_account_code,
+                'gls_account_name' => $beforeItem->gls_account_name,
+                'gls_gl_date' => $beforeItem->gls_gl_date,
+                'gl_company' => $beforeItem->gl_company,
+                'gls_credit' => $matchingItem ? $matchingItem->gls_credit - ($beforeItem->gls_credit ?? 0) : ($beforeItem->gls_credit ?? 0),
+                'gls_debit' => $matchingItem ? $matchingItem->gls_debit - ($beforeItem->gls_debit ?? 0) : ($beforeItem->gls_debit ?? 0),
+            ];
+        });
+
 
 
         // dd($after_date_query);
@@ -235,7 +232,9 @@ class LedgerController extends Controller
             ->select(
                 DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32"),
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as acc_total_4"),
-                DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5")
+                DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5"),
+                DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit"),
+                DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit")
             )
             ->get();
         // รวมผลลัพธ์

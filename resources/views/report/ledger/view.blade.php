@@ -107,11 +107,11 @@
                                                     <td>{{ $query->gl_company }}</td>
                                                     <td
                                                         class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
-                                                        {{ $query->gls_debit > 0 ? number_format($query->gls_debit, 2) : '' }}
+                                                        {{ $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '' }}
                                                     </td>
                                                     <td
                                                         class="text-end {{ $query->gls_credit < 0 ? 'error-message' : '' }}">
-                                                        {{ $query->gls_credit > 0 ? number_format($query->gls_credit, 2) : '' }}
+                                                        {{ $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '' }}
                                                     </td>
                                                     <td
                                                         class="text-end {{ $accumulatedTotal < 0 ? 'error-message' : '' }}">
