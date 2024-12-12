@@ -64,7 +64,7 @@
                 {{-- 1% --}}
                 <tr>
 
-                    <th colspan="8" class="center" style="border: none;">
+                    <th colspan="8" style="border: none; text-align: left;">
                         สินทรัพย์
                     </th>
 
@@ -127,7 +127,7 @@
                 {{-- 2% --}}
                 <tr>
 
-                    <th colspan="8" class="center" style="border: none;">
+                    <th colspan="8" style="border: none; text-align: left;">
                         หนี้สิน
                     </th>
 
@@ -188,7 +188,7 @@
                 {{-- 3% --}}
 
                 <tr>
-                    <th colspan="8" class="center" style="border: none;">
+                    <th colspan="8" style="border: none; text-align: left;">
                         ส่วนของผู้ถือหุ้น/ผู้เป็นหุ้นส่วน
                     </th>
                 </tr>
@@ -290,7 +290,7 @@
 
                 {{-- 4% --}}
                 <tr>
-                    <th colspan="8" class="text-left" syle="border: none;">
+                    <th colspan="8" style="border: none; text-align: left;">
                         รายได้จากการดำเนินงาน</th>
 
                 </tr>
@@ -346,7 +346,7 @@
 
                 {{-- 5% --}}
                 <tr>
-                    <th colspan="8" class="text-left" style="border: none;">
+                    <th colspan="8" style="border: none; text-align: left;">
                         ค่าใช้จ่ายในการขายเเละบริหาร</th>
                 </tr>
                 @foreach ($date_query as $entry)
@@ -450,7 +450,7 @@
 
                 </tr>
                 <tr>
-                    <td colspan="8" style="border: none; height: 32px;"></td>
+                    <td colspan="8" style="border: none; height: 32px;text-align: left;"></td>
                     <!-- ใช้ height เพิ่มช่องว่าง -->
                 </tr>
                 @php

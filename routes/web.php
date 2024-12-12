@@ -69,6 +69,8 @@ Route::get('trial-balance-before-closing-excel/{id}/{month}/{year}', [TrialBalan
 //งบดุลบัญชี
 Route::get('report/account-balance-sheet/{id}', [AccountBalanceSheetController::class, 'show'])->name('report/account-balance-sheet');
 Route::post('report/search-account-balance-sheet', [AccountBalanceSheetController::class, 'search'])->name('report/search-account-balance-sheet');
+Route::get('account-balance-sheet-pdf/{id}/{month}/{year}', [AccountBalanceSheetController::class, 'exportPDF'])->name('account-balance-sheet-pdf');
+Route::get('account-balance-sheet-excel/{id}/{month}/{year}', [AccountBalanceSheetController::class, 'exportExcel'])->name('account-balance-sheet-pdf');
 
 //งบดุลบัญชี
 Route::get('report/ledger/{id}', [LedgerController::class, 'show'])->name('report/ledger');

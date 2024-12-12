@@ -307,4 +307,28 @@ class AccountBalanceSheetController extends Controller
             'id' => $request->id
         ]);
     }
+
+    public function exportPDF($id, $start_date, $end_date)
+    {
+
+
+
+        $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
+
+        $pdf = PDF::loadView('report.account_balance_sheet.pdf_view', [
+            'date_query' => $data['date_query'],
+            'user' => $data['user'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate'],
+            'day' => $data['day'],
+            'monthThai' => $data['monthThai'],
+            'currentYear' => $data['currentYear'],
+        ]);
+        $pdf->setPaper('a4', 'landscape') // ขนาดกระดาษ A4
+            ->setOption('margin-top', 15)
+            ->setOption('margin-bottom', 15)
+            ->setOption('margin-left', 10)
+            ->setOption('margin-right', 10);
+        return $pdf->stream('exportPDF.pdf');
+    }
 }
