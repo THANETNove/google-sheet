@@ -79,6 +79,10 @@ class LedgerController extends Controller
             })
             ->select(
                 'general_ledgers.gl_company',
+                'general_ledgers.gl_description',
+                'general_ledgers.gl_url',
+                'general_ledgers.gl_page',
+                'general_ledgers.gl_document',
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
@@ -108,6 +112,10 @@ class LedgerController extends Controller
             })
             ->select(
                 'general_ledgers.gl_company',
+                'general_ledgers.gl_description',
+                'general_ledgers.gl_url',
+                'general_ledgers.gl_page',
+                'general_ledgers.gl_document',
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
@@ -141,6 +149,10 @@ class LedgerController extends Controller
             })
             ->select(
                 'general_ledgers.gl_company',
+                'general_ledgers.gl_description',
+                'general_ledgers.gl_url',
+                'general_ledgers.gl_page',
+                'general_ledgers.gl_document',
                 'gls_gl_document',
                 'gls_account_code',
                 'gls_account_name',
@@ -173,6 +185,10 @@ class LedgerController extends Controller
 
             return (object) [
                 'gls_account_code' => $beforeItem->gls_account_code,
+                'gl_description' => $beforeItem->gl_description,
+                'gl_url' => $beforeItem->gl_url,
+                'gl_page' => $beforeItem->gl_page,
+                'gl_document' => $beforeItem->gl_document,
                 'gls_account_name' => $beforeItem->gls_account_name,
                 'gls_gl_date' => $beforeItem->gls_gl_date,
                 'gl_company' => $beforeItem->gl_company,
@@ -197,7 +213,7 @@ class LedgerController extends Controller
         // หลัง start date
 
 
-
+        //  gl_url,gl_page,gl_document
 
         $date_query = DB::table('general_ledger_subs')
             ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
@@ -206,6 +222,10 @@ class LedgerController extends Controller
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->select(
                 'general_ledgers.gl_company',
+                'general_ledgers.gl_description',
+                'general_ledgers.gl_url',
+                'general_ledgers.gl_page',
+                'general_ledgers.gl_document',
                 'gls_gl_date',
                 'gls_account_code',
                 'gls_gl_document',
@@ -250,6 +270,7 @@ class LedgerController extends Controller
                     'gls_gl_date' =>  null,
                     'gls_account_code' => '32-1001-01',
                     'gls_gl_document' => null,
+                    'gl_description' => null,
                     'gl_company' => null,
                     'gls_account_name' => 'กำไร(ขาดทุน)สะสม',
                     'gls_debit' => 0,
@@ -279,6 +300,7 @@ class LedgerController extends Controller
             }
         }
         $date_query = $date_query->sortKeys();
+
         // dd($date_query['32-1001-01']);
 
         // เพิ่ม before_total ให้กับแต่ละรายการของ account code
