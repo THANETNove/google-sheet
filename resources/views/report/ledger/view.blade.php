@@ -38,7 +38,8 @@
                             <div class="container-company">
                                 <div class="company">
                                     <p><strong>{{ $user->company }}</strong></p>
-                                    <p><strong>-- บัญชีแยกประเภท {{ $accountCode }} --</strong></p>
+                                    <p><strong>-- บัญชีแยกประเภท {{ $accountCode }} : {{ $queries[0]->gls_account_name }}
+                                            --</strong></p>
                                     <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</strong></p>
                                     <p><strong> ตั้งแต่วันที่ &nbsp; {{ date('d-m-Y', strtotime($startDate)) }}
                                             &nbsp;จนถึงวันที่&nbsp; {{ date('d-m-Y', strtotime($endDate)) }}</strong></p>
@@ -100,7 +101,7 @@
 
                                             <tr>
                                                 <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
-                                                <td>{{ $query->gls_gl_document }}</td>
+                                                <td>{{ $query->gls_account_code }}</td>
                                                 <td>{{ $query->gl_company }}</td>
                                                 <td class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
                                                     {{ $query->gls_debit > 0 ? number_format($query->gls_debit, 2) : '' }}
@@ -118,6 +119,37 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <th>โอนเข้าบัญชีกำไรสะสม </th>
+                                            <td> </td>
+                                            <th
+                                                class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td> </td>
+                                            <td> </td>
+                                            <th>ยอดรวม </th>
+                                            <th
+                                                class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                            </th>
+                                            <th
+                                                class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                        </tr>
+
+
                                     </tbody>
                                 </table>
                             </div>
