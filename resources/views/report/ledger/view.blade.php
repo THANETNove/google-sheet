@@ -84,40 +84,46 @@
 
                                         </tr>
                                         @foreach ($queries as $query)
-                                            @php
-                                                if ($isFirst) {
-                                                    $accumulatedTotal += $query->gls_debit - $query->gls_credit;
-                                                    $beginning_accumulation +=
-                                                        $queries->first()->before_total +
-                                                        $query->gls_debit -
-                                                        $query->gls_credit;
-                                                    $isFirst = false;
-                                                } else {
-                                                    $accumulatedTotal += $query->gls_debit - $query->gls_credit;
-                                                    $beginning_accumulation += $query->gls_debit - $query->gls_credit;
-                                                }
+                                            @if ($query->gls_account_code != '32-1001-01')
+                                                @php
+                                                    if ($isFirst) {
+                                                        $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                        $beginning_accumulation +=
+                                                            $queries->first()->before_total +
+                                                            $query->gls_debit -
+                                                            $query->gls_credit;
+                                                        $isFirst = false;
+                                                    } else {
+                                                        $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                        $beginning_accumulation +=
+                                                            $query->gls_debit - $query->gls_credit;
+                                                    }
 
-                                            @endphp
+                                                @endphp
 
-                                            <tr>
-                                                <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
-                                                <td>{{ $query->gls_account_code }}</td>
-                                                <td>{{ $query->gl_company }}</td>
-                                                <td class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
-                                                    {{ $query->gls_debit > 0 ? number_format($query->gls_debit, 2) : '' }}
-                                                </td>
-                                                <td class="text-end {{ $query->gls_credit < 0 ? 'error-message' : '' }}">
-                                                    {{ $query->gls_credit > 0 ? number_format($query->gls_credit, 2) : '' }}
-                                                </td>
-                                                <td class="text-end {{ $accumulatedTotal < 0 ? 'error-message' : '' }}">
-                                                    {{ $accumulatedTotal != 0 ? number_format($accumulatedTotal, 2) : '' }}
+                                                <tr>
+                                                    <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
+                                                    <td>{{ $query->gls_account_code }}</td>
+                                                    <td>{{ $query->gl_company }}</td>
+                                                    <td
+                                                        class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
+                                                        {{ $query->gls_debit > 0 ? number_format($query->gls_debit, 2) : '' }}
+                                                    </td>
+                                                    <td
+                                                        class="text-end {{ $query->gls_credit < 0 ? 'error-message' : '' }}">
+                                                        {{ $query->gls_credit > 0 ? number_format($query->gls_credit, 2) : '' }}
+                                                    </td>
+                                                    <td
+                                                        class="text-end {{ $accumulatedTotal < 0 ? 'error-message' : '' }}">
+                                                        {{ $accumulatedTotal != 0 ? number_format($accumulatedTotal, 2) : '' }}
 
-                                                </td>
-                                                <td
-                                                    class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                    {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td
+                                                        class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                        {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                                    </td>
+                                                </tr>
+                                            @endif
                                         @endforeach
                                         <tr>
                                             <td> </td>

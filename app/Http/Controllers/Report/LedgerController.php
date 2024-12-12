@@ -114,7 +114,9 @@ class LedgerController extends Controller
                 WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
                 WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
                 ELSE 0
-             END as before_total")
+             END as before_total"),
+                DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit"),
+                DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit")
             )
             ->groupBy('gls_account_code')
             ->get();
@@ -142,12 +144,16 @@ class LedgerController extends Controller
                 'gls_account_code',
                 'gls_account_name',
                 'gls_gl_date',
-                DB::raw("CASE 
+                /*   DB::raw("CASE 
                 WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit) 
                 WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
                 ELSE 0
-             END as gls_credit")
+             END as gls_credit") */
+                DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit"),
+                DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit")
             )
+
+
             ->groupBy('gls_account_code')
             ->get();
 
@@ -156,16 +162,31 @@ class LedgerController extends Controller
 
 
         // รวม $after_date_query กับ $before_date_query_2
-        $after_date_query = $after_date_query->map(function ($afterItem) use ($before_date_query_2) {
+        /*   $after_date_query = $after_date_query->map(function ($afterItem) use ($before_date_query_2) {
             // ค้นหา before_total ที่ตรงกับ gls_account_code
             $beforeItem = $before_date_query_2->firstWhere('gls_account_code', $afterItem->gls_account_code);
 
             // เพิ่ม before_total ใน $afterItem
-            $afterItem->gls_debit = $beforeItem->before_total ?? 0; // ตั้งค่าเป็น 0 ถ้าไม่มีค่าที่ตรงกัน
-            return $afterItem;
-        });
 
-        dd($after_date_query);
+            return  $beforeItem;
+        }); */
+
+        $after_date_query = $before_date_query_2->merge($after_date_query)
+            ->groupBy('gls_account_code')
+            ->map(function ($items) {
+                return (object) [
+                    'gls_gl_date' => $items->first()->gls_gl_date,
+                    'gls_account_code' => $items->first()->gls_account_code,
+                    'gls_credit' => $items->sum(fn($item) => $item->gls_credit),
+                    'gls_debit' => $items->sum(fn($item) => $item->gls_debit),
+                    'gls_account_name' => $items->first()->gls_account_name, // ใช้ข้อมูลจากรายการแรก
+                    'gl_company' => $items->first()->gl_company, // ใช้ข้อมูลจากรายการแรก
+                ];
+            })
+            ->values(); // รีเซ็ต key ของ collection
+
+
+        // dd($after_date_query);
         // Deb
 
 
@@ -244,7 +265,7 @@ class LedgerController extends Controller
 
 
 
-        //   dd($date_query['32-1001-01'], 'aa');
+        //dd($date_query['32-1001-01'], 'aa');
 
         // เพิ่ม before_total ให้กับแต่ละรายการของ account code
         foreach ($date_query as $accountCode => $transactions) {
@@ -271,7 +292,7 @@ class LedgerController extends Controller
                 $transaction->before_total = $before_total;
             }
         } */
-        // dd($date_query['32-1001-01']);
+        //dd($date_query['32-1001-01']);
 
         return [
             'date_query' => $date_query,
