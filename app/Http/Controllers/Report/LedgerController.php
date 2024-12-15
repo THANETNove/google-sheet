@@ -187,7 +187,7 @@ class LedgerController extends Controller
 
 
 
-        $date_query = DB::table('general_ledger_subs')
+        $date_query1 = DB::table('general_ledger_subs')
             ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
 
             ->where('gls_code_company', $id)
@@ -209,6 +209,56 @@ class LedgerController extends Controller
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
+        $date_query2 = DB::table('general_ledger_subs')
+            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
+            ->where('gls_code_company', $id)
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+            ->select(
+                'general_ledgers.gl_company',
+                'general_ledgers.gl_description',
+                'general_ledgers.gl_url',
+                'general_ledgers.gl_page',
+                'general_ledgers.gl_document',
+                'gls_gl_date',
+                'gls_account_code',
+                'gls_gl_document',
+                'gls_account_name',
+                'gls_debit',
+                'gls_credit'
+
+            )
+            ->orderBy('gls_gl_date', 'ASC')
+            ->get()
+            ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
+        $date_query3 = DB::table('general_ledger_subs')
+            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
+            ->where('gls_code_company', $id)
+            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->select(
+                'general_ledgers.gl_company',
+                'general_ledgers.gl_description',
+                'general_ledgers.gl_url',
+                'general_ledgers.gl_page',
+                'general_ledgers.gl_document',
+                'gls_gl_date',
+                'gls_account_code',
+                'gls_gl_document',
+                'gls_account_name',
+                'gls_debit',
+                'gls_credit'
+
+            )
+            ->orderBy('gls_gl_date', 'ASC')
+            ->get()
+            ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
+
+        //dd($date_query1->sortKeys(), $date_query2->sortKeys());
+        $date_query = $date_query1->merge($date_query2);
+
+        $date_query = $date_query1
+            ->merge($date_query2)
+            ->merge($date_query3);
+
 
 
         $query = DB::table('general_ledger_subs')
