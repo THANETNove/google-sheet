@@ -66,11 +66,11 @@ class LedgerController extends Controller
 
         // ก่อน start date 16,238,926.78 +13764.23+ 389774.68 +30585.03+ 14450.09
         //  16,687,500.81
-
-
-        $before_date_query = DB::table('general_ledger_subs')
+        $query = DB::table('general_ledger_subs')
             ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
-            ->where('gls_code_company', $id)
+            ->where('gls_code_company', $id);
+
+        $before_date_query = (clone $query)
             ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '1%')
@@ -100,10 +100,7 @@ class LedgerController extends Controller
         //   dd($before_date_query);
         //   dd($startPeriod->toDateString(), $carryForwardDate->toDateString());
         //  dd([$startDate->toDateString(), $endDate->toDateString()], [$startPeriod->toDateString(), $carryForwardDate->toDateString()]);
-        $before_date_query_2 = DB::table('general_ledger_subs')
-            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
-
-            ->where('gls_code_company', $id)
+        $before_date_query_2 = (clone $query)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
 
             ->where(function ($q) {
@@ -138,10 +135,7 @@ class LedgerController extends Controller
 
 
 
-        $after_date_query = DB::table('general_ledger_subs')
-            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
-
-            ->where('gls_code_company', $id)
+        $after_date_query = (clone $query)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
@@ -187,10 +181,7 @@ class LedgerController extends Controller
 
 
 
-        $date_query1 = DB::table('general_ledger_subs')
-            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
-
-            ->where('gls_code_company', $id)
+        $date_query1 = (clone $query)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->select(
                 'general_ledgers.gl_company',
@@ -209,9 +200,7 @@ class LedgerController extends Controller
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
-        $date_query2 = DB::table('general_ledger_subs')
-            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
-            ->where('gls_code_company', $id)
+        $date_query2 = (clone $query)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->select(
                 'general_ledgers.gl_company',
@@ -230,10 +219,13 @@ class LedgerController extends Controller
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
-        $date_query3 = DB::table('general_ledger_subs')
-            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
-            ->where('gls_code_company', $id)
+
+        $existingAccountCodes = $date_query1->keys()->merge($date_query2->keys())->unique();
+
+        // กรอง gls_account_code ใน $date_query3 ที่ไม่มีใน $date_query1 และ $date_query2
+        $date_query3 = (clone $query)
             ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->whereNotIn('gls_account_code', $existingAccountCodes) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
             ->select(
                 'general_ledgers.gl_company',
                 'general_ledgers.gl_description',
@@ -246,23 +238,19 @@ class LedgerController extends Controller
                 'gls_account_name',
                 'gls_debit',
                 'gls_credit'
-
             )
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
-            ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
+            ->groupBy('gls_account_code');
 
-        //dd($date_query1->sortKeys(), $date_query2->sortKeys());
-        $date_query = $date_query1->merge($date_query2);
 
-        $date_query = $date_query1
-            ->merge($date_query2)
-            ->merge($date_query3);
+        $date_query = $date_query1->merge($date_query2)->merge($date_query3);
 
 
 
-        $query = DB::table('general_ledger_subs')
-            ->where('gls_code_company', $id)
+
+
+        $query = (clone $query)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startOfYearDate->toDateString(), $endOfYearDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '32-1001-01')
