@@ -52,7 +52,10 @@
                                 <table class="table">
                                     <thead class="text-center">
                                         <tr class="table-secondary">
-                                            <th class="child-2">วันที่</th>
+                                            @if ($accountCode != '32-1001-01')
+                                                <th class="child-2">วันที่</th>
+                                            @endif
+
                                             <th>เลขที่เอกสาร</th>
                                             <th>คำอธิบาย</th>
                                             <th>เดบิต</th>
@@ -66,12 +69,16 @@
                                             $accumulatedTotal = 0;
                                             $beginning_accumulation = 0;
                                             $isFirst = true;
+                                            $gls_credit_sum = 0;
+                                            $gls_debit_sum = 0;
                                             $i = 1;
                                         @endphp
 
                                         <tr>
+                                            @if ($accountCode != '32-1001-01')
+                                                <td></td>
+                                            @endif
 
-                                            <td></td>
                                             <td></td>
                                             <th>ยอดยกมาต้นงวด </th>
                                             <!-- Display value if $accountCode starts with 1 or 5 -->
@@ -104,12 +111,17 @@
                                                 @php
                                                     if ($isFirst) {
                                                         if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
-                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                            $gls_credit_sum += $query->gls_credit;
+                                                            $gls_debit_sum += $query->gls_debit;
+
+                                                            $accumulatedTotal += $query->gls_credit - $query->gls_debit;
                                                             $beginning_accumulation +=
                                                                 $queries->first()->before_total +
                                                                 $query->gls_credit -
                                                                 $query->gls_debit;
                                                         } else {
+                                                            $gls_credit_sum += $query->gls_credit;
+                                                            $gls_debit_sum += $query->gls_debit;
                                                             $accumulatedTotal += $query->gls_debit - $query->gls_credit;
                                                             $beginning_accumulation +=
                                                                 $queries->first()->before_total +
@@ -117,18 +129,17 @@
                                                                 $query->gls_credit;
                                                         }
 
-                                                        /*   $accumulatedTotal += $query->gls_debit - $query->gls_credit;
-                                                        $beginning_accumulation +=
-                                                            $queries->first()->before_total +
-                                                            $query->gls_debit -
-                                                            $query->gls_credit;
-                                                        $isFirst = false; */
+                                                        $isFirst = false;
                                                     } else {
                                                         if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
-                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                            $gls_credit_sum += $query->gls_credit;
+                                                            $gls_debit_sum += $query->gls_debit;
+                                                            $accumulatedTotal += $query->gls_credit - $query->gls_debit;
                                                             $beginning_accumulation +=
                                                                 $query->gls_credit - $query->gls_debit;
                                                         } else {
+                                                            $gls_credit_sum += $query->gls_credit;
+                                                            $gls_debit_sum += $query->gls_debit;
                                                             $accumulatedTotal += $query->gls_debit - $query->gls_credit;
                                                             $beginning_accumulation +=
                                                                 $query->gls_debit - $query->gls_credit;
@@ -138,7 +149,10 @@
                                                 @endphp
 
                                                 <tr>
-                                                    <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
+                                                    @if ($accountCode != '32-1001-01')
+                                                        <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
+                                                    @endif
+
                                                     <td>
                                                         @if ($query->gl_url)
                                                             <a href="{{ $query->gl_url }}" target="_blank"
@@ -165,17 +179,20 @@
                                                         class="text-end {{ $accumulatedTotal < 0 ? 'error-message' : '' }}">
                                                         {{ $accumulatedTotal != 0 ? number_format($accumulatedTotal, 2) : '' }}
 
+
                                                     </td>
                                                     <td
                                                         class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                        {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                                        {{ number_format($beginning_accumulation, 2) }}
                                                     </td>
                                                 </tr>
                                             @endif
                                         @endforeach
                                         <tr>
 
-                                            <td> </td>
+                                            @if ($accountCode != '32-1001-01')
+                                                <td></td>
+                                            @endif
                                             <td> </td>
                                             <th>
                                                 @if (in_array(substr($accountCode, 0, 1), ['4', '5']))
@@ -186,28 +203,69 @@
 
 
                                             </th>
-                                            <td> </td>
-                                            <th
+
+                                            {{--  <th
                                                 class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
                                                 {{ number_format($beginning_accumulation, 2) }}
-                                            </th>
-                                            <td> </td>
+                                            </th> --}}
+
+                                            @if (in_array(substr($accountCode, 0, 1), ['1', '5']))
+                                                <td></td>
+                                                <th
+                                                    class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($beginning_accumulation, 2) }}
+                                                </th>
+                                            @endif
+                                            <!-- Display value if $accountCode starts with 2, 3, or 4 -->
+                                            @if (in_array(substr($accountCode, 0, 1), ['2', '3', '4']))
+                                                <th
+                                                    class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($beginning_accumulation, 2) }}
+                                                </th>
+                                                <td> </td>
+                                            @endif
+
                                             <td> </td>
 
                                         </tr>
                                         <tr>
-                                            <td></td>
+                                            @if ($accountCode != '32-1001-01')
+                                                <td></td>
+                                            @endif
+
                                             <td> </td>
                                             <th>ยอดรวม </th>
 
-                                            <th
+                                            {{-- <th
                                                 class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                {{ number_format($beginning_accumulation, 2) }}
+                                                {{ number_format($gls_debit_sum + $queries->first()->before_total, 2) }}
                                             </th>
                                             <th
                                                 class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                {{ number_format($beginning_accumulation, 2) }}
-                                            </th>
+                                                {{ number_format($gls_credit_sum + $beginning_accumulation, 2) }}
+                                            </th> --}}
+
+                                            @if (in_array(substr($accountCode, 0, 1), ['1', '5']))
+                                                <th
+                                                    class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($gls_debit_sum + $queries->first()->before_total, 2) }}
+                                                </th>
+                                                <th
+                                                    class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($gls_credit_sum + $beginning_accumulation, 2) }}
+                                                </th>
+                                            @endif
+                                            <!-- Display value if $accountCode starts with 2, 3, or 4 -->
+                                            @if (in_array(substr($accountCode, 0, 1), ['2', '3', '4']))
+                                                <th
+                                                    class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($gls_debit_sum + $beginning_accumulation, 2) }}
+                                                </th>
+                                                <th
+                                                    class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($gls_credit_sum + $queries->first()->before_total, 2) }}
+                                                </th>
+                                            @endif
                                             <td> </td>
                                             <td> </td>
 
