@@ -52,7 +52,7 @@
                                 <table class="table">
                                     <thead class="text-center">
                                         <tr class="table-secondary">
-                                            {{--  <th>#</th> --}}
+                                            <th class="child-2">วันที่</th>
                                             <th>เลขที่เอกสาร</th>
                                             <th>คำอธิบาย</th>
                                             <th>เดบิต</th>
@@ -72,6 +72,7 @@
                                         <tr>
 
                                             <td></td>
+                                            <td></td>
                                             <th>ยอดยกมาต้นงวด </th>
                                             <!-- Display value if $accountCode starts with 1 or 5 -->
 
@@ -84,7 +85,8 @@
                                             @endif
                                             <!-- Display value if $accountCode starts with 2, 3, or 4 -->
                                             @if (in_array(substr($accountCode, 0, 1), ['2', '3', '4']))
-                                                <td></td>
+                                                <td> </td>
+
                                                 <th
                                                     class="text-end {{ $queries->first()->before_total < 0 ? 'error-message' : '' }}">
                                                     {{ number_format($queries->first()->before_total, 2) }}
@@ -101,22 +103,42 @@
                                             @if ($query->gls_account_code != '32-1001-01')
                                                 @php
                                                     if ($isFirst) {
-                                                        $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                        if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
+                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                            $beginning_accumulation +=
+                                                                $queries->first()->before_total +
+                                                                $query->gls_credit -
+                                                                $query->gls_debit;
+                                                        } else {
+                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                            $beginning_accumulation +=
+                                                                $queries->first()->before_total +
+                                                                $query->gls_debit -
+                                                                $query->gls_credit;
+                                                        }
+
+                                                        /*   $accumulatedTotal += $query->gls_debit - $query->gls_credit;
                                                         $beginning_accumulation +=
                                                             $queries->first()->before_total +
                                                             $query->gls_debit -
                                                             $query->gls_credit;
-                                                        $isFirst = false;
+                                                        $isFirst = false; */
                                                     } else {
-                                                        $accumulatedTotal += $query->gls_debit - $query->gls_credit;
-                                                        $beginning_accumulation +=
-                                                            $query->gls_debit - $query->gls_credit;
+                                                        if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
+                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                            $beginning_accumulation +=
+                                                                $query->gls_credit - $query->gls_debit;
+                                                        } else {
+                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
+                                                            $beginning_accumulation +=
+                                                                $query->gls_debit - $query->gls_credit;
+                                                        }
                                                     }
 
                                                 @endphp
 
                                                 <tr>
-
+                                                    <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
                                                     <td>
                                                         @if ($query->gl_url)
                                                             <a href="{{ $query->gl_url }}" target="_blank"
@@ -154,6 +176,7 @@
                                         <tr>
 
                                             <td> </td>
+                                            <td> </td>
                                             <th>
                                                 @if (in_array(substr($accountCode, 0, 1), ['4', '5']))
                                                     โอนเข้าบัญชีกำไรขาดทุนสะสม
@@ -166,23 +189,24 @@
                                             <td> </td>
                                             <th
                                                 class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                                {{ number_format($beginning_accumulation, 2) }}
                                             </th>
                                             <td> </td>
                                             <td> </td>
 
                                         </tr>
                                         <tr>
-
+                                            <td></td>
                                             <td> </td>
                                             <th>ยอดรวม </th>
+
                                             <th
                                                 class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                                {{ number_format($beginning_accumulation, 2) }}
                                             </th>
                                             <th
                                                 class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                {{ $beginning_accumulation != 0 ? number_format($beginning_accumulation, 2) : '' }}
+                                                {{ number_format($beginning_accumulation, 2) }}
                                             </th>
                                             <td> </td>
                                             <td> </td>
