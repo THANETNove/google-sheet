@@ -115,6 +115,7 @@
                                                 $total_1 += $entry->total;
                                             @endphp
                                             <tr>
+
                                                 <td class="center">{{ $entry->gls_account_code }}</td>
                                                 <td class="center">{{ $entry->gls_account_name }}</td>
                                                 <td

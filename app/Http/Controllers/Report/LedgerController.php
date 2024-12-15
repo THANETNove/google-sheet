@@ -168,18 +168,6 @@ class LedgerController extends Controller
 
 
 
-        // รวม $after_date_query กับ $before_date_query_2
-        /*   $after_date_query = $after_date_query->map(function ($afterItem) use ($before_date_query_2) {
-            // ค้นหา before_total ที่ตรงกับ gls_account_code
-            $beforeItem = $before_date_query_2->firstWhere('gls_account_code', $afterItem->gls_account_code);
-
-            // เพิ่ม before_total ใน $afterItem
-
-            return  $beforeItem;
-        }); */
-
-        /*    dd($after_date_query, $before_date_query_2); */
-
         $after_date_query = $after_date_query->map(function ($beforeItem) use ($before_date_query_2) {
             $matchingItem = $before_date_query_2->firstWhere('gls_account_code', $beforeItem->gls_account_code);
 
@@ -199,22 +187,6 @@ class LedgerController extends Controller
 
 
 
-        // dd($after_date_query);
-        // Deb
-
-
-
-
-        // Debug ผลลัพธ์
-
-
-
-
-        // หลัง start date
-
-
-        //  gl_url,gl_page,gl_document
-
         $date_query = DB::table('general_ledger_subs')
             ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
 
@@ -232,10 +204,8 @@ class LedgerController extends Controller
                 'gls_account_name',
                 'gls_debit',
                 'gls_credit'
-                /*       DB::raw('SUM(gls_debit) as total_debit'),
-                DB::raw('SUM(gls_credit) as total_credit') */
+
             )
-            // ->groupBy('gls_account_code', 'gls_gl_date') // Group by account code and date
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
@@ -283,10 +253,6 @@ class LedgerController extends Controller
 
         $date_query['32-1001-01'] = $date_query['32-1001-01']->merge($after_date_query);
 
-
-
-        //dd($date_query['32-1001-01'], 'aa');
-
         // เพิ่ม before_total ให้กับแต่ละรายการของ account code
         foreach ($date_query as $accountCode => $transactions) {
             foreach ($transactions as $transaction) {
@@ -301,19 +267,6 @@ class LedgerController extends Controller
         }
         $date_query = $date_query->sortKeys();
 
-        // dd($date_query['32-1001-01']);
-
-        // เพิ่ม before_total ให้กับแต่ละรายการของ account code
-        /*     foreach ($date_query as $accountCode => $transactions) {
-            // ตรวจสอบว่าใน $combined_result มีค่า for $accountCode นี้หรือไม่
-            $before_total = $combined_result->firstWhere('gls_account_code', $accountCode)->before_total ?? 0;
-
-            // เพิ่ม before_total ให้กับแต่ละรายการของ account code นั้นๆ
-            foreach ($transactions as $transaction) {
-                $transaction->before_total = $before_total;
-            }
-        } */
-        //dd($date_query['32-1001-01']);
 
         return [
             'date_query' => $date_query,
