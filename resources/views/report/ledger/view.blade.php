@@ -249,10 +249,12 @@
                                                 <th
                                                     class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
                                                     {{ number_format($gls_debit_sum + $queries->first()->before_total, 2) }}
+
                                                 </th>
                                                 <th
                                                     class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
                                                     {{ number_format($gls_credit_sum + $beginning_accumulation, 2) }}
+
                                                 </th>
                                             @endif
                                             <!-- Display value if $accountCode starts with 2, 3, or 4 -->
@@ -260,10 +262,12 @@
                                                 <th
                                                     class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
                                                     {{ number_format($gls_debit_sum + $beginning_accumulation, 2) }}
+
                                                 </th>
                                                 <th
                                                     class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
                                                     {{ number_format($gls_credit_sum + $queries->first()->before_total, 2) }}
+
                                                 </th>
                                             @endif
                                             <td> </td>
