@@ -64,8 +64,7 @@ class LedgerController extends Controller
         $startOfYearDate = $startDate->copy()->subYear()->startOfYear()->startOfDay();
         $endOfYearDate = $endDate->copy()->subYear()->endOfYear()->endOfDay();
 
-        // ก่อน start date 16,238,926.78 +13764.23+ 389774.68 +30585.03+ 14450.09
-        //  16,687,500.81
+
         $query = DB::table('general_ledger_subs')
             ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
             ->where('gls_code_company', $id);
@@ -97,9 +96,6 @@ class LedgerController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
-        //   dd($before_date_query);
-        //   dd($startPeriod->toDateString(), $carryForwardDate->toDateString());
-        //  dd([$startDate->toDateString(), $endDate->toDateString()], [$startPeriod->toDateString(), $carryForwardDate->toDateString()]);
         $before_date_query_2 = (clone $query)
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
 
@@ -303,11 +299,13 @@ class LedgerController extends Controller
                 }
             }
         }
-        $date_query = $date_query->sortKeys();
+        $dateQueries = $date_query->sortKeys();
+
+
 
 
         return [
-            'date_query' => $date_query,
+            'date_query' => $dateQueries,
             'user' => $user,
             'startDate' => $startDate,
             'endDate' => $endDate,
