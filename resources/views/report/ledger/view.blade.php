@@ -106,88 +106,187 @@
 
 
                                         </tr>
-                                        @foreach ($queries as $query)
+                                        {{-- @foreach ($queries as $query)
                                             @if ($query->gls_account_code != '32-1001-01')
                                                 @php
                                                     if ($isFirst) {
-                                                        if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
-                                                            $gls_credit_sum += $query->gls_credit;
-                                                            $gls_debit_sum += $query->gls_debit;
+                                                        if (
+                                                            $query->gls_gl_date >= $startDate->toDateString() &&
+                                                            $query->gls_gl_date <= $endDate->toDateString()
+                                                        ) {
+                                                            if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
+                                                                $gls_credit_sum += $query->gls_credit;
+                                                                $gls_debit_sum += $query->gls_debit;
 
-                                                            $accumulatedTotal += $query->gls_credit - $query->gls_debit;
-                                                            $beginning_accumulation +=
-                                                                $queries->first()->before_total +
-                                                                $query->gls_credit -
-                                                                $query->gls_debit;
+                                                                $accumulatedTotal +=
+                                                                    $query->gls_credit - $query->gls_debit;
+                                                                $beginning_accumulation +=
+                                                                    $queries->first()->before_total +
+                                                                    $query->gls_credit -
+                                                                    $query->gls_debit;
+                                                            } else {
+                                                                $gls_credit_sum += $query->gls_credit;
+                                                                $gls_debit_sum += $query->gls_debit;
+                                                                $accumulatedTotal +=
+                                                                    $query->gls_debit - $query->gls_credit;
+                                                                $beginning_accumulation +=
+                                                                    $queries->first()->before_total +
+                                                                    $query->gls_debit -
+                                                                    $query->gls_credit;
+                                                            }
                                                         } else {
-                                                            $gls_credit_sum += $query->gls_credit;
-                                                            $gls_debit_sum += $query->gls_debit;
-                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
-                                                            $beginning_accumulation +=
-                                                                $queries->first()->before_total +
-                                                                $query->gls_debit -
-                                                                $query->gls_credit;
+                                                            if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
+                                                                $beginning_accumulation += $queries->first()
+                                                                    ->before_total;
+                                                            } else {
+                                                                $beginning_accumulation += $queries->first()
+                                                                    ->before_total;
+                                                            }
                                                         }
 
                                                         $isFirst = false;
                                                     } else {
-                                                        if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
-                                                            $gls_credit_sum += $query->gls_credit;
-                                                            $gls_debit_sum += $query->gls_debit;
-                                                            $accumulatedTotal += $query->gls_credit - $query->gls_debit;
-                                                            $beginning_accumulation +=
-                                                                $query->gls_credit - $query->gls_debit;
-                                                        } else {
-                                                            $gls_credit_sum += $query->gls_credit;
-                                                            $gls_debit_sum += $query->gls_debit;
-                                                            $accumulatedTotal += $query->gls_debit - $query->gls_credit;
-                                                            $beginning_accumulation +=
-                                                                $query->gls_debit - $query->gls_credit;
+                                                        if (
+                                                            $query->gls_gl_date >= $startDate->toDateString() &&
+                                                            $query->gls_gl_date <= $endDate->toDateString()
+                                                        ) {
+                                                            if (in_array(substr($accountCode, 0, 1), ['2', '3', '4'])) {
+                                                                $gls_credit_sum += $query->gls_credit;
+                                                                $gls_debit_sum += $query->gls_debit;
+                                                                $accumulatedTotal +=
+                                                                    $query->gls_credit - $query->gls_debit;
+                                                                $beginning_accumulation +=
+                                                                    $query->gls_credit - $query->gls_debit;
+                                                            } else {
+                                                                $gls_credit_sum += $query->gls_credit;
+                                                                $gls_debit_sum += $query->gls_debit;
+                                                                $accumulatedTotal +=
+                                                                    $query->gls_debit - $query->gls_credit;
+                                                                $beginning_accumulation +=
+                                                                    $query->gls_debit - $query->gls_credit;
+                                                            }
                                                         }
                                                     }
 
                                                 @endphp
-
-                                                <tr>
-                                                    @if ($accountCode != '32-1001-01')
-                                                        <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
-                                                    @endif
-
-                                                    <td>
-                                                        @if ($query->gl_url)
-                                                            <a href="{{ $query->gl_url }}" target="_blank"
-                                                                class="opan-message" rel="noopener noreferrer">
-                                                                {{ $query->gl_document }}
-                                                                <span class="id-message">
-                                                                    หน้า {{ $query->gl_page }}
-                                                                </span>
-                                                            </a>
-                                                        @else
-                                                            {{ $query->gl_document }}
+                                                @if ($query->gls_gl_date >= $startDate->toDateString() && $query->gls_gl_date <= $endDate->toDateString())
+                                                    <tr>
+                                                        @if ($accountCode != '32-1001-01')
+                                                            <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
                                                         @endif
-                                                    </td>
-                                                    <td>{{ $query->gl_description }} - {{ $query->gl_company }}</td>
-                                                    <td
-                                                        class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
-                                                        {{ $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '' }}
-                                                    </td>
-                                                    <td
-                                                        class="text-end {{ $query->gls_credit < 0 ? 'error-message' : '' }}">
-                                                        {{ $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '' }}
-                                                    </td>
-                                                    <td
-                                                        class="text-end {{ $accumulatedTotal < 0 ? 'error-message' : '' }}">
-                                                        {{ $accumulatedTotal != 0 ? number_format($accumulatedTotal, 2) : '' }}
+
+                                                        <td>
+                                                            @if ($query->gl_url)
+                                                                <a href="{{ $query->gl_url }}" target="_blank"
+                                                                    class="opan-message" rel="noopener noreferrer">
+                                                                    {{ $query->gl_document }}
+                                                                    <span class="id-message">
+                                                                        หน้า {{ $query->gl_page }}
+                                                                    </span>
+                                                                </a>
+                                                            @else
+                                                                {{ $query->gl_document }}
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $query->gl_description }} - {{ $query->gl_company }}</td>
+                                                        <td
+                                                            class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
+                                                            {{ $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '' }}
+                                                        </td>
+                                                        <td
+                                                            class="text-end {{ $query->gls_credit < 0 ? 'error-message' : '' }}">
+                                                            {{ $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '' }}
+                                                        </td>
+                                                        <td
+                                                            class="text-end {{ $accumulatedTotal < 0 ? 'error-message' : '' }}">
+                                                            {{ $accumulatedTotal != 0 ? number_format($accumulatedTotal, 2) : '' }}
 
 
-                                                    </td>
-                                                    <td
-                                                        class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
-                                                        {{ number_format($beginning_accumulation, 2) }}
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                        <td
+                                                            class="text-end {{ $beginning_accumulation < 0 && $beginning_accumulation != 0 ? 'error-message' : '' }}">
+                                                            {{ number_format($beginning_accumulation, 2) }}
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endif
+                                        @endforeach --}}
+                                        @foreach ($queries as $query)
+                                            @if ($query->gls_account_code != '32-1001-01')
+                                                @php
+                                                    $isInDateRange =
+                                                        $query->gls_gl_date >= $startDate->toDateString() &&
+                                                        $query->gls_gl_date <= $endDate->toDateString();
+                                                    $isCategory234 = in_array(substr($accountCode, 0, 1), [
+                                                        '2',
+                                                        '3',
+                                                        '4',
+                                                    ]);
+
+                                                    if ($isFirst) {
+                                                        if ($isInDateRange) {
+                                                            $delta = $isCategory234
+                                                                ? $query->gls_credit - $query->gls_debit
+                                                                : $query->gls_debit - $query->gls_credit;
+                                                            $gls_credit_sum += $query->gls_credit;
+                                                            $gls_debit_sum += $query->gls_debit;
+                                                            $accumulatedTotal += $delta;
+                                                            $beginning_accumulation +=
+                                                                $queries->first()->before_total + $delta;
+                                                        } else {
+                                                            $beginning_accumulation += $queries->first()->before_total;
+                                                        }
+                                                        $isFirst = false;
+                                                    } elseif ($isInDateRange) {
+                                                        $delta = $isCategory234
+                                                            ? $query->gls_credit - $query->gls_debit
+                                                            : $query->gls_debit - $query->gls_credit;
+                                                        $gls_credit_sum += $query->gls_credit;
+                                                        $gls_debit_sum += $query->gls_debit;
+                                                        $accumulatedTotal += $delta;
+                                                        $beginning_accumulation += $delta;
+                                                    }
+                                                @endphp
+
+                                                @if ($isInDateRange)
+                                                    <tr>
+                                                        @if ($accountCode != '32-1001-01')
+                                                            <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
+                                                        @endif
+                                                        <td>
+                                                            @if ($query->gl_url)
+                                                                <a href="{{ $query->gl_url }}" target="_blank"
+                                                                    class="opan-message" rel="noopener noreferrer">
+                                                                    {{ $query->gl_document }}
+                                                                    <span class="id-message">หน้า
+                                                                        {{ $query->gl_page }}</span>
+                                                                </a>
+                                                            @else
+                                                                {{ $query->gl_document }}
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $query->gl_description }} - {{ $query->gl_company }}</td>
+                                                        <td
+                                                            class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
+                                                            {{ $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '' }}
+                                                        </td>
+                                                        <td
+                                                            class="text-end {{ $query->gls_credit < 0 ? 'error-message' : '' }}">
+                                                            {{ $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '' }}
+                                                        </td>
+                                                        <td
+                                                            class="text-end {{ $accumulatedTotal < 0 ? 'error-message' : '' }}">
+                                                            {{ $accumulatedTotal != 0 ? number_format($accumulatedTotal, 2) : '' }}
+                                                        </td>
+                                                        <td
+                                                            class="text-end {{ $beginning_accumulation < 0 ? 'error-message' : '' }}">
+                                                            {{ number_format($beginning_accumulation, 2) }}
+                                                        </td>
+                                                    </tr>
+                                                @endif
                                             @endif
                                         @endforeach
+
                                         <tr>
 
                                             @if ($accountCode != '32-1001-01')

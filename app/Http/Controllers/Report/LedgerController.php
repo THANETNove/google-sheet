@@ -198,8 +198,12 @@ class LedgerController extends Controller
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
+
+
+        $existingAccountCodes1 = $date_query1->keys()->unique();
         $date_query2 = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+            ->whereNotIn('gls_account_code', $existingAccountCodes1)
             ->selectRaw("
                 general_ledgers.gl_company,
                 general_ledgers.gl_description,
@@ -217,12 +221,12 @@ class LedgerController extends Controller
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
 
-        $existingAccountCodes = $date_query1->keys()->merge($date_query2->keys())->unique();
+        $existingAccountCodes2 = $date_query1->keys()->merge($date_query2->keys())->unique();
 
         // กรอง gls_account_code ใน $date_query3 ที่ไม่มีใน $date_query1 และ $date_query2
         $date_query3 = $query->clone()
             ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
-            ->whereNotIn('gls_account_code', $existingAccountCodes) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
+            ->whereNotIn('gls_account_code', $existingAccountCodes2) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
             ->selectRaw("
                 general_ledgers.gl_company,
                 general_ledgers.gl_description,
@@ -239,7 +243,7 @@ class LedgerController extends Controller
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code');
-
+        // dd($date_query2, $date_query3);
 
         $date_query = $date_query1->merge($date_query2)->merge($date_query3);
 
@@ -283,6 +287,62 @@ class LedgerController extends Controller
 
 
         $date_query['32-1001-01'] = $date_query['32-1001-01']->merge($after_date_query);
+
+
+        /* $date_query2 = $query->clone()
+    ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+    ->selectRaw("
+        gls_account_name,
+        gls_account_code
+    ")
+    ->orderBy('gls_gl_date', 'ASC')
+    ->get()
+    ->map(function ($item) {
+        return (object)[
+            'general_ledgers.gl_company' => null,
+            'general_ledgers.gl_description' => null,
+            'general_ledgers.gl_url' => null,
+            'general_ledgers.gl_page' => null,
+            'general_ledgers.gl_document' => null,
+            'gls_gl_date' => null,
+            'gls_account_code' => $item->gls_account_code,
+            'gls_gl_document' => null,
+            'gls_account_name' => $item->gls_account_name,
+            'gls_debit' => null,
+            'gls_credit' => null,
+        ];
+    })
+    ->groupBy('gls_account_code');
+
+$date_query3 = $query->clone()
+    ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+    ->whereNotIn('gls_account_code', $existingAccountCodes) 
+    ->selectRaw("
+        gls_account_name,
+        gls_account_code
+    ")
+    ->orderBy('gls_gl_date', 'ASC')
+    ->get()
+    ->map(function ($item) {
+        return (object)[
+            'general_ledgers.gl_company' => null,
+            'general_ledgers.gl_description' => null,
+            'general_ledgers.gl_url' => null,
+            'general_ledgers.gl_page' => null,
+            'general_ledgers.gl_document' => null,
+            'gls_gl_date' => null,
+            'gls_account_code' => $item->gls_account_code,
+            'gls_gl_document' => null,
+            'gls_account_name' => $item->gls_account_name,
+            'gls_debit' => null,
+            'gls_credit' => null,
+        ];
+    })
+    ->groupBy('gls_account_code');
+
+// Merge all queries into one
+$date_query = $date_query1->merge($date_query2)->merge($date_query3);
+ */
 
         // เพิ่ม before_total ให้กับแต่ละรายการของ account code
         foreach ($date_query as $accountCode => $transactions) {
