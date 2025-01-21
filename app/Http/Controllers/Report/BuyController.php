@@ -96,14 +96,14 @@ class BuyController extends Controller
             )
             ->orderBy('gl_date', 'ASC')
             ->get();
-        /*    dd($monthName); */
+
         return [
             'query' => $query,
             'user' => $user,
             'startDate' => $startDate,
             'day' => $startDate->day,
             'vat_month' => $monthName2,
-            'month' => $month,
+            'month' => $defaultMonth,
             'year' => $year,
             'monthThai' => $monthName,
             'currentYear' => $year
