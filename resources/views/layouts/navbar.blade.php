@@ -40,8 +40,11 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
-                                    <small class="text-muted">Admin</small>
+                                    @if (Auth::check() && Auth::user()->status == 1)
+                                        <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
+                                        <small class="text-muted">Admin</small>
+                                    @endif
+
                                 </div>
                             </div>
                         </a>

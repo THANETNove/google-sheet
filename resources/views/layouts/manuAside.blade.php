@@ -10,50 +10,147 @@
 
         <div class="menu-inner-shadow"></div>
 
-        <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item   {{ Request::is('home') || Request::is('company*') ? 'active' : '' }} ">
-                <a href="{{ url('home') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                    <div data-i18n="Analytics">Dashboard </div>
-                </a>
-            </li>
+        {{--  ส่วนของเมนู admin --}}
+        @if (Auth::check() && Auth::user()->status == 1)
+            <ul class="menu-inner py-1">
+                <!-- Dashboard -->
+                <li class="menu-item   {{ Request::is('home') || Request::is('company*') ? 'active' : '' }} ">
+                    <a href="{{ url('home') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                        <div data-i18n="Analytics">Dashboard </div>
+                    </a>
+                </li>
 
 
-            <!-- บริษัท -->
-            {{--  <li class="menu-item  {{ Request::is('company*') ? 'active open' : '' }} ">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">บริษัท</div>
-                </a>
 
-                <ul class="menu-sub">
-                    <li class="menu-item {{ Request::is('company*') ? 'active' : '' }} ">
-                        <a href="{{ url('company') }} " class="menu-link">
-                            <div data-i18n="Without menu">รายชื่อบริษัท</div>
+                <!--รายงาน -->
+                @if (session()->has('company_id'))
+                    <li class="menu-item  {{ Request::is('report/*') ? 'active open' : '' }} ">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class='menu-icon tf-icons bx bxs-report'></i>
+                            <div data-i18n="Layouts">รายงาน</div>
                         </a>
+
+                        <ul class="menu-sub">
+                            <li
+                                class="menu-item {{ Request::is('report/general-journal-view/*') || Request::is('report/search-date') ? 'active' : '' }} ">
+                                <a href="@if (session()->has('company_id')) {{ url('report/general-journal-view', session()->get('company_id')) }} @else # @endif"
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
+                                </a>
+                            </li>
+
+                            <li
+                                class="menu-item {{ Request::is('report/ledger/*') || Request::is('report/search-ledger') ? 'active' : '' }} ">
+                                <a href="@if (session()->has('company_id')) {{ url('report/ledger', session()->get('company_id')) }} @else # @endif "
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
+                                </a>
+                            </li>
+                            <li
+                                class="menu-item {{ Request::is('report/buy-view/*') || Request::is('report/search-buy') ? 'active' : '' }} ">
+                                <a href="@if (session()->has('company_id')) {{ url('report/buy-view', session()->get('company_id')) }} @else # @endif"
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">รายงานภาษีซื้อ</div>
+                                </a>
+                            </li>
+                            <li
+                                class="menu-item {{ Request::is('report/sell-view/*') || Request::is('report/search-sell') ? 'active' : '' }} ">
+                                <a href="@if (session()->has('company_id')) {{ url('report/sell-view', session()->get('company_id')) }} @else # @endif"
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">รายงานภาษีขาย</div>
+                                </a>
+                            </li>
+                            <li
+                                class="menu-item {{ Request::is('report/account-balance-sheet/*') || Request::is('report/search-account-balance-sheet') ? 'active' : '' }} ">
+                                <a href="@if (session()->has('company_id')) {{ url('report/account-balance-sheet', session()->get('company_id')) }} @else # @endif"
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">งบดุลบัญชี</div>
+                                </a>
+                            </li>
+                            <li
+                                class="menu-item {{ Request::is('report/profit-statement/*') || Request::is('report/search-profit-statement') ? 'active' : '' }} ">
+                                <a href="@if (session()->has('company_id')) {{ url('report/profit-statement', session()->get('company_id')) }} @else # @endif"
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>
+                                </a>
+                            </li>
+                            <li
+                                class="menu-item {{ Request::is('report/trial-balance-before-closing/*') || Request::is('report/search-trial-balance-before-closing') ? 'active' : '' }} ">
+                                <a href="@if (session()->has('company_id')) {{ url('report/trial-balance-before-closing', session()->get('company_id')) }} @else # @endif"
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">งบทดลองก่อนปิดบัญชี</div>
+                                </a>
+                            </li>
+
+                        </ul>
                     </li>
 
-                </ul>
-            </li>
- --}}
+                    <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
+                    <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class='menu-icon tf-icons bx bxs-server'></i>
+                            <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
+                        </a>
 
-            <!--รายงาน -->
-            @if (session()->has('company_id'))
-                <li class="menu-item  {{ Request::is('report/*') ? 'active open' : '' }} ">
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                <a href="{{ url('#') }} " class="menu-link">
+                                    <div data-i18n="Without menu">รายงานภาษีขาย-ซื้อ</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                <a href="{{ url('#') }} " class="menu-link">
+                                    <div data-i18n="Without menu">ภาษีหัก ณ ที่จ่าย</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                <a href="{{ url('#') }} " class="menu-link">
+                                    <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                <a href="{{ url('#') }} " class="menu-link">
+                                    <div data-i18n="Without menu">ภาษีมูลค่าเพิ่ม</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
+                                <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
+                                    class="menu-link">
+                                    <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                @endif
+            </ul>
+        @endif
+
+
+        @if (session()->has('company_status') && session('company_status') == 0)
+            <ul class="menu-inner py-1">
+                <!-- Dashboard -->
+
+
+
+
+                <!--รายงาน -->
+
+                <li class="menu-item  {{ Request::is('report/*', 'user-report/*') ? 'active open' : '' }} ">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class='menu-icon tf-icons bx bxs-report'></i>
                         <div data-i18n="Layouts">รายงาน</div>
                     </a>
 
                     <ul class="menu-sub">
-                        <li
-                            class="menu-item {{ Request::is('report/general-journal-view/*') || Request::is('report/search-date') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/general-journal-view', session()->get('company_id')) }} @else # @endif"
+                        <li class="menu-item {{ Request::is('user-report/*') ? 'active' : '' }} ">
+                            <a href="{{ url('user-report/general-journal') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>
                             </a>
                         </li>
+
                         <li
                             class="menu-item {{ Request::is('report/ledger/*') || Request::is('report/search-ledger') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/ledger', session()->get('company_id')) }} @else # @endif "
@@ -100,44 +197,10 @@
                     </ul>
                 </li>
 
-                <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
-                <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class='menu-icon tf-icons bx bxs-server'></i>
-                        <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
-                    </a>
 
-                    <ul class="menu-sub">
-                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                            <a href="{{ url('#') }} " class="menu-link">
-                                <div data-i18n="Without menu">รายงานภาษีขาย-ซื้อ</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                            <a href="{{ url('#') }} " class="menu-link">
-                                <div data-i18n="Without menu">ภาษีหัก ณ ที่จ่าย</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                            <a href="{{ url('#') }} " class="menu-link">
-                                <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                            <a href="{{ url('#') }} " class="menu-link">
-                                <div data-i18n="Without menu">ภาษีมูลค่าเพิ่ม</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
-                            <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
-                                class="menu-link">
-                                <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
-                            </a>
-                        </li>
 
-                    </ul>
-                </li>
-            @endif
-        </ul>
+            </ul>
+        @endif
+
     </div>
 </aside>

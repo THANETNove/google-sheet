@@ -19,8 +19,59 @@
                             </div>
 
                         </div>
-                        <form action="{{ route('report/search-date') }}" method="POST" class="container-date">
+                        @php
+
+                            $route =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? route('report/search-date')
+                                    : route('user-report/search-date', [
+                                        'username' => $user->username,
+                                        'password' => $user->password,
+                                    ]);
+                            $url_export_pdf =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url(
+                                        '/export-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate),
+                                    )
+                                    : url(
+                                        '/user-export-pdf/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate) .
+                                            '?username=' .
+                                            urlencode($user->username) .
+                                            '&password=' .
+                                            urlencode($user->password),
+                                    );
+                            $url_export_excel =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url(
+                                        '/export-excel/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate),
+                                    )
+                                    : url(
+                                        '/user-export-excel/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate) .
+                                            '?username=' .
+                                            urlencode($user->username) .
+                                            '&password=' .
+                                            urlencode($user->password),
+                                    );
+                        @endphp
+                        <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
+
+
                             <div class="container-date">
                                 <div class="col-8">
                                     <small class="text-light fw-semibold d-block mb-1">วันที่</small>
@@ -51,13 +102,11 @@
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
 
 
-                            <a href="{{ url('/export-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
-                                target="_blank" class="btn btn-primary">
+                            <a href="{{ $url_export_pdf }}" target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
 
-                            <a href="{{ url('/export-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
-                                class="btn btn-primary">
+                            <a href="{{ $url_export_excel }}" class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
                             </a>
                         </div>
