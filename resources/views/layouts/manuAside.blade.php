@@ -128,12 +128,8 @@
         @endif
 
 
-        @if (session()->has('company_status') && session('company_status') == 0)
+        @if (!Auth::check() && session()->has('company_status') && session('company_status') == 0)
             <ul class="menu-inner py-1">
-                <!-- Dashboard -->
-
-
-
 
                 <!--รายงาน -->
 
