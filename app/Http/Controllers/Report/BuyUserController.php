@@ -64,6 +64,7 @@ class BuyUserController extends Controller
         $vat_month = $startDate->month;
         $monthName = $this->getMonths()[$defaultMonth];
         $monthName2 = "$monthName $year"; // เช่น 'มกราคม 2024'
+        $monthName3 =  $this->getMonths()[$month] . ' ' . $year; // เช่น 'มกราคม 2024'
 
         // ดึงข้อมูลตามเดือนและปีที่เลือก
         $query = DB::table('general_ledgers')
@@ -94,7 +95,7 @@ class BuyUserController extends Controller
             'user' => $user,
             'startDate' => $startDate,
             'day' => $startDate->day,
-            'vat_month' => $monthName,
+            'vat_month' => $monthName3,
             'month' => $defaultMonth,
             'year' => $year,
             'monthThai' => $monthName,
