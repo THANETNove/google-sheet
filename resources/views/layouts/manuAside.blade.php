@@ -140,7 +140,8 @@
                     </a>
 
                     <ul class="menu-sub">
-                        <li class="menu-item {{ Request::is('user-report/*') ? 'active' : '' }} ">
+                        <li
+                            class="menu-item {{ Request::is('user-report/general-journal*', 'user-report/search-date*') ? 'active' : '' }} ">
                             <a href="{{ url('user-report/general-journal') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">สมุดรายวันทั่วไป</div>

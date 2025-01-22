@@ -17,7 +17,50 @@
                                 <p><strong>เดือนภาษี {{ $vat_month }}<strong></p>
                             </div>
                         </div>
-                        <form action="{{ route('report/search-buy') }}" method="POST" class="container-date">
+
+                        @php
+
+                            $route =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? route('report/search-buy')
+                                    : route('user-report/search-buy', [
+                                        'username' => $user->username,
+                                        'password' => $user->password,
+                                    ]);
+                            $url_export_pdf =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url(url('/buy-pdf/' . $id . '/' . urlencode($month) . '/' . urlencode($year)))
+                                    : url(
+                                        url('user-buy-pdf/' . $id . '/' . urlencode($month) . '/' . urlencode($year)) .
+                                            '?username=' .
+                                            urlencode($user->username) .
+                                            '&password=' .
+                                            urlencode($user->password),
+                                    );
+                            /*      $url_export_excel =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url(
+                                        '/export-excel/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate),
+                                    )
+                                    : url(
+                                        '/user-export-excel/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate) .
+                                            '?username=' .
+                                            urlencode($user->username) .
+                                            '&password=' .
+                                            urlencode($user->password),
+                                    ); */
+                        @endphp
+                        <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
                             <div class="container-date">
 
@@ -29,23 +72,23 @@
                                         <div class="col-6">
                                             <small class="text-light fw-semibold d-block mb-1" for="month">เดือน:</small>
                                             <select id="month" name="month" class="form-control">
-                                                <option value="01" {{ $month == '1' ? 'selected' : '' }}>มกราคม
+                                                <option value="1" {{ $month == '1' ? 'selected' : '' }}>มกราคม
                                                 </option>
-                                                <option value="02" {{ $month == '2' ? 'selected' : '' }}>
+                                                <option value="2" {{ $month == '2' ? 'selected' : '' }}>
                                                     กุมภาพันธ์</option>
-                                                <option value="03" {{ $month == '3' ? 'selected' : '' }}>มีนาคม
+                                                <option value="3" {{ $month == '3' ? 'selected' : '' }}>มีนาคม
                                                 </option>
-                                                <option value="04" {{ $month == '4' ? 'selected' : '' }}>เมษายน
+                                                <option value="4" {{ $month == '4' ? 'selected' : '' }}>เมษายน
                                                 </option>
-                                                <option value="05" {{ $month == '5' ? 'selected' : '' }}>พฤษภาคม
+                                                <option value="5" {{ $month == '5' ? 'selected' : '' }}>พฤษภาคม
                                                 </option>
-                                                <option value="06" {{ $month == '6' ? 'selected' : '' }}>มิถุนายน
+                                                <option value="6" {{ $month == '6' ? 'selected' : '' }}>มิถุนายน
                                                 </option>
-                                                <option value="07" {{ $month == '7' ? 'selected' : '' }}>กรกฎาคม
+                                                <option value="7" {{ $month == '7' ? 'selected' : '' }}>กรกฎาคม
                                                 </option>
-                                                <option value="08" {{ $month == '8' ? 'selected' : '' }}>สิงหาคม
+                                                <option value="8" {{ $month == '8' ? 'selected' : '' }}>สิงหาคม
                                                 </option>
-                                                <option value="09" {{ $month == '9' ? 'selected' : '' }}>กันยายน
+                                                <option value="9" {{ $month == '9' ? 'selected' : '' }}>กันยายน
                                                 </option>
                                                 <option value="10" {{ $month == '10' ? 'selected' : '' }}>ตุลาคม
                                                 </option>
@@ -79,8 +122,7 @@
                         </form>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-                            <a href="{{ url('/buy-pdf/' . $id . '/' . urlencode($month) . '/' . urlencode($year)) }}"
-                                target="_blank" class="btn btn-primary">
+                            <a href="{{ $url_export_pdf }}" target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
                             <a href="{{ url('/buy-excel/' . $id . '/' . urlencode($month) . '/' . urlencode($year)) }}"

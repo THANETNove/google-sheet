@@ -15,16 +15,8 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-
-class BuyController extends Controller
+class BuyUserController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-
     private function getMonths()
     {
         return [
@@ -67,12 +59,11 @@ class BuyController extends Controller
         // ใช้ Carbon เพื่อสร้างวันที่จากเดือนและปีที่กำหนด
         $startDate = Carbon::createFromDate($year, $month, 1); // วันที่ 1 ของเดือนที่เลือก
         $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth(); // วันที่สุดท้ายของเดือนที่เลือก
-
+        /* dd($defaultMonth); */
         // แปลงเดือนเป็นชื่อเดือนภาษาไทย
         $vat_month = $startDate->month;
         $monthName = $this->getMonths()[$defaultMonth];
         $monthName2 = "$monthName $year"; // เช่น 'มกราคม 2024'
-        $monthName3 =  $this->getMonths()[$month] . ' ' . $year; // เช่น 'มกราคม 2024'
 
         // ดึงข้อมูลตามเดือนและปีที่เลือก
         $query = DB::table('general_ledgers')
@@ -103,8 +94,8 @@ class BuyController extends Controller
             'user' => $user,
             'startDate' => $startDate,
             'day' => $startDate->day,
-            'vat_month' => $monthName3,
-            'month' => $month,
+            'vat_month' => $monthName,
+            'month' => $defaultMonth,
             'year' => $year,
             'monthThai' => $monthName,
             'currentYear' => $year
@@ -123,14 +114,15 @@ class BuyController extends Controller
         return view('report.buy.index', compact('query'));
     }
 
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->user_id;
         $data = $this->getData($id); // รับค่ากลับมา
 
 
         return view('report.buy.view', [
             'query' => $data['query'],
-            'user' => $data['user'],
+            'user' => $request,
             'startDate' => $data['startDate'],
             'day' => $data['day'],
             'month' => $data['month'],
@@ -144,16 +136,17 @@ class BuyController extends Controller
 
     public function search(Request $request)
     {
+        $id = $request->user_id;
 
         $month = $request->month;  // รับค่าจากฟอร์มเลือกเดือน
         $year = $request->year;    // รับค่าจากฟอร์มเลือกปี
 
         // เรียกฟังก์ชัน getData และส่งค่า month และ year ไป
-        $data = $this->getData($request->id, $month, $year);
+        $data = $this->getData($id, $month, $year);
 
         return view('report.buy.view', [
             'query' => $data['query'],
-            'user' => $data['user'],
+            'user' => $request,
             'startDate' => $data['startDate'],
             'day' => $data['day'],
             'month' => $data['month'],
@@ -161,7 +154,7 @@ class BuyController extends Controller
             'vat_month' =>  $data['vat_month'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
-            'id' => $request->id
+            'id' => $id
         ]);
     }
 

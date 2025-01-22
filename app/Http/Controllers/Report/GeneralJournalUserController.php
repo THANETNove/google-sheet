@@ -94,17 +94,7 @@ class GeneralJournalUserController extends Controller
     }
 
 
-    public function handle($request,  $next)
-    {
-        $username = $request->query('username');
-        $password = $request->query('password');
 
-        if ($username === 'your-username' && $password === 'your-password') {
-            return $next($request);
-        }
-
-        return response('Unauthorized', 401);
-    }
 
 
     public function index(Request $request)

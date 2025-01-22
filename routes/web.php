@@ -19,6 +19,7 @@ use App\Http\Middleware\AuthenticateUserStatusReport;
 
 //user report
 use App\Http\Controllers\Report\GeneralJournalUserController;
+use App\Http\Controllers\Report\BuyUserController;
 
 
 Route::get('/', function () {
@@ -55,6 +56,7 @@ Route::middleware([AuthenticateUserStatusReport::class])->group(function () {
     Route::get('buy-pdf/{id}/{month}/{year}', [BuyController::class, 'exportPDF'])->name('buy-pdf');
     Route::get('buy-excel/{id}/{month}/{year}', [BuyController::class, 'exportExcel'])->name('buy-excel');
     Route::post('report/search-buy', [BuyController::class, 'search'])->name('report/search-buy');
+
     // รายการขาย
     Route::get('report/sell', [SellController::class, 'index'])->name('report/sell');
     Route::get('report/sell-view/{id}', [SellController::class, 'show'])->name('report/sell-view');
@@ -87,10 +89,18 @@ Route::middleware([AuthenticateUserStatusReport::class])->group(function () {
 //user report
 
 Route::middleware([AuthenticateUserReport::class])->group(function () {
+    //รายงานทั่วไป
+    // http://localhost:8000/user-report/general-journal?username=kloof&password=12345678
     Route::get('user-report/general-journal', [GeneralJournalUserController::class, 'show'])->name('user-report/general-journal');
     Route::post('user-report/search-date', [GeneralJournalUserController::class, 'search'])->name('user-report/search-date');
     Route::get('user-export-pdf/{id}/{start_date}/{end_date}', [GeneralJournalUserController::class, 'exportPDF'])->name('user-export-pdf');
     Route::get('user-export-excel/{id}/{start_date}/{end_date}', [GeneralJournalUserController::class, 'exportExcel'])->name('user-export-excel');
+
+    //รายงานซื้อ
+    Route::get('user-report/buy', [BuyUserController::class, 'show'])->name('report/buy');
+    Route::get('user-buy-pdf/{id}/{month}/{year}', [BuyUserController::class, 'exportPDF'])->name('buy-pdf');
+    Route::get('user-buy-excel/{id}/{month}/{year}', [BuyUserController::class, 'exportExcel'])->name('buy-excel');
+    Route::post('user-report/search-buy', [BuyUserController::class, 'search'])->name('user-report/search-buy');
 });
 
 
