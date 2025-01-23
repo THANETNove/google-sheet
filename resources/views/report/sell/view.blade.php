@@ -22,7 +22,7 @@
 
                             $route =
                                 Auth::check() && Auth::user()->status == 1
-                                    ? route('report/sell')
+                                    ? route('report/search-sell')
                                     : route('user-report/search-sell', [
                                         'username' => $user->username,
                                         'password' => $user->password,
