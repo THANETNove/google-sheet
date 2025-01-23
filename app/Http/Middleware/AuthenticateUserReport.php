@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Hash;
 
 
 class AuthenticateUserReport
@@ -26,7 +26,7 @@ class AuthenticateUserReport
         // ค้นหาผู้ใช้ในฐานข้อมูล
         $user = DB::table('users')->where('name', $username)->where('status', 0)->first();
 
-        if ($user && password_verify($password, $user->password)) {
+        if ($user && $password == $user->password) {
             // หากพบผู้ใช้และรหัสผ่านถูกต้อง ให้ผ่านไปยัง Controller
 
             $request->merge([

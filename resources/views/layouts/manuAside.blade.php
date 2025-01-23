@@ -149,14 +149,14 @@
                         </li>
 
                         <li
-                            class="menu-item {{ Request::is('report/ledger/*', 'report/search-ledger', 'user-report/buy*', 'user-report/search-buy*') ? 'active' : '' }} ">
+                            class="menu-item {{ Request::is('report/ledger/*', 'report/search-ledger', 'user-report/ledger*', 'user-report/search-ledger*') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/ledger', session()->get('company_id')) }} @else # @endif "
                                 class="menu-link">
                                 <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
                             </a>
                         </li>
                         <li
-                            class="menu-item {{ Request::is('report/buy-view/*') || Request::is('report/search-buy') ? 'active' : '' }} ">
+                            class="menu-item {{ Request::is('report/buy-view/*', 'report/search-buy', 'user-report/buy*', 'user-report/search-buy*') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/buy-view', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
                                 <div data-i18n="Without menu">รายงานภาษีซื้อ</div>
