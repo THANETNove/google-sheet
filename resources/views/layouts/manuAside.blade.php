@@ -177,7 +177,7 @@
                             </a>
                         </li>
                         <li
-                            class="menu-item {{ Request::is('report/profit-statement/*') || Request::is('report/search-profit-statement') ? 'active' : '' }} ">
+                            class="menu-item {{ Request::is('report/profit-statement/*', 'report/search-profit-statement', 'user-report/profit-statement*', 'user-report/search-profit-statement*') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/profit-statement', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
                                 <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>

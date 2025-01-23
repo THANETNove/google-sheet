@@ -21,6 +21,7 @@ use App\Http\Middleware\AuthenticateUserStatusReport;
 use App\Http\Controllers\Report\GeneralJournalUserController;
 use App\Http\Controllers\Report\BuyUserController;
 use App\Http\Controllers\Report\SellUserController;
+use App\Http\Controllers\Report\ProfitStatementUserController;
 
 
 Route::get('/', function () {
@@ -111,10 +112,10 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
 
 
     // งบกำไร(ขาดทุน)
-    Route::get('report/profit-statement/{id}', [ProfitStatementController::class, 'show'])->name('report/profit-statement');
-    Route::post('report/search-profit-statement', [ProfitStatementController::class, 'search'])->name('report/search-profit-statement');
-    Route::get('profit-statement-pdf/{id}/{month}/{year}', [ProfitStatementController::class, 'exportPDF'])->name('profit-statement-pdf');
-    Route::get('profit-statement-excel/{id}/{start_date}/{end_date}', [ProfitStatementController::class, 'exportExcel'])->name('profit-statement-excel');
+    Route::get('user-report/profit-statement', [ProfitStatementUserController::class, 'show'])->name('user-report/profit-statement');
+    Route::post('user-report/search-profit-statement', [ProfitStatementUserController::class, 'search'])->name('user-report/search-profit-statement');
+    Route::get('user-profit-statement-pdf/{id}/{month}/{year}', [ProfitStatementUserController::class, 'exportPDF'])->name('user-profit-statement-pdf');
+    Route::get('user-profit-statement-excel/{id}/{start_date}/{end_date}', [ProfitStatementUserController::class, 'exportExcel'])->name('user-profit-statement-excel');
 });
 
 
