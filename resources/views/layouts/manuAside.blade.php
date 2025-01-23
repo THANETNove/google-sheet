@@ -184,7 +184,7 @@
                             </a>
                         </li>
                         <li
-                            class="menu-item {{ Request::is('report/trial-balance-before-closing/*') || Request::is('report/search-trial-balance-before-closing') ? 'active' : '' }} ">
+                            class="menu-item {{ Request::is('report/trial-balance-before-closing/*', 'report/search-trial-balance-before-closing', 'user-report/trial-balance-before-closing*', 'user-report/search-trial-balance-before-closing*') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/trial-balance-before-closing', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
                                 <div data-i18n="Without menu">งบทดลองก่อนปิดบัญชี</div>
