@@ -8,7 +8,49 @@
                 <div id="printableArea">
 
                     <div class="card" style="margin-bottom: 32px;">
-                        <form action="{{ route('report/search-ledger') }}" method="POST" class="container-date">
+                        @php
+
+                            $route =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? route('report/search-ledger')
+                                    : route('user-report/search-ledger', [
+                                        'username' => $user->username,
+                                        'password' => $user->password,
+                                    ]);
+                            /* $url_export_pdf =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url('/sell-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
+                                    : url(
+                                            'user-sell-pdf/' .
+                                                $id .
+                                                '/' .
+                                                urlencode($startDate) .
+                                                '/' .
+                                                urlencode($endDate),
+                                        ) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password);
+                            $url_export_excel =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url(
+                                        '/sell-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate),
+                                    )
+                                    : url(
+                                        '/user-sell-excel/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate) .
+                                            '?username=' .
+                                            urlencode($user->username) .
+                                            '&password=' .
+                                            urlencode($user->password),
+                                    ); */
+                        @endphp
+                        <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
                             <div class="container-date">
                                 <div class="col-8">

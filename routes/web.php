@@ -24,6 +24,7 @@ use App\Http\Controllers\Report\SellUserController;
 use App\Http\Controllers\Report\ProfitStatementUserController;
 use App\Http\Controllers\Report\TrialBalanceBeforeClosingUserController;
 use App\Http\Controllers\Report\AccountBalanceSheetUserController;
+use App\Http\Controllers\Report\LedgerUserController;
 
 
 Route::get('/', function () {
@@ -86,7 +87,7 @@ Route::middleware([AuthenticateUserStatusReport::class])->group(function () {
     Route::get('account-balance-sheet-pdf/{id}/{month}/{year}', [AccountBalanceSheetController::class, 'exportPDF'])->name('account-balance-sheet-pdf');
     Route::get('account-balance-sheet-excel/{id}/{month}/{year}', [AccountBalanceSheetController::class, 'exportExcel'])->name('account-balance-sheet-pdf');
 
-    //งบดุลบัญชี
+    //บัญชีเเยกประเภท
     Route::get('report/ledger/{id}', [LedgerController::class, 'show'])->name('report/ledger');
     Route::post('report/search-ledger', [LedgerController::class, 'search'])->name('report/search-ledger');
 });
@@ -132,6 +133,10 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
     Route::post('user-report/search-account-balance-sheet', [AccountBalanceSheetUserController::class, 'search'])->name('user-report/search-account-balance-sheet');
     Route::get('user-account-balance-sheet-pdf/{id}/{month}/{year}', [AccountBalanceSheetUserController::class, 'exportPDF'])->name('user-account-balance-sheet-pdf');
     Route::get('user-account-balance-sheet-excel/{id}/{month}/{year}', [AccountBalanceSheetUserController::class, 'exportExcel'])->name('user-account-balance-sheet-pdf');
+
+    //บัญชีเเยกประเภท
+    Route::get('user-report/ledger', [LedgerUserController::class, 'show'])->name('user-report/ledger');
+    Route::post('user-report/search-ledger', [LedgerUserController::class, 'search'])->name('user-report/search-ledger');
 });
 
 
