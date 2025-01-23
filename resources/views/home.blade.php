@@ -184,9 +184,9 @@
 
 
             // Define the URL to be copied (adjust as needed)
-            const domain = 'http://localhost:8000/';
+            const domain = 'https://th-workings.com/google-sheet/public/';
             const domainLocal = 'http://localhost:8000/';
-            var url = domainLocal + path;
+            var url = domain + path;
 
 
             console.log("url", url);
