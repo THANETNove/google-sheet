@@ -22,6 +22,7 @@ use App\Http\Controllers\Report\GeneralJournalUserController;
 use App\Http\Controllers\Report\BuyUserController;
 use App\Http\Controllers\Report\SellUserController;
 use App\Http\Controllers\Report\ProfitStatementUserController;
+use App\Http\Controllers\Report\TrialBalanceBeforeClosingUserController;
 
 
 Route::get('/', function () {
@@ -116,6 +117,14 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
     Route::post('user-report/search-profit-statement', [ProfitStatementUserController::class, 'search'])->name('user-report/search-profit-statement');
     Route::get('user-profit-statement-pdf/{id}/{month}/{year}', [ProfitStatementUserController::class, 'exportPDF'])->name('user-profit-statement-pdf');
     Route::get('user-profit-statement-excel/{id}/{start_date}/{end_date}', [ProfitStatementUserController::class, 'exportExcel'])->name('user-profit-statement-excel');
+
+
+
+    // งบทดลองก่อนปิดบัญชี
+    Route::get('user-report/trial-balance-before-closing', [TrialBalanceBeforeClosingUserController::class, 'show'])->name('user-report/trial-balance-before-closing');
+    Route::post('user-report/search-trial-balance-before-closing', [TrialBalanceBeforeClosingUserController::class, 'search'])->name('user-report/search-trial-balance-before-closing');
+    Route::get('user-trial-balance-before-closing-pdf/{id}/{month}/{year}', [TrialBalanceBeforeClosingUserController::class, 'exportPDF'])->name('user-trial-balance-before-closing-pdf');
+    Route::get('user-trial-balance-before-closing-excel/{id}/{month}/{year}', [TrialBalanceBeforeClosingUserController::class, 'exportExcel'])->name('user-trial-balance-before-closing-pdf');
 });
 
 

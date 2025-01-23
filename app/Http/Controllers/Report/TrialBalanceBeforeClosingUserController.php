@@ -16,13 +16,8 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class TrialBalanceBeforeClosingController extends Controller
+class TrialBalanceBeforeClosingUserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     private function getMonths()
     {
         return [
@@ -239,15 +234,15 @@ class TrialBalanceBeforeClosingController extends Controller
     }
 
 
-    public function show(string $id)
+    public function show(Request $request)
     {
-
+        $id = $request->user_id;
         $data = $this->getData($id); // รับค่ากลับมา
 
 
         return view('report.trial_balance_before_closing.view', [
             'date_query' => $data['date_query'],
-            'user' => $data['user'],
+            'user' => $request,
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
             'day' => $data['day'],
@@ -259,20 +254,20 @@ class TrialBalanceBeforeClosingController extends Controller
 
     public function search(Request $request)
     {
-
+        $id = $request->user_id;
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $data = $this->getData($request->id, $startDate, $endDate);
+        $data = $this->getData($id, $startDate, $endDate);
 
         return view('report.trial_balance_before_closing.view', [
             'date_query' => $data['date_query'],
-            'user' => $data['user'],
+            'user' => $request,
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
             'day' => $data['day'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
-            'id' => $request->id
+            'id' => $id
         ]);
     }
 
