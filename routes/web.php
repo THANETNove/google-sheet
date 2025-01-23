@@ -20,6 +20,7 @@ use App\Http\Middleware\AuthenticateUserStatusReport;
 //user report
 use App\Http\Controllers\Report\GeneralJournalUserController;
 use App\Http\Controllers\Report\BuyUserController;
+use App\Http\Controllers\Report\SellUserController;
 
 
 Route::get('/', function () {
@@ -101,6 +102,12 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
     Route::get('user-buy-pdf/{id}/{month}/{year}', [BuyUserController::class, 'exportPDF'])->name('buy-pdf');
     Route::get('user-buy-excel/{id}/{month}/{year}', [BuyUserController::class, 'exportExcel'])->name('buy-excel');
     Route::post('user-report/search-buy', [BuyUserController::class, 'search'])->name('user-report/search-buy');
+
+    // รายการขาย
+    Route::get('user-report/sell', [SellUserController::class, 'show'])->name('user-report/sell');
+    Route::post('user-report/search-sell', [SellUserController::class, 'search'])->name('user-report/search-sell');
+    Route::get('user-sell-pdf/{id}/{start_date}/{end_date}', [SellUserController::class, 'exportPDF'])->name('user-sell-pdf');
+    Route::get('user-sell-excel/{id}/{start_date}/{end_date}', [SellUserController::class, 'exportExcel'])->name('user-sell-excel');
 });
 
 
