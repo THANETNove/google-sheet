@@ -23,6 +23,7 @@ use App\Http\Controllers\Report\BuyUserController;
 use App\Http\Controllers\Report\SellUserController;
 use App\Http\Controllers\Report\ProfitStatementUserController;
 use App\Http\Controllers\Report\TrialBalanceBeforeClosingUserController;
+use App\Http\Controllers\Report\AccountBalanceSheetUserController;
 
 
 Route::get('/', function () {
@@ -125,6 +126,12 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
     Route::post('user-report/search-trial-balance-before-closing', [TrialBalanceBeforeClosingUserController::class, 'search'])->name('user-report/search-trial-balance-before-closing');
     Route::get('user-trial-balance-before-closing-pdf/{id}/{month}/{year}', [TrialBalanceBeforeClosingUserController::class, 'exportPDF'])->name('user-trial-balance-before-closing-pdf');
     Route::get('user-trial-balance-before-closing-excel/{id}/{month}/{year}', [TrialBalanceBeforeClosingUserController::class, 'exportExcel'])->name('user-trial-balance-before-closing-pdf');
+
+    //งบดุลบัญชี
+    Route::get('user-report/account-balance-sheet', [AccountBalanceSheetUserController::class, 'show'])->name('user-report/account-balance-sheet');
+    Route::post('user-report/search-account-balance-sheet', [AccountBalanceSheetUserController::class, 'search'])->name('user-report/search-account-balance-sheet');
+    Route::get('user-account-balance-sheet-pdf/{id}/{month}/{year}', [AccountBalanceSheetUserController::class, 'exportPDF'])->name('user-account-balance-sheet-pdf');
+    Route::get('user-account-balance-sheet-excel/{id}/{month}/{year}', [AccountBalanceSheetUserController::class, 'exportExcel'])->name('user-account-balance-sheet-pdf');
 });
 
 

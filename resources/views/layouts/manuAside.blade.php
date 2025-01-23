@@ -170,7 +170,7 @@
                             </a>
                         </li>
                         <li
-                            class="menu-item {{ Request::is('report/account-balance-sheet/*') || Request::is('report/search-account-balance-sheet') ? 'active' : '' }} ">
+                            class="menu-item {{ Request::is('report/account-balance-sheet/*', 'report/search-account-balance-sheet', 'user-report/account-balance-sheet', 'user-report/search-account-balance-sheet') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/account-balance-sheet', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
                                 <div data-i18n="Without menu">งบดุลบัญชี</div>

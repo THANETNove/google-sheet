@@ -19,8 +19,61 @@
                                         {{ date('d-m-Y', strtotime($endDate)) }}</strong></p>
                             </div>
                         </div>
-                        <form action="{{ route('report/search-account-balance-sheet') }}" method="POST"
-                            class="container-date">
+                        @php
+
+                            $route =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? route('report/search-account-balance-sheet')
+                                    : route('user-report/search-account-balance-sheet', [
+                                        'username' => $user->username,
+                                        'password' => $user->password,
+                                    ]);
+                            $url_export_pdf =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url(
+                                        '/account-balance-sheet-pdf/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate),
+                                    )
+                                    : url(
+                                            '/user-account-balance-sheet-pdf/' .
+                                                $id .
+                                                '/' .
+                                                urlencode($startDate) .
+                                                '/' .
+                                                urlencode($endDate),
+                                        ) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password);
+                            $url_export_excel =
+                                Auth::check() && Auth::user()->status == 1
+                                    ? url(
+                                        '/account-balance-sheet-excel/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate),
+                                    )
+                                    : url(
+                                        '/user-account-balance-sheet-excel/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate) .
+                                            '?username=' .
+                                            urlencode($user->username) .
+                                            '&password=' .
+                                            urlencode($user->password),
+                                    );
+                        @endphp
+                        <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
                             <div class="container-date">
                                 <div class="col-8">
@@ -46,12 +99,10 @@
                         </form>
                         <div class="date">
                             <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-                            <a href="{{ url('/account-balance-sheet-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
-                                target="_blank" class="btn btn-primary">
+                            <a href="{{ $url_export_pdf }}" target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
-                            <a href="{{ url('/account-balance-sheet-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate)) }}"
-                                class="btn btn-primary">
+                            <a href="{{ $url_export_excel }}" class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
                             </a>
                         </div>
