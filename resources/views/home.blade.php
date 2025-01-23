@@ -13,6 +13,7 @@
                 {{ session('success') }} {{ session('message') }}
             </div>
         @endif
+        <p class="alert alert-info mb-3" id="copy-url" style="display: none">คัดลอกลิงค์เรียบร้อย!</p>
 
         <div class="mb-3">
             <input type="text" id="searchInput" class="form-control" placeholder="ค้นหาบริษัท..." />
@@ -202,12 +203,16 @@
             // Delete the temporary element
             document.body.removeChild(tempInput);
 
+            const copyUrl = document.getElementById('copy-url');
             // Notify user of copy success or failure
-            /*  if (document.execCommand("copy")) {
-                 alert("คัดลอกลิงค์เรียบร้อย!");
-             } else {
-                 alert("ไม่สามารถคัดลอกลิงค์ได้ กรุณาลองอีกครั้ง");
-             } */
+            if (document.execCommand("copy")) {
+                copyUrl.style.display = 'block';
+                setTimeout(() => {
+                    copyUrl.style.display = 'none';
+                }, 3000);
+            } else {
+                copyUrl.style.display = 'none';
+            }
         }
     </script>
 @endsection
