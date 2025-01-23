@@ -163,7 +163,7 @@
                             </a>
                         </li>
                         <li
-                            class="menu-item {{ Request::is('report/sell-view/*') || Request::is('report/search-sell') ? 'active' : '' }} ">
+                            class="menu-item {{ Request::is('report/sell-view/*', 'report/search-sell', 'user-report/sell*', 'user-report/search-sell*') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/sell-view', session()->get('company_id')) }} @else # @endif"
                                 class="menu-link">
                                 <div data-i18n="Without menu">รายงานภาษีขาย</div>

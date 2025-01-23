@@ -108,6 +108,13 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
     Route::post('user-report/search-sell', [SellUserController::class, 'search'])->name('user-report/search-sell');
     Route::get('user-sell-pdf/{id}/{start_date}/{end_date}', [SellUserController::class, 'exportPDF'])->name('user-sell-pdf');
     Route::get('user-sell-excel/{id}/{start_date}/{end_date}', [SellUserController::class, 'exportExcel'])->name('user-sell-excel');
+
+
+    // งบกำไร(ขาดทุน)
+    Route::get('report/profit-statement/{id}', [ProfitStatementController::class, 'show'])->name('report/profit-statement');
+    Route::post('report/search-profit-statement', [ProfitStatementController::class, 'search'])->name('report/search-profit-statement');
+    Route::get('profit-statement-pdf/{id}/{month}/{year}', [ProfitStatementController::class, 'exportPDF'])->name('profit-statement-pdf');
+    Route::get('profit-statement-excel/{id}/{start_date}/{end_date}', [ProfitStatementController::class, 'exportExcel'])->name('profit-statement-excel');
 });
 
 
