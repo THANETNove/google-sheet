@@ -96,7 +96,7 @@ class BuyUserController extends Controller
             'startDate' => $startDate,
             'day' => $startDate->day,
             'vat_month' => $monthName3,
-            'month' => $defaultMonth,
+            'month' => $month,
             'year' => $year,
             'monthThai' => $monthName,
             'currentYear' => $year

@@ -37,28 +37,21 @@
                                             '&password=' .
                                             urlencode($user->password),
                                     );
-                            /*      $url_export_excel =
+                            $url_export_excel =
                                 Auth::check() && Auth::user()->status == 1
-                                    ? url(
-                                        '/export-excel/' .
-                                            $id .
-                                            '/' .
-                                            urlencode($startDate) .
-                                            '/' .
-                                            urlencode($endDate),
-                                    )
+                                    ? url('/export-excel/' . $id . '/' . urlencode($month) . '/' . urlencode($year))
                                     : url(
-                                        '/user-export-excel/' .
+                                        '/user-buy-excel/' .
                                             $id .
                                             '/' .
-                                            urlencode($startDate) .
+                                            urlencode($month) .
                                             '/' .
-                                            urlencode($endDate) .
+                                            urlencode($year) .
                                             '?username=' .
                                             urlencode($user->username) .
                                             '&password=' .
                                             urlencode($user->password),
-                                    ); */
+                                    );
                         @endphp
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
@@ -125,8 +118,7 @@
                             <a href="{{ $url_export_pdf }}" target="_blank" class="btn btn-primary">
                                 <i class='bx bxs-file-pdf'></i>&nbsp; PDF
                             </a>
-                            <a href="{{ url('/buy-excel/' . $id . '/' . urlencode($month) . '/' . urlencode($year)) }}"
-                                class="btn btn-primary">
+                            <a href="{{ $url_export_excel }}" class="btn btn-primary">
                                 <i class='bx bxs-file'></i>&nbsp; Excel
                             </a>
                         </div>

@@ -149,7 +149,7 @@
                         </li>
 
                         <li
-                            class="menu-item {{ Request::is('report/ledger/*') || Request::is('report/search-ledger') ? 'active' : '' }} ">
+                            class="menu-item {{ Request::is('report/ledger/*', 'report/search-ledger', 'user-report/buy*', 'user-report/search-buy*') ? 'active' : '' }} ">
                             <a href="@if (session()->has('company_id')) {{ url('report/ledger', session()->get('company_id')) }} @else # @endif "
                                 class="menu-link">
                                 <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
