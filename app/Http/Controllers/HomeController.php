@@ -40,17 +40,11 @@ class HomeController extends Controller
 
             return view('home', compact('query'));
         } else {
-            $query = DB::table('users')
-                ->where('users.status', 0)
-                ->select(
-                    'users.*',
-                    DB::raw('(SELECT COUNT(*) FROM general_ledgers WHERE general_ledgers.gl_code_company = users.id) as general_ledger_count'),
-                    DB::raw('(SELECT COUNT(*) FROM general_ledger_subs WHERE general_ledger_subs.gls_code_company = users.id) as general_ledger_sub_count'),
-                    DB::raw('(SELECT COUNT(*) FROM account__codes WHERE account__codes.acc_code_company = users.id) as account_code_count')
-                )
-                ->get();
 
-            return view('home', compact('query'));
+            session(['company_id' => Auth::user()->id]);
+            session(['company_status' => Auth::user()->status]);
+            session(['company_name' =>  Auth::user()->company]);
+            return redirect()->route('report/general-journal-view', ['id' => Auth::user()->id]);
         }
     }
     public function selectCard($id)
