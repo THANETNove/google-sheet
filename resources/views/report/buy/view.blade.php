@@ -23,35 +23,39 @@
                             $route =
                                 Auth::check() && Auth::user()->status == 1
                                     ? route('report/search-buy')
-                                    : route('user-report/search-buy', [
-                                        'username' => $user->username,
-                                        'password' => $user->password,
-                                    ]);
+                                    : isset($user->username) &&
+                                        isset($user->password) &&
+                                        route('user-report/search-buy', [
+                                            'username' => $user->username,
+                                            'password' => $user->password,
+                                        ]);
                             $url_export_pdf =
                                 Auth::check() && Auth::user()->status == 1
                                     ? url(url('/buy-pdf/' . $id . '/' . urlencode($month) . '/' . urlencode($year)))
-                                    : url(
+                                    : isset($user->username) &&
+                                        isset($user->password) &&
                                         url('user-buy-pdf/' . $id . '/' . urlencode($month) . '/' . urlencode($year)) .
                                             '?username=' .
                                             urlencode($user->username) .
                                             '&password=' .
-                                            urlencode($user->password),
-                                    );
+                                            urlencode($user->password);
                             $url_export_excel =
                                 Auth::check() && Auth::user()->status == 1
                                     ? url('/export-excel/' . $id . '/' . urlencode($month) . '/' . urlencode($year))
-                                    : url(
-                                        '/user-buy-excel/' .
-                                            $id .
-                                            '/' .
-                                            urlencode($month) .
-                                            '/' .
-                                            urlencode($year) .
-                                            '?username=' .
-                                            urlencode($user->username) .
-                                            '&password=' .
-                                            urlencode($user->password),
-                                    );
+                                    : isset($user->username) &&
+                                        isset($user->password) &&
+                                        url(
+                                            '/user-buy-excel/' .
+                                                $id .
+                                                '/' .
+                                                urlencode($month) .
+                                                '/' .
+                                                urlencode($year) .
+                                                '?username=' .
+                                                urlencode($user->username) .
+                                                '&password=' .
+                                                urlencode($user->password),
+                                        );
                         @endphp
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf

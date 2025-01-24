@@ -19,7 +19,7 @@ class AuthenticateUserStatusReport
     public function handle(Request $request, Closure $next): Response
     {
 
-        if (Auth::check() && Auth::user()->status == 1) {
+        if (Auth::check()) {
             // หากสถานะของผู้ใช้คือ 0 ให้ผ่าน
             return $next($request);
         }

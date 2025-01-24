@@ -13,10 +13,12 @@
                             $route =
                                 Auth::check() && Auth::user()->status == 1
                                     ? route('report/search-ledger')
-                                    : route('user-report/search-ledger', [
-                                        'username' => $user->username,
-                                        'password' => $user->password,
-                                    ]);
+                                    : isset($user->username) &&
+                                        isset($user->password) &&
+                                        route('user-report/search-ledger', [
+                                            'username' => $user->username,
+                                            'password' => $user->password,
+                                        ]);
                             /* $url_export_pdf =
                                 Auth::check() && Auth::user()->status == 1
                                     ? url('/sell-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))

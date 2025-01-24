@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -25,17 +26,32 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $query = DB::table('users')
-            ->where('users.status', 0)
-            ->select(
-                'users.*',
-                DB::raw('(SELECT COUNT(*) FROM general_ledgers WHERE general_ledgers.gl_code_company = users.id) as general_ledger_count'),
-                DB::raw('(SELECT COUNT(*) FROM general_ledger_subs WHERE general_ledger_subs.gls_code_company = users.id) as general_ledger_sub_count'),
-                DB::raw('(SELECT COUNT(*) FROM account__codes WHERE account__codes.acc_code_company = users.id) as account_code_count')
-            )
-            ->get();
 
-        return view('home', compact('query'));
+        if (Auth::check() && Auth::user()->status == 1) {
+            $query = DB::table('users')
+                ->where('users.status', 0)
+                ->select(
+                    'users.*',
+                    DB::raw('(SELECT COUNT(*) FROM general_ledgers WHERE general_ledgers.gl_code_company = users.id) as general_ledger_count'),
+                    DB::raw('(SELECT COUNT(*) FROM general_ledger_subs WHERE general_ledger_subs.gls_code_company = users.id) as general_ledger_sub_count'),
+                    DB::raw('(SELECT COUNT(*) FROM account__codes WHERE account__codes.acc_code_company = users.id) as account_code_count')
+                )
+                ->get();
+
+            return view('home', compact('query'));
+        } else {
+            $query = DB::table('users')
+                ->where('users.status', 0)
+                ->select(
+                    'users.*',
+                    DB::raw('(SELECT COUNT(*) FROM general_ledgers WHERE general_ledgers.gl_code_company = users.id) as general_ledger_count'),
+                    DB::raw('(SELECT COUNT(*) FROM general_ledger_subs WHERE general_ledger_subs.gls_code_company = users.id) as general_ledger_sub_count'),
+                    DB::raw('(SELECT COUNT(*) FROM account__codes WHERE account__codes.acc_code_company = users.id) as account_code_count')
+                )
+                ->get();
+
+            return view('home', compact('query'));
+        }
     }
     public function selectCard($id)
     {

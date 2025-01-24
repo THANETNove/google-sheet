@@ -11,15 +11,19 @@
         <div class="menu-inner-shadow"></div>
 
         {{--  ส่วนของเมนู admin --}}
-        @if (Auth::check() && Auth::user()->status == 1)
+        @if (Auth::check())
             <ul class="menu-inner py-1">
-                <!-- Dashboard -->
-                <li class="menu-item   {{ Request::is('home') || Request::is('company*') ? 'active' : '' }} ">
-                    <a href="{{ url('home') }}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                        <div data-i18n="Analytics">Dashboard </div>
-                    </a>
-                </li>
+
+                @if (Auth::user()->status == 1)
+                    <!-- Dashboard -->
+                    <li class="menu-item   {{ Request::is('home') || Request::is('company*') ? 'active' : '' }} ">
+                        <a href="{{ url('home') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics">Dashboard </div>
+                        </a>
+                    </li>
+                @endif
+
 
 
 
@@ -86,43 +90,47 @@
                         </ul>
                     </li>
 
-                    <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
-                    <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class='menu-icon tf-icons bx bxs-server'></i>
-                            <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
-                        </a>
+                    @if (Auth::user()->status == 1)
+                        <!-- อัพข้อมูล-ลงบัญชีอัตโนมัต -->
+                        <li class="menu-item  {{ Request::is('update/*') ? 'active open' : '' }} ">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class='menu-icon tf-icons bx bxs-server'></i>
+                                <div data-i18n="Layouts">อัพข้อมูล-ลงบัญชี</div>
+                            </a>
 
-                        <ul class="menu-sub">
-                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                                <a href="{{ url('#') }} " class="menu-link">
-                                    <div data-i18n="Without menu">รายงานภาษีขาย-ซื้อ</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                                <a href="{{ url('#') }} " class="menu-link">
-                                    <div data-i18n="Without menu">ภาษีหัก ณ ที่จ่าย</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                                <a href="{{ url('#') }} " class="menu-link">
-                                    <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
-                                <a href="{{ url('#') }} " class="menu-link">
-                                    <div data-i18n="Without menu">ภาษีมูลค่าเพิ่ม</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
-                                <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
-                                    class="menu-link">
-                                    <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
-                                </a>
-                            </li>
+                            <ul class="menu-sub">
+                                <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                    <a href="{{ url('#') }} " class="menu-link">
+                                        <div data-i18n="Without menu">รายงานภาษีขาย-ซื้อ</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                    <a href="{{ url('#') }} " class="menu-link">
+                                        <div data-i18n="Without menu">ภาษีหัก ณ ที่จ่าย</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                    <a href="{{ url('#') }} " class="menu-link">
+                                        <div data-i18n="Without menu">เงินเดือนประกันสังคม</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ Request::is('information/*') ? 'active' : '' }} ">
+                                    <a href="{{ url('#') }} " class="menu-link">
+                                        <div data-i18n="Without menu">ภาษีมูลค่าเพิ่ม</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ Request::is('update/import-data/*') ? 'active' : '' }}">
+                                    <a href="@if (session()->has('company_id')) {{ url('update/import-data', session()->get('company_id')) }} @else # @endif"
+                                        class="menu-link">
+                                        <div data-i18n="Without menu">Googlesheet เข้าระบบ Mysql</div>
+                                    </a>
+                                </li>
 
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    @endif
+
+
                 @endif
             </ul>
         @endif
