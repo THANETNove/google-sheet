@@ -186,10 +186,9 @@
             // Define the URL to be copied (adjust as needed)
             const domain = 'https://th-workings.com/google-sheet/public/';
             const domainLocal = 'http://localhost:8000/';
-            var url = domain + path;
+            var url = domainLocal + path;
 
 
-            console.log("url", url);
 
             // Create a temporary element to store the URL
             var tempInput = document.createElement("input");

@@ -68,8 +68,7 @@ class GeneralJournalController extends Controller
             ->where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])
             ->get()
-            ->sortBy('gls_account_code'); // เรียงลำดับหลังจากดึงข้อมูล
-
+            ->sortBy('gls_account_code');
 
 
 

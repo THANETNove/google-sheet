@@ -150,42 +150,42 @@
 
                         <li
                             class="menu-item {{ Request::is('report/ledger/*', 'report/search-ledger', 'user-report/ledger*', 'user-report/search-ledger*') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/ledger', session()->get('company_id')) }} @else # @endif "
+                            <a href="{{ url('user-report/ledger') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">สมุดบัญชีแยกประเภท</div>
                             </a>
                         </li>
                         <li
                             class="menu-item {{ Request::is('report/buy-view/*', 'report/search-buy', 'user-report/buy*', 'user-report/search-buy*') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/buy-view', session()->get('company_id')) }} @else # @endif"
+                            <a href="{{ url('user-report/buy') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">รายงานภาษีซื้อ</div>
                             </a>
                         </li>
                         <li
                             class="menu-item {{ Request::is('report/sell-view/*', 'report/search-sell', 'user-report/sell*', 'user-report/search-sell*') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/sell-view', session()->get('company_id')) }} @else # @endif"
+                            <a href="{{ url('user-report/sell') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">รายงานภาษีขาย</div>
                             </a>
                         </li>
                         <li
-                            class="menu-item {{ Request::is('report/account-balance-sheet/*', 'report/search-account-balance-sheet', 'user-report/account-balance-sheet', 'user-report/search-account-balance-sheet') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/account-balance-sheet', session()->get('company_id')) }} @else # @endif"
+                            class="menu-item {{ Request::is('report/account-balance-sheet/*', 'report/search-account-balance-sheet', 'user-report/account-balance-sheet*', 'user-report/search-account-balance-sheet*') ? 'active' : '' }} ">
+                            <a href="{{ url('user-report/account-balance-sheet') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">งบดุลบัญชี</div>
                             </a>
                         </li>
                         <li
                             class="menu-item {{ Request::is('report/profit-statement/*', 'report/search-profit-statement', 'user-report/profit-statement*', 'user-report/search-profit-statement*') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/profit-statement', session()->get('company_id')) }} @else # @endif"
+                            <a href="{{ url('user-report/profit-statement') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">งบกำไร(ขาดทุน)</div>
                             </a>
                         </li>
                         <li
                             class="menu-item {{ Request::is('report/trial-balance-before-closing/*', 'report/search-trial-balance-before-closing', 'user-report/trial-balance-before-closing*', 'user-report/search-trial-balance-before-closing*') ? 'active' : '' }} ">
-                            <a href="@if (session()->has('company_id')) {{ url('report/trial-balance-before-closing', session()->get('company_id')) }} @else # @endif"
+                            <a href="{{ url('user-report/trial-balance-before-closing') . '?username=' . urlencode($user->username) . '&password=' . urlencode($user->password) }}"
                                 class="menu-link">
                                 <div data-i18n="Without menu">งบทดลองก่อนปิดบัญชี</div>
                             </a>
