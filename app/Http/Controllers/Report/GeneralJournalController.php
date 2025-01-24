@@ -233,7 +233,7 @@ class GeneralJournalController extends Controller
             ]);
 
             // เพิ่มข้อมูล subs ที่เกี่ยวข้อง
-            foreach ($ledger->subs->sortBy('gls_account_code') as $sub) {
+            foreach ($ledger->subs->sortBy('gls_id') as $sub) {
                 if (!isset($sub->gls_account_code, $sub->gls_account_name, $sub->gls_debit, $sub->gls_credit)) {
                     continue; // ข้ามถ้าข้อมูลไม่ครบ
                 }

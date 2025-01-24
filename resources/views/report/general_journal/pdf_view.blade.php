@@ -51,7 +51,7 @@
                             <td></td>
                         </tr>
 
-                        @foreach ($ledger->subs->sortBy('gls_account_code') as $sub)
+                        @foreach ($ledger->subs->sortBy('gls_id') as $sub)
                             <tr>
                                 <td colspan="3"></td>
                                 <td>&nbsp;{{ $sub->gls_account_code }} - {{ $sub->gls_account_name }}</td>
