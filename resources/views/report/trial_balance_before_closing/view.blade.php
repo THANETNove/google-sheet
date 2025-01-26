@@ -24,8 +24,7 @@
 
                             $route = Auth::check()
                                 ? route('report/search-trial-balance-before-closing')
-                                : isset($user->username) &&
-                                    isset($user->password) &&
+                                : 
                                     route('user-report/search-trial-balance-before-closing', [
                                         'username' => $user->username,
                                         'password' => $user->password,

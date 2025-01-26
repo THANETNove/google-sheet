@@ -76,7 +76,7 @@
                                             <td>{{ $i++ }}</td>
                                             <td>{{ date('d-m-Y', strtotime($que->gl_date)) }} {{-- <br>
                                                 {{ date('d-m-Y', strtotime($que->gl_taxmonth)) }} --}}</td>
-                                            <td>
+                                            <td style="max-width: 80px; word-wrap: break-word; white-space: normal;">
                                                 @if ($que->gl_url)
                                                     <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
                                                         rel="noopener noreferrer">

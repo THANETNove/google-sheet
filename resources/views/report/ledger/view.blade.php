@@ -12,12 +12,10 @@
 
                             $route = Auth::check()
                                 ? route('report/search-ledger')
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    route('user-report/search-ledger', [
-                                        'username' => $user->username,
-                                        'password' => $user->password,
-                                    ]);
+                                : route('user-report/search-ledger', [
+                                    'username' => $user->username,
+                                    'password' => $user->password,
+                                ]);
                         @endphp
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
@@ -264,7 +262,7 @@
                                                         @if ($accountCode != '32-1001-01')
                                                             <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
                                                         @endif
-                                                        <td>
+                                                        <td style="max-width: 80px;">
                                                             @if ($query->gl_url)
                                                                 <a href="{{ $query->gl_url }}" target="_blank"
                                                                     class="opan-message" rel="noopener noreferrer">
