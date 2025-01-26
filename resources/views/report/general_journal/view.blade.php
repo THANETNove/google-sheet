@@ -22,7 +22,7 @@
                         @php
 
                             $route =
-                                Auth::check() && Auth::user()->status == 1
+                                Auth::check() 
                                     ? route('report/search-date')
                                     : isset($user->username) &&
                                         isset($user->password) &&
@@ -31,7 +31,7 @@
                                             'password' => $user->password,
                                         ]);
                             $url_export_pdf =
-                                Auth::check() && Auth::user()->status == 1
+                                Auth::check() 
                                     ? url(
                                         '/export-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate),
                                     )
@@ -50,7 +50,7 @@
                                                 urlencode($user->password),
                                         );
                             $url_export_excel =
-                                Auth::check() && Auth::user()->status == 1
+                                Auth::check() 
                                     ? url(
                                         '/export-excel/' .
                                             $id .

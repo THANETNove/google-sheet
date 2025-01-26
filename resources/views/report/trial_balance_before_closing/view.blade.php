@@ -22,39 +22,37 @@
 
                         @php
 
-                            $route =
-                                Auth::check() && Auth::user()->status == 1
-                                    ? route('report/search-trial-balance-before-closing')
-                                    : isset($user->username) &&
-                                        isset($user->password) &&
-                                        route('user-report/search-trial-balance-before-closing', [
-                                            'username' => $user->username,
-                                            'password' => $user->password,
-                                        ]);
-                            $url_export_pdf =
-                                Auth::check() && Auth::user()->status == 1
-                                    ? url(
-                                        '/trial-balance-before-closing-pdf/' .
+                            $route = Auth::check()
+                                ? route('report/search-trial-balance-before-closing')
+                                : isset($user->username) &&
+                                    isset($user->password) &&
+                                    route('user-report/search-trial-balance-before-closing', [
+                                        'username' => $user->username,
+                                        'password' => $user->password,
+                                    ]);
+                            $url_export_pdf = Auth::check()
+                                ? url(
+                                    '/trial-balance-before-closing-pdf/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate),
+                                )
+                                : isset($user->username) &&
+                                    isset($user->password) &&
+                                    url(
+                                        '/user-trial-balance-before-closing-pdf/' .
                                             $id .
                                             '/' .
                                             urlencode($startDate) .
                                             '/' .
                                             urlencode($endDate),
-                                    )
-                                    : isset($user->username) &&
-                                        isset($user->password) &&
-                                        url(
-                                            '/user-trial-balance-before-closing-pdf/' .
-                                                $id .
-                                                '/' .
-                                                urlencode($startDate) .
-                                                '/' .
-                                                urlencode($endDate),
-                                        ) .
-                                            '?username=' .
-                                            urlencode($user->username) .
-                                            '&password=' .
-                                            urlencode($user->password);
+                                    ) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password);
                             $url_export_excel =
                                 Auth::check() && Auth::user()->status == 1
                                     ? url(

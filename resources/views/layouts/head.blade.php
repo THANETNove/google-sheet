@@ -23,14 +23,16 @@
 
 <!-- Vendors CSS -->
 <link rel="stylesheet" href="{{ URL::asset('/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 
 <!-- Page CSS -->
 <!-- Page -->
 <link rel="stylesheet" href="{{ URL::asset('/assets/vendor/css/pages/page-auth.css') }}" />
 <link rel="stylesheet" href="{{ URL::asset('/assets/vendor/css/pages/page-misc.css') }}" />
 <!-- Helpers -->
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
 <script src="{{ URL::asset('/assets/vendor/js/helpers.js') }}"></script>
 
 <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
