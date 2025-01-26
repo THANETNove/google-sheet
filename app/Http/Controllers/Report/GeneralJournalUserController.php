@@ -46,6 +46,7 @@ class GeneralJournalUserController extends Controller
     {
         $user = DB::table('users')->find($id);
 
+
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
@@ -60,8 +61,7 @@ class GeneralJournalUserController extends Controller
             ->where('gl_code_company', $id)
             ->whereBetween('gl_date', [$startDate, $endDate])
             ->get()
-            ->sortBy('gls_account_code'); // เรียงลำดับหลังจากดึงข้อมูล
-
+            ->sortBy('gls_account_code');
 
 
 
@@ -82,6 +82,7 @@ class GeneralJournalUserController extends Controller
         ]]);
         // Group by document
 
+
         return [
             'query' => $generalLedgers,
             'user' => $user,
@@ -92,11 +93,6 @@ class GeneralJournalUserController extends Controller
             'currentYear' => date('Y')
         ];
     }
-
-
-
-
-
     public function index(Request $request)
     {
 
@@ -149,7 +145,6 @@ class GeneralJournalUserController extends Controller
             'id' => $request->id
         ]);
     }
-
     public function exportPDF($id, $start_date, $end_date)
     {
 
@@ -184,12 +179,14 @@ class GeneralJournalUserController extends Controller
     public function exportExcel($id, $start_date, $end_date)
     {
 
+
         $data = collect(session()->get('generalLedgers'));
+
         $query =  $data['query'];
         // ตรวจสอบว่า $query มีข้อมูลหรือไม่
-        if ($query->isEmpty()) {
+        /* if ($query->isEmpty()) {
             return back()->with('error', 'ไม่มีข้อมูลสำหรับการส่งออก');
-        }
+        } */
 
         $data = collect();
         $i = 1;
@@ -234,7 +231,7 @@ class GeneralJournalUserController extends Controller
             ]);
 
             // เพิ่มข้อมูล subs ที่เกี่ยวข้อง
-            foreach ($ledger->subs->sortBy('gls_account_code') as $sub) {
+            foreach ($ledger->subs->sortBy('gls_id') as $sub) {
                 if (!isset($sub->gls_account_code, $sub->gls_account_name, $sub->gls_debit, $sub->gls_credit)) {
                     continue; // ข้ามถ้าข้อมูลไม่ครบ
                 }
@@ -308,6 +305,7 @@ class GeneralJournalUserController extends Controller
             }
         }
 
+
         $export = new class($data) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
 
@@ -327,6 +325,7 @@ class GeneralJournalUserController extends Controller
                     ['#', 'วันที่', 'เลขที่เอกสาร', 'บริษัท', 'เดบิต', 'เครดิต', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
                 ];
             }
+
 
             public function columnWidths(): array
             {

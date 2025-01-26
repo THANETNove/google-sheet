@@ -279,7 +279,7 @@ class TrialBalanceBeforeClosingController extends Controller
     public function exportPDF($id, $start_date, $end_date)
     {
 
-
+     
 
         $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
 

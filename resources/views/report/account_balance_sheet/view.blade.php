@@ -23,12 +23,10 @@
 
                             $route = Auth::check()
                                 ? route('report/search-account-balance-sheet')
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    route('user-report/search-account-balance-sheet', [
-                                        'username' => $user->username,
-                                        'password' => $user->password,
-                                    ]);
+                                : route('user-report/search-account-balance-sheet', [
+                                    'username' => $user->username,
+                                    'password' => $user->password,
+                                ]);
                             $url_export_pdf = Auth::check()
                                 ? url(
                                     '/account-balance-sheet-pdf/' .
@@ -38,9 +36,7 @@
                                         '/' .
                                         urlencode($endDate),
                                 )
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    url(
+                                : url(
                                         '/user-account-balance-sheet-pdf/' .
                                             $id .
                                             '/' .
@@ -48,10 +44,10 @@
                                             '/' .
                                             urlencode($endDate),
                                     ) .
-                                        '?username=' .
-                                        urlencode($user->username) .
-                                        '&password=' .
-                                        urlencode($user->password);
+                                    '?username=' .
+                                    urlencode($user->username) .
+                                    '&password=' .
+                                    urlencode($user->password);
                             $url_export_excel = Auth::check()
                                 ? url(
                                     '/account-balance-sheet-excel/' .
@@ -61,20 +57,18 @@
                                         '/' .
                                         urlencode($endDate),
                                 )
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    url(
-                                        '/user-account-balance-sheet-excel/' .
-                                            $id .
-                                            '/' .
-                                            urlencode($startDate) .
-                                            '/' .
-                                            urlencode($endDate) .
-                                            '?username=' .
-                                            urlencode($user->username) .
-                                            '&password=' .
-                                            urlencode($user->password),
-                                    );
+                                : url(
+                                    '/user-account-balance-sheet-excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password),
+                                );
                         @endphp
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf

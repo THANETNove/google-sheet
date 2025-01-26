@@ -39,9 +39,7 @@
                                         '/' .
                                         urlencode($endDate),
                                 )
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    url(
+                                : url(
                                         '/user-trial-balance-before-closing-pdf/' .
                                             $id .
                                             '/' .
@@ -49,34 +47,31 @@
                                             '/' .
                                             urlencode($endDate),
                                     ) .
+                                    '?username=' .
+                                    urlencode($user->username) .
+                                    '&password=' .
+                                    urlencode($user->password);
+                            $url_export_excel = Auth::check()
+                                ? url(
+                                    '/trial-balance-before-closing-excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate),
+                                )
+                                : url(
+                                    '/user-trial-balance-before-closing-excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate) .
                                         '?username=' .
                                         urlencode($user->username) .
                                         '&password=' .
-                                        urlencode($user->password);
-                            $url_export_excel =
-                                Auth::check() && Auth::user()->status == 1
-                                    ? url(
-                                        '/trial-balance-before-closing-excel/' .
-                                            $id .
-                                            '/' .
-                                            urlencode($startDate) .
-                                            '/' .
-                                            urlencode($endDate),
-                                    )
-                                    : isset($user->username) &&
-                                        isset($user->password) &&
-                                        url(
-                                            '/user-trial-balance-before-closing-excel/' .
-                                                $id .
-                                                '/' .
-                                                urlencode($startDate) .
-                                                '/' .
-                                                urlencode($endDate) .
-                                                '?username=' .
-                                                urlencode($user->username) .
-                                                '&password=' .
-                                                urlencode($user->password),
-                                        );
+                                        urlencode($user->password),
+                                );
                         @endphp
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf

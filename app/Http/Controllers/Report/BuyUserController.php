@@ -59,7 +59,7 @@ class BuyUserController extends Controller
         // ใช้ Carbon เพื่อสร้างวันที่จากเดือนและปีที่กำหนด
         $startDate = Carbon::createFromDate($year, $month, 1); // วันที่ 1 ของเดือนที่เลือก
         $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth(); // วันที่สุดท้ายของเดือนที่เลือก
-        /* dd($defaultMonth); */
+
         // แปลงเดือนเป็นชื่อเดือนภาษาไทย
         $vat_month = $startDate->month;
         $monthName = $this->getMonths()[$defaultMonth];
@@ -162,7 +162,7 @@ class BuyUserController extends Controller
 
     public function exportPDF($id, $month, $year)
     {
-        dd("aa555");
+
         $data = $this->getData($id, $month, $year); // รับค่ากลับมา
 
         $pdf = PDF::loadView('report.buy.pdf_view', [

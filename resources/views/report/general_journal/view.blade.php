@@ -21,58 +21,40 @@
                         </div>
                         @php
 
-                            $route =
-                                Auth::check() 
-                                    ? route('report/search-date')
-                                    : isset($user->username) &&
-                                        isset($user->password) &&
-                                        route('user-report/search-date', [
-                                            'username' => $user->username,
-                                            'password' => $user->password,
-                                        ]);
-                            $url_export_pdf =
-                                Auth::check() 
-                                    ? url(
-                                        '/export-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate),
-                                    )
-                                    : isset($user->username) &&
-                                        isset($user->password) &&
-                                        url(
-                                            '/user-export-pdf/' .
-                                                $id .
-                                                '/' .
-                                                urlencode($startDate) .
-                                                '/' .
-                                                urlencode($endDate) .
-                                                '?username=' .
-                                                urlencode($user->username) .
-                                                '&password=' .
-                                                urlencode($user->password),
-                                        );
-                            $url_export_excel =
-                                Auth::check() 
-                                    ? url(
-                                        '/export-excel/' .
-                                            $id .
-                                            '/' .
-                                            urlencode($startDate) .
-                                            '/' .
-                                            urlencode($endDate),
-                                    )
-                                    : isset($user->username) &&
-                                        isset($user->password) &&
-                                        url(
-                                            '/user-export-excel/' .
-                                                $id .
-                                                '/' .
-                                                urlencode($startDate) .
-                                                '/' .
-                                                urlencode($endDate) .
-                                                '?username=' .
-                                                urlencode($user->username) .
-                                                '&password=' .
-                                                urlencode($user->password),
-                                        );
+                            $route = Auth::check()
+                                ? route('report/search-date')
+                                : route('user-report/search-date', [
+                                    'username' => $user->username,
+                                    'password' => $user->password,
+                                ]);
+                            $url_export_pdf = Auth::check()
+                                ? url('/export-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
+                                : url(
+                                    '/user-export-pdf/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password),
+                                );
+                            $url_export_excel = Auth::check()
+                                ? url('/export-excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
+                                : url(
+                                    '/user-export-excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password),
+                                );
                         @endphp
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf

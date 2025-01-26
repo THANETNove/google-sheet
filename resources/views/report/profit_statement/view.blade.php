@@ -24,12 +24,10 @@
 
                             $route = Auth::check()
                                 ? route('report/search-profit-statement')
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    route('user-report/search-profit-statement', [
-                                        'username' => $user->username,
-                                        'password' => $user->password,
-                                    ]);
+                                : route('user-report/search-profit-statement', [
+                                    'username' => $user->username,
+                                    'password' => $user->password,
+                                ]);
                             $url_export_pdf = Auth::check()
                                 ? url(
                                     '/profit-statement-pdf/' .
@@ -39,9 +37,7 @@
                                         '/' .
                                         urlencode($endDate),
                                 )
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    url(
+                                : url(
                                         'user-profit-statement-pdf/' .
                                             $id .
                                             '/' .
@@ -49,10 +45,10 @@
                                             '/' .
                                             urlencode($endDate),
                                     ) .
-                                        '?username=' .
-                                        urlencode($user->username) .
-                                        '&password=' .
-                                        urlencode($user->password);
+                                    '?username=' .
+                                    urlencode($user->username) .
+                                    '&password=' .
+                                    urlencode($user->password);
                             $url_export_excel = Auth::check()
                                 ? url(
                                     '/profit-statement-excel/' .
@@ -62,20 +58,18 @@
                                         '/' .
                                         urlencode($endDate),
                                 )
-                                : isset($user->username) &&
-                                    isset($user->password) &&
-                                    url(
-                                        '/user-profit-statement-excel/' .
-                                            $id .
-                                            '/' .
-                                            urlencode($startDate) .
-                                            '/' .
-                                            urlencode($endDate) .
-                                            '?username=' .
-                                            urlencode($user->username) .
-                                            '&password=' .
-                                            urlencode($user->password),
-                                    );
+                                : url(
+                                    '/user-profit-statement-excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password),
+                                );
                         @endphp
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
