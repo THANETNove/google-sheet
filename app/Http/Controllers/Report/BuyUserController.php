@@ -162,7 +162,7 @@ class BuyUserController extends Controller
 
     public function exportPDF($id, $month, $year)
     {
-
+        dd("aa555");
         $data = $this->getData($id, $month, $year); // รับค่ากลับมา
 
         $pdf = PDF::loadView('report.buy.pdf_view', [

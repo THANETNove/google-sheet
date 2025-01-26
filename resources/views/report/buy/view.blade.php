@@ -38,7 +38,7 @@
                                         '&password=' .
                                         urlencode($user->password);
                             $url_export_excel = Auth::check()
-                                ? url('/export-excel/' . $id . '/' . urlencode($month) . '/' . urlencode($year))
+                                ? url('/buy-excel/' . $id . '/' . urlencode($month) . '/' . urlencode($year))
                                 : isset($user->username) &&
                                     isset($user->password) &&
                                     url(

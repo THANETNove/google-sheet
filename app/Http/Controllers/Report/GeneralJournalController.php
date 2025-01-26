@@ -185,12 +185,14 @@ class GeneralJournalController extends Controller
     public function exportExcel($id, $start_date, $end_date)
     {
 
+
         $data = collect(session()->get('generalLedgers'));
+
         $query =  $data['query'];
         // ตรวจสอบว่า $query มีข้อมูลหรือไม่
-        if ($query->isEmpty()) {
+        /* if ($query->isEmpty()) {
             return back()->with('error', 'ไม่มีข้อมูลสำหรับการส่งออก');
-        }
+        } */
 
         $data = collect();
         $i = 1;
@@ -309,6 +311,7 @@ class GeneralJournalController extends Controller
             }
         }
 
+
         $export = new class($data) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
 
@@ -328,6 +331,7 @@ class GeneralJournalController extends Controller
                     ['#', 'วันที่', 'เลขที่เอกสาร', 'บริษัท', 'เดบิต', 'เครดิต', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
                 ];
             }
+
 
             public function columnWidths(): array
             {

@@ -20,6 +20,8 @@ class AuthenticateUserStatusReport
     {
 
         if (Auth::check()) {
+         
+
             // หากสถานะของผู้ใช้คือ 0 ให้ผ่าน
             return $next($request);
         }

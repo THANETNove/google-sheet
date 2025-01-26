@@ -28,7 +28,7 @@ class AuthenticateUserReport
 
         if ($user && $password == $user->password) {
             // หากพบผู้ใช้และรหัสผ่านถูกต้อง ให้ผ่านไปยัง Controller
-
+          
             $request->merge([
                 'user_id' => $user->id,
                 'username' => $username,
