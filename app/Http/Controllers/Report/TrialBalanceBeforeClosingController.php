@@ -469,7 +469,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $displayed_after_total = 0;
         // Add rows for each entry in the group
 
-        foreach ($groupData as $entry) {
+        /* foreach ($groupData as $entry) {
 
             $displayed_before  = ($entry->gls_account_code == '32-1001-01') ? $before_total_result_3 : $entry->before_total;
             $displayed_after  = ($entry->gls_account_code == '32-1001-01') ? $after_total_result_3 : $entry->after_total;
@@ -498,6 +498,39 @@ class TrialBalanceBeforeClosingController extends Controller
             (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total, 2) : '',
             (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
             (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '',
+        ]); */
+
+        if ($groupData->isNotEmpty()) {
+            foreach ($groupData as $entry) {
+                $displayed_before = ($entry->gls_account_code == '32-1001-01') ? $before_total_result_3 : $entry->before_total;
+                $displayed_after = ($entry->gls_account_code == '32-1001-01') ? $after_total_result_3 : $entry->after_total;
+
+                $displayed_before_total += $displayed_before;
+                $displayed_after_total += $displayed_after;
+
+                $mappedData->push([
+                    $entry->gls_account_code,
+                    $entry->gls_account_name,
+                    (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before, 2) : '',
+                    (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before, 2) : '',
+                    (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after, 2) : '',
+                    (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after, 2) : '',
+                    (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before + $displayed_after, 2) : '',
+                    (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before + $displayed_after, 2) : '',
+                ]);
+            }
+        }
+
+        // Add subtotal row for each group
+        $mappedData->push([
+            '',
+            "รวม $title",
+            number_format($displayed_before_total, 2),
+            number_format($displayed_before_total, 2),
+            number_format($displayed_after_total, 2),
+            number_format($displayed_after_total, 2),
+            number_format($displayed_after_total + $displayed_before_total, 2),
+            number_format($displayed_after_total + $displayed_before_total, 2),
         ]);
     }
 }
