@@ -7,7 +7,7 @@
 
                 <div id="printableArea">
 
-                    <div class="card" style="margin-bottom: 32px;">
+                    <div class="card2" style="margin-bottom: 32px;">
                         @php
 
                             $route = Auth::check()
@@ -45,7 +45,7 @@
                         </form>
                     </div>
                     @foreach ($date_query as $accountCode => $queries)
-                        <div class="card" style="margin-bottom: 32px;">
+                        <div class="card2" style="margin-bottom: 32px;">
                             <div class="container-company">
                                 <div class="company">
                                     <p><strong>{{ $user->company }}</strong></p>

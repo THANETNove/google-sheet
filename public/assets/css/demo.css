@@ -471,3 +471,15 @@ td:nth-child(8) {
 }
 
 */
+.card2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 0 solid #d9dee3;
+  border-radius: 0.5rem;
+  height: auto;
+}

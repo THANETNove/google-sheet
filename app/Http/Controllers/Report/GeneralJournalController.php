@@ -54,6 +54,7 @@ class GeneralJournalController extends Controller
     {
         $user = DB::table('users')->find($id);
 
+
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
@@ -88,6 +89,7 @@ class GeneralJournalController extends Controller
             'currentYear' => date('Y')
         ]]);
         // Group by document
+
 
         return [
             'query' => $generalLedgers,
