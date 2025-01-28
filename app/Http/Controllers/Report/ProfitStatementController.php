@@ -194,7 +194,7 @@ class ProfitStatementController extends Controller
 
 
 
-
+        
         return [
             'date_query' => $combined_result,
             'user' => $user,

@@ -10,7 +10,8 @@
 
                         <div class="container-company">
                             <div class="company">
-                                <p><strong>{{ $user->company }}</strong></p>
+                               {{--  <p><strong>{{ $user->company }}</strong></p> --}}
+                                <p><strong>{{ session('company_name') }}</strong></p>
 
                                 <p><strong>-- งบกำไร(ขาดทุน) --</strong></p>
                                 <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}<strong></p>

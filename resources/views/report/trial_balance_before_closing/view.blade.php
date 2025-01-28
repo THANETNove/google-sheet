@@ -10,8 +10,9 @@
 
                         <div class="container-company">
                             <div class="company">
-                                <p><strong>{{ $user->company }}</strong></p>
+                                {{-- <p><strong>{{ $user->company }}</strong></p> --}}
 
+                                <p><strong>{{ session('company_name') }}</strong></p>
                                 <p><strong>-- งบทดลองก่อนปิดบัญชี --</strong></p>
                                 <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}<strong></p>
                                 <p><strong> ตั้งแต่วันที่ &nbsp; {{ date('d-m-Y', strtotime($startDate)) }}
@@ -24,11 +25,10 @@
 
                             $route = Auth::check()
                                 ? route('report/search-trial-balance-before-closing')
-                                : 
-                                    route('user-report/search-trial-balance-before-closing', [
-                                        'username' => $user->username,
-                                        'password' => $user->password,
-                                    ]);
+                                : route('user-report/search-trial-balance-before-closing', [
+                                    'username' => $user->username,
+                                    'password' => $user->password,
+                                ]);
                             $url_export_pdf = Auth::check()
                                 ? url(
                                     '/trial-balance-before-closing-pdf/' .

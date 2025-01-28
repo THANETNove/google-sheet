@@ -10,8 +10,8 @@
 
                         <div class="container-company">
                             <div class="company">
-                                <p><strong>{{ $user->company }}</strong></p>
-
+                                {{--  <p><strong>{{ $user->company }}</strong></p> --}}
+                                <p><strong>{{ session('company_name') }}</strong></p>
                                 <p><strong>-- รายงานภาษีซื้อ --</strong></p>
                                 <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}<strong></p>
                                 <p><strong>เดือนภาษี {{ $vat_month }}<strong></p>
@@ -164,7 +164,7 @@
                                             <td>{{ $i++ }}</td>
                                             <td>{{ date('d-m-Y', strtotime($que->gl_date)) }} {{-- <br>
                                                 {{ date('d-m-Y', strtotime($que->gl_taxmonth)) }} --}}</td>
-                                            <td >
+                                            <td>
                                                 @if ($que->gl_url)
                                                     <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
                                                         rel="noopener noreferrer">

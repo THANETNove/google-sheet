@@ -205,7 +205,6 @@ class ProfitStatementUserController extends Controller
         $data = $this->getData($id); // รับค่ากลับมา
 
 
-
         return view('report.profit_statement.view', [
             'date_query' => $data['date_query'],
             'user' => $request,

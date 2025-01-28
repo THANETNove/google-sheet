@@ -46,7 +46,8 @@
                         <div class="card2" style="margin-bottom: 32px;">
                             <div class="container-company">
                                 <div class="company">
-                                    <p><strong>{{ $user->company }}</strong></p>
+                                    {{--   <p><strong>{{ $user->company }}</strong></p> --}}
+                                    <p><strong>{{ session('company_name') }}</strong></p>
                                     <p><strong>-- บัญชีแยกประเภท {{ $accountCode }} : {{ $queries[0]->gls_account_name }}
                                             --</strong></p>
                                     <p><strong>หมายเลขผู้เสียภาษี {{ $user->tax_id }}</strong></p>
