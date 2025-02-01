@@ -10,16 +10,19 @@
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="{{ URL::asset('/assets/img/icons/icon-2.png') }}" />
 
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
-
 <style>
-    body {
-        font-size: 8pt !important;
-        font-family: 'Sarabun', sans-serif;
+    @font-face {
+        font-family: 'THSarabunNew';
+        font-style: normal;
+        font-weight: normal;
+        src: url("{{ public_path('fonts/THSarabunNew.ttf') }}") format('truetype');
+    }
 
+    body {
+        font-family: 'THSarabunNew', sans-serif;
+        font-size: 8pt !important;
         font-weight: 400;
         font-style: normal !important;
-
     }
 
 

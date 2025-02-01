@@ -19,5 +19,8 @@
         "600": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_600_d1b6ac4445657ae19e1bbc350318956b",
         "bold": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_bold_681e04cb4e36d6793599121d224f6f86",
         "800": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/\/sarabun_800_aff3e6b5654af5461fc9e8b8ba89faf1"
+    },
+    "thsarabunnew": {
+        "normal": "thsarabunnew_normal_87c9abc8a0d9e41b69e65b32304a2433"
     }
 }
