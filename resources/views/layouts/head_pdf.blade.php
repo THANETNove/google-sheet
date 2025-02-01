@@ -10,19 +10,29 @@
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="{{ URL::asset('/assets/img/icons/icon-2.png') }}" />
 
+
 <style>
     @font-face {
         font-family: 'THSarabunNew';
-        font-style: normal;
+        src: url('{{ public_path('fonts/THSarabunNew.ttf') }}') format('truetype');
         font-weight: normal;
-        src: url("{{ public_path('fonts/THSarabunNew.ttf') }}") format('truetype');
+        font-style: normal;
     }
 
+    @font-face {
+        font-family: 'THSarabunNew';
+        src: url('{{ public_path('fonts/THSarabunNew-Bold.ttf') }}') format('truetype');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+
     body {
+
         font-family: 'THSarabunNew', sans-serif;
-        font-size: 8pt !important;
         font-weight: 400;
         font-style: normal !important;
+
     }
 
 
@@ -61,7 +71,7 @@
         border: 1px solid #d9dee3;
         border-collapse: collapse;
 
-        font-size: 12px !important;
+        font-size: 16px !important;
     }
 
     .table th,

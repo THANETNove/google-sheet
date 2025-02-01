@@ -3,24 +3,25 @@
         "normal": "glyphicons_halflings_normal_4bf4c90600ef2617211b8a7969a7b830"
     },
     "sarabun": {
-        "100_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_100_italic_88f0672101a2f70d2182af023e5e2eed",
-        "200_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_200_italic_f03f380c599df3a168ba1410622d39b6",
-        "300_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_300_italic_90f9f93d56fd7c72ff79c0851bd4bd45",
-        "italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_italic_10f9319225be3ef1511488b415036fcc",
-        "500_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_500_italic_d55b0aa2bdc99d677d2601013a831097",
-        "600_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_600_italic_8d9b3280776c434ddf282d0b5b98ad32",
-        "bold_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_bold_italic_e30f4df686033e54506106d48e07fee9",
-        "800_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_800_italic_efbbc4d92c306f05aae46de5c5b8ccb8",
-        "100": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_100_6c63296830c6787416e70d69a29d00f1",
-        "200": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_200_f826f916cf0ae844d5e2152afbc1ba20",
+        "100_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_100_italic_88f0672101a2f70d2182af023e5e2eed",
+        "200_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_200_italic_f03f380c599df3a168ba1410622d39b6",
+        "300_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_300_italic_90f9f93d56fd7c72ff79c0851bd4bd45",
+        "italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_italic_10f9319225be3ef1511488b415036fcc",
+        "500_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_500_italic_d55b0aa2bdc99d677d2601013a831097",
+        "600_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_600_italic_8d9b3280776c434ddf282d0b5b98ad32",
+        "bold_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_bold_italic_e30f4df686033e54506106d48e07fee9",
+        "800_italic": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_800_italic_efbbc4d92c306f05aae46de5c5b8ccb8",
+        "100": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_100_6c63296830c6787416e70d69a29d00f1",
+        "200": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_200_f826f916cf0ae844d5e2152afbc1ba20",
         "300": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_300_9674c0c9acba07d66366329624398b72",
-        "normal": "sarabun_normal_bcf01d8d70bbc4a458a8b99c089a29e9",
-        "500": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_500_ecf56bd4ff76d9e6b213035633d152fb",
-        "600": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/sarabun_600_d1b6ac4445657ae19e1bbc350318956b",
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_normal_bcf01d8d70bbc4a458a8b99c089a29e9",
+        "500": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_500_ecf56bd4ff76d9e6b213035633d152fb",
+        "600": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_600_d1b6ac4445657ae19e1bbc350318956b",
         "bold": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/sarabun_bold_681e04cb4e36d6793599121d224f6f86",
-        "800": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/google-sheet\/storage\/fonts\/\/sarabun_800_aff3e6b5654af5461fc9e8b8ba89faf1"
+        "800": "sarabun_800_aff3e6b5654af5461fc9e8b8ba89faf1"
     },
     "thsarabunnew": {
-        "normal": "thsarabunnew_normal_87c9abc8a0d9e41b69e65b32304a2433"
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/project\/gl\/storage\/fonts\/\/thsarabunnew_normal_87c9abc8a0d9e41b69e65b32304a2433",
+        "bold": "thsarabunnew_bold_52ec499ca2f793c3b96bfdec25069db8"
     }
 }

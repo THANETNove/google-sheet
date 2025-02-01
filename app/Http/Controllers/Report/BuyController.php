@@ -61,9 +61,10 @@ class BuyController extends Controller
             // กำหนดเดือนและปีให้เป็นเดือนและปีของเดือนก่อนหน้า
             $previousMonthDate = Carbon::now()->subMonthNoOverflow();
 
-            $month = $previousMonthDate->format('m');  // ใช้เดือนของเดือนก่อนหน้า (กันยายน)
+            $month = $previousMonthDate->format('n');  // ใช้เดือนของเดือนก่อนหน้า (กันยายน)
             $year = $previousMonthDate->format('Y');   // ใช้ปีของเดือนก่อนหน้า (2024)
         }
+
         // ใช้ Carbon เพื่อสร้างวันที่จากเดือนและปีที่กำหนด
         $startDate = Carbon::createFromDate($year, $month, 1); // วันที่ 1 ของเดือนที่เลือก
         $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth(); // วันที่สุดท้ายของเดือนที่เลือก
@@ -72,6 +73,7 @@ class BuyController extends Controller
         $vat_month = $startDate->month;
         $monthName = $this->getMonths()[$defaultMonth];
         $monthName2 = "$monthName $year"; // เช่น 'มกราคม 2024'
+
         $monthName3 =  $this->getMonths()[$month] . ' ' . $year; // เช่น 'มกราคม 2024'
 
         // ดึงข้อมูลตามเดือนและปีที่เลือก
