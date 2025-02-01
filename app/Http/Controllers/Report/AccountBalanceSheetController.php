@@ -84,6 +84,7 @@ class AccountBalanceSheetController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
+
         // ก่อน start date
         $before_date_query1_3 = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
@@ -108,8 +109,8 @@ class AccountBalanceSheetController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
-
-
+        // 
+        //dd($before_date_query1_3);
 
 
 
@@ -248,8 +249,8 @@ class AccountBalanceSheetController extends Controller
                     'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
                     'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
-                    'before_total_result' => $items->sum(fn($item) => $item->total_result ?? 0), // ตรวจสอบค่า total_result จาก $firstItem
-                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0), // ตรวจสอบค่า after_total_result จาก $firstItem
+                    'before_total_result' => $items->sum(fn($item) => $item->total_result ?? 0 ?? 0), // ตรวจสอบค่า total_result จาก $firstItem
+                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result   ?? 0), // ตรวจสอบค่า after_total_result จาก $firstItem
                 ];
             })
             ->values()
@@ -341,14 +342,21 @@ class AccountBalanceSheetController extends Controller
 
         // Process and organize data based on gls_account_code prefix
         // Process and organize data based on gls_account_code prefix
+        $before_total_1 = $data['date_query']->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))->sum('before_total');
+        $before_total_2 = $data['date_query']->filter(fn($item) => Str::startsWith($item->gls_account_code, '2'))->sum('before_total');
+
+        $before_total_3 = $data['date_query']->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('before_total');
+        $before_total_result_3 =  $data['date_query']->filter(fn($item) => $item->gls_account_code == '32-1001-01')->sum('before_total_result');
+
+
         $combined_result = $data['date_query']
             ->groupBy('gls_account_code')
-            ->map(function ($items) {
+            ->map(function ($items)  use ($before_total_1, $before_total_2, $before_total_3) {
                 return (object) [
                     'gls_account_code' => $items->first()->gls_account_code,
                     'gls_account_name' => $items->first()->gls_account_name,
                     'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
-                    'before_total_result' => $items->sum(fn($item) => $item->before_total_result ?? 0),
+                    'before_total_result' => $before_total_1 - $before_total_3 - $before_total_2 ?? 0,
                     'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
                     'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0),
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
@@ -367,12 +375,12 @@ class AccountBalanceSheetController extends Controller
         $this->addGroupToExcel($mappedData, $combined_result, '5', 'ค่าใช้จ่ายในการขายและบริหาร');
 
         // Calculate overall totals for summary rows
-        $before_total_1 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))->sum('before_total');
 
 
-        $before_total_2 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '2'))->sum('before_total');
-        $before_total_3 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('before_total');
-        $before_total_result_3 = $combined_result->filter(fn($item) => $item->gls_account_code == '32-1001-01')->sum('before_total_result');
+
+
+
+
         $before_total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('before_total');
         $before_total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('before_total');
 
@@ -417,19 +425,20 @@ class AccountBalanceSheetController extends Controller
 
         // Add final cumulative total row
 
-        $cumulativeTotal = $after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4  + $after_total_result_3 + $before_total_result_3;
+        $cumulativeTotal = $after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_1 - $before_total_2  + $after_total_result_3;
 
         $mappedData->push([
             '',
             'ยอดรวมทั้งหมด',
             number_format($before_total_1 + $before_total_5, 2),
-            number_format($before_total_2 + $before_total_3 + $before_total_result_3 + $before_total_4, 2),
+            number_format($before_total_2 + $before_total_1 - $before_total_2, 2),
             number_format($after_total_1 + $after_total_5, 2),
             number_format($after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3, 2),
             number_format($total_5 + $after_total_1 + $before_total_1, 2),
             number_format($cumulativeTotal, 2),
 
         ]);
+
         // Export to Excel
         $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;

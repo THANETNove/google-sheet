@@ -76,7 +76,7 @@
                                     {{-- 1% --}}
                                     <tr>
 
-                                        <th colspan="8" style="border: none; text-align: left;">
+                                        <th colspan="8" class="center" style="border: none;">
                                             สินทรัพย์
                                         </th>
 
@@ -145,7 +145,7 @@
                                     {{-- 2% --}}
                                     <tr>
 
-                                        <th colspan="8" style="border: none; text-align: left;">
+                                        <th colspan="8" class="center" style="border: none;">
                                             หนี้สิน
                                         </th>
 
@@ -212,7 +212,7 @@
                                     {{-- 3% --}}
 
                                     <tr>
-                                        <th colspan="8" style="border: none; text-align: left;">
+                                        <th colspan="8" class="center" style="border: none;">
                                             ส่วนของผู้ถือหุ้น/ผู้เป็นหุ้นส่วน
                                         </th>
                                     </tr>
@@ -227,6 +227,7 @@
                                                 $after_total_result_3 += $entry->after_total_result;
                                                 $after_total_3 += $entry->after_total;
                                                 $total_3 += $entry->total;
+
                                             @endphp
                                             <tr>
                                                 <td class="center">{{ $entry->gls_account_code }}</td>
@@ -237,7 +238,7 @@
                                                     class="text-end color-yellow {{ $entry->before_total < 0 || $entry->before_total_result < 0 ? 'error-message' : '' }}">
                                                     @if ($entry->gls_account_code == '32-1001-01')
                                                         {{-- แสดง before_total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
-                                                        {{ isset($entry->before_total_result) && $entry->before_total_result != 0 ? number_format($entry->before_total_result, 2) : '' }}
+                                                        {{ isset($entry->before_total_result) && $entry->before_total_result != 0 ? number_format($before_total_1 - $before_total_2 - $before_total_3, 2) : '' }}
                                                     @else
                                                         {{-- แสดง before_total สำหรับบัญชีอื่น --}}
                                                         {{ isset($entry->before_total) && $entry->before_total != 0 ? number_format($entry->before_total, 2) : '' }}
@@ -267,7 +268,13 @@
 
                                                     @if ($entry->gls_account_code == '32-1001-01')
                                                         {{-- แสดง before_total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
-                                                        {{ $entry->after_total_result + $entry->after_total + $entry->before_total_result != 0 ? number_format($entry->after_total_result + $entry->after_total + $entry->before_total_result, 2) : '' }}
+
+                                                        {{ $entry->after_total_result + $entry->after_total + $entry->before_total_result != 0
+                                                            ? number_format(
+                                                                $entry->after_total_result + $entry->after_total + $before_total_1 - $before_total_2 - $before_total_3,
+                                                                2,
+                                                            )
+                                                            : '' }}
                                                     @else
                                                         {{-- แสดง before_total สำหรับบัญชีอื่น --}}
                                                         {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
@@ -287,10 +294,12 @@
 
                                         <td
                                             class="text-end color-yellow text-bold {{ $before_total_3 + $before_total_result_3 < 0 ? 'error-message' : '' }}">
-                                            {{ $before_total_3 + $before_total_result_3 != 0 ? number_format($before_total_3 + $before_total_result_3, 2) : '' }}
+
+                                            {{ $before_total_3 + $before_total_result_3 != 0 ? number_format($before_total_1 - $before_total_2, 2) : '' }}
 
                                         </td>
                                         <td class="text-end color-green">
+
                                         </td>
                                         <td
                                             class="text-end color-green text-bold {{ $after_total_3 + $after_total_result_3 < 0 ? 'error-message' : '' }}">
@@ -303,8 +312,8 @@
                                         </td>
                                         @php
                                             $total_result =
-                                                $before_total_3 +
-                                                $before_total_result_3 +
+                                                $before_total_1 -
+                                                $before_total_2 +
                                                 $after_total_3 +
                                                 $after_total_result_3;
                                         @endphp
@@ -320,7 +329,7 @@
                                     {{-- 4% --}}
                                     <tr>
 
-                                        <th colspan="8" style="border: none; text-align: left;">
+                                        <th colspan="8" class="text-left" style="border: none;">
                                             รายได้จากการดำเนินงาน</th>
 
                                     </tr>
@@ -331,8 +340,9 @@
                                         @if (Str::startsWith($entry->gls_account_code, '4'))
                                             @php
                                                 $before_total_4 += $entry->before_total;
-                                                $after_total_4 += $entry->after_total;
+                                                $after_total_4 = $entry->after_total;
                                                 $total_4 += $entry->total;
+
                                             @endphp
                                             <tr>
                                                 <td class="center">{{ $entry->gls_account_code }}</td>
@@ -383,7 +393,7 @@
                                     {{-- 5% --}}
                                     <tr>
 
-                                        <th colspan="8" style="border: none; text-align: left;">
+                                        <th colspan="8" class="center" style="border: none;">
                                             ค่าใช้จ่ายในการขายเเละบริหาร</th>
                                     </tr>
                                     @foreach ($date_query as $entry)
@@ -496,12 +506,12 @@
 
                                     </tr>
                                     <tr>
-                                        <td colspan="8" style="border: none; height: 32px;text-align: left;"></td>
+                                        <td colspan="8" style="border: none; height: 32px;"></td>
                                         <!-- ใช้ height เพิ่มช่องว่าง -->
                                     </tr>
                                     @php
                                         $toatalSum_1 = $before_total_1;
-                                        $toatalSum_2 = $before_total_2 + $before_total_3 + $before_total_result_3;
+                                        $toatalSum_2 = $before_total_2 + $before_total_1 - $before_total_2;
                                         $toatalSum_3 = $after_total_1;
                                         $toatalSum_4 = $after_total_2 + $after_total_3 + $after_total_result_3;
                                         $toatalSum_5 = $total_1;
