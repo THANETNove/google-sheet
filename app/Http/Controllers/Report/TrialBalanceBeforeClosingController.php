@@ -64,7 +64,7 @@ class TrialBalanceBeforeClosingController extends Controller
         // ก่อน start date
         $before_date_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod2->toDateString(), $carryForwardDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
@@ -82,6 +82,7 @@ class TrialBalanceBeforeClosingController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
+        //dd($startPeriod2->toDateString(), $carryForwardDate->toDateString());
 
         // ก่อน start date
         $before_date_query1_3 = DB::table('general_ledger_subs')
