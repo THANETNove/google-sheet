@@ -556,6 +556,7 @@
 
                                         <td class="text-end color-blue"></td>
                                         @php
+
                                             $totalProfitLoss =
                                                 $before_total_result_3 +
                                                 ($before_total_4 - $before_total_5) +
@@ -572,22 +573,29 @@
                                         <!-- ใช้ height เพิ่มช่องว่าง -->
                                     </tr>
                                     @php
-                                        $toatalSum_1 = round($before_total_1 + $before_total_5);
-                                        $toatalSum_2 = round($before_total_2 + $before_total_1 - $before_total_2);
-                                        $toatalSum_3 = round($after_total_1 + $after_total_5);
-                                        $toatalSum_4 = round(
-                                            $after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3,
-                                        );
-                                        $toatalSum_5 = round($total_1 + $total_5);
-                                        $toatalSum_6 = round(
+
+                                        $toatalSum_1 = $before_total_1 + $before_total_5;
+                                        $toatalSum_2 =
+                                            $before_total_2 +
+                                            $before_total_3 +
+                                            $before_total_1 -
+                                            $before_total_2 -
+                                            $before_total_3 +
+                                            $before_total_5;
+                                        $toatalSum_3 = $after_total_1 + $after_total_5;
+                                        $toatalSum_4 =
+                                            $after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3;
+                                        $toatalSum_5 = $total_1 + $total_5;
+                                        $toatalSum_6_1 =
                                             $total_2 +
-                                                $before_total_1 -
-                                                $before_total_2 -
-                                                $before_total_3 +
-                                                $total_3 +
-                                                $total_4 +
-                                                $after_total_result_3,
-                                        );
+                                            $before_total_1 -
+                                            $before_total_2 -
+                                            $before_total_3 +
+                                            $total_3 +
+                                            $total_4 +
+                                            $after_total_result_3;
+                                        $toatalSum_6_2 = $before_total_4 - $before_total_5;
+                                        $toatalSum_6 = $toatalSum_6_1 - $toatalSum_6_2;
                                         // กำหนดทศนิยม 10 ตำแหน่ง
                                     @endphp
 
