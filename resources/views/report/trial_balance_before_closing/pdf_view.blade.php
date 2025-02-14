@@ -456,12 +456,19 @@
                     <!-- ใช้ height เพิ่มช่องว่าง -->
                 </tr>
                 @php
+                    
                     $toatalSum_1 = $before_total_1 + $before_total_5;
-                    $toatalSum_2 = $before_total_2 + $before_total_1 - $before_total_2;
+                    $toatalSum_2 =
+                        $before_total_2 +
+                        $before_total_3 +
+                        $before_total_1 -
+                        $before_total_2 -
+                        $before_total_3 +
+                        $before_total_5;
                     $toatalSum_3 = $after_total_1 + $after_total_5;
                     $toatalSum_4 = $after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3;
                     $toatalSum_5 = $total_1 + $total_5;
-                    $toatalSum_6 =
+                    $toatalSum_6_1 =
                         $total_2 +
                         $before_total_1 -
                         $before_total_2 -
@@ -469,6 +476,8 @@
                         $total_3 +
                         $total_4 +
                         $after_total_result_3;
+                    $toatalSum_6_2 = $before_total_4 - $before_total_5;
+                    $toatalSum_6 = $toatalSum_6_1 - $toatalSum_6_2;
                 @endphp
 
                 <tr style="border: none; margin-top: 64px;">

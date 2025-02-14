@@ -303,6 +303,7 @@ class TrialBalanceBeforeClosingUserController extends Controller
 
         // Process and organize data based on gls_account_code prefix
         // Process and organize data based on gls_account_code prefix
+
         $before_total_1 = $data['date_query']->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))->sum('before_total');
         $before_total_2 = $data['date_query']->filter(fn($item) => Str::startsWith($item->gls_account_code, '2'))->sum('before_total');
 
@@ -345,10 +346,14 @@ class TrialBalanceBeforeClosingUserController extends Controller
         $after_total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('after_total');
         $after_total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('after_total');
 
+        $total_1 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '1'))->sum('total');
+        $total_2 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '2'))->sum('total');
+        $total_3 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('total');
         $total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('total');
         $total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('total');
         // dd(number_format($after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4, 2));
         // Add "ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้" row
+
         $mappedData->push([
             '',
             'ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้',
@@ -379,19 +384,56 @@ class TrialBalanceBeforeClosingUserController extends Controller
 
         // Add final cumulative total row
 
-        $cumulativeTotal = $after_total_2 + $after_total_3 + $after_total_4 + $before_total_1 - $before_total_2  + $after_total_result_3;
+        $toatalSum_6_1 =
+            $total_2 +
+            $before_total_1 -
+            $before_total_2 -
+            $before_total_3 +
+            $total_3 +
+            $total_4 +
+            $after_total_result_3;
+        $toatalSum_6_2 = $before_total_4 - $before_total_5;
+
+        $cumulativeTotal = $toatalSum_6_1 - $toatalSum_6_2;
 
         $mappedData->push([
             '',
             'ยอดรวมทั้งหมด',
             number_format($before_total_1 + $before_total_5, 2),
-            number_format($before_total_2 + $before_total_1 - $before_total_2, 2),
+            number_format($before_total_2 +
+                $before_total_3 +
+                $before_total_1 -
+                $before_total_2 -
+                $before_total_3 +
+                $before_total_5, 2),
             number_format($after_total_1 + $after_total_5, 2),
             number_format($after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3, 2),
-            number_format($total_5 + $after_total_1 + $before_total_1, 2),
+            number_format($total_1 + $total_5, 2),
             number_format($cumulativeTotal, 2),
 
         ]);
+
+        /*  $toatalSum_1 = $before_total_1 + $before_total_5;
+        $toatalSum_2 =
+            $before_total_2 +
+            $before_total_3 +
+            $before_total_1 -
+            $before_total_2 -
+            $before_total_3 +
+            $before_total_5;
+        $toatalSum_3 = $after_total_1 + $after_total_5;
+        $toatalSum_4 = $after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3;
+        $toatalSum_5 = $total_1 + $total_5;
+        $toatalSum_6_1 =
+            $total_2 +
+            $before_total_1 -
+            $before_total_2 -
+            $before_total_3 +
+            $total_3 +
+            $total_4 +
+            $after_total_result_3;
+        $toatalSum_6_2 = $before_total_4 - $before_total_5;
+        $toatalSum_6 = $toatalSum_6_1 - $toatalSum_6_2; */
         // Export to Excel
         $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
