@@ -177,9 +177,7 @@
                                                             <td style="max-width: 80px;">
                                                                 @php
 
-                                                                    $glUrl = \App\Http\Controllers\Report\LedgerController::getGlUrl(
-                                                                        $query->gls_gl_code,
-                                                                    );
+                                                                    $glUrl = $ledgers[$query->gls_gl_code] ?? null;
 
                                                                 @endphp
 

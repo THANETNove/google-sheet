@@ -271,9 +271,23 @@ class LedgerController extends Controller
             }
         }
         $dateQueries = $date_query->sortKeys();
+        // ดึง gls_gl_code ทั้งหมดที่ต้องใช้
+        $glCodes = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->pluck('gls_gl_code')
+            ->toArray();
+
+        // ดึงข้อมูล Ledger ทั้งหมดในคำสั่งเดียว
+        $ledgers = DB::table('general_ledgers')
+            ->whereIn('gl_code', $glCodes)
+            ->select('gl_code', 'gl_url', 'gl_page', 'gl_document', 'gl_description', 'gl_company')
+            ->get()
+            ->keyBy('gl_code'); // แปลงเป็น array เพื่อเรียกใช้เร็วขึ้น
+
 
         return [
             'date_query' => $dateQueries,
+            'ledgers' => $ledgers,
             'user' => $user,
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -291,6 +305,7 @@ class LedgerController extends Controller
 
         return view('report.ledger.view', [
             'date_query' => $data['date_query'],
+            'ledgers' => $data['ledgers'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
@@ -321,9 +336,21 @@ class LedgerController extends Controller
     }
 
 
-    public static function getGlUrl($gls_gl_code)
+    public static function getGlUrl($query)
     {
-        $ledger = GeneralLedger::where('gl_code', $gls_gl_code)->first();
+
+
+        // ดึงรหัส gl_code ทั้งหมดจาก query
+        $glCodes = $query->pluck('gls_gl_code')->toArray();
+
+        // ดึงข้อมูล Ledger ทั้งหมดที่เกี่ยวข้องในครั้งเดียว
+        $ledger = DB::table('general_ledgers')
+            ->whereIn('gl_code', $glCodes) // ดึงข้อมูลที่เกี่ยวข้องทั้งหมด
+            ->select('gl_code', 'gl_url', 'gl_page', 'gl_document', 'gl_description', 'gl_company')
+            ->get()
+            ->keyBy('gl_code'); // แปลงเป็น associative array ตาม gl_code
+
+
         return $ledger;
     }
 }
