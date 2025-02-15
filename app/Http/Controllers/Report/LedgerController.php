@@ -48,7 +48,7 @@ class LedgerController extends Controller
         ];
     }
 
-    private function getData($id, $startDate = null, $endDate = null)
+    private function getData($id, $startDate = null, $endDate = null, $startCode = null, $endCode = null)
     {
 
         $user = DB::table('users')->find($id);
@@ -71,6 +71,10 @@ class LedgerController extends Controller
 
         $query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id);
+
+        if ($startCode && $endCode) {
+            $query->whereBetween('gls_account_code', [$startCode, $endCode]);
+        }
 
         $before_date_query = $query->clone()
             ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
@@ -321,10 +325,16 @@ class LedgerController extends Controller
 
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $data = $this->getData($request->id, $startDate, $endDate);
+        $startCode = $request->start_code;
+        $endCode = $request->end_code;
+        $data = $this->getData($request->id, $startDate, $endDate, $startCode, $endCode);
+
 
         return view('report.ledger.view', [
+            'startCode' => $startCode,
+            'endCode' => $endCode,
             'date_query' => $data['date_query'],
+            'ledgers' => $data['ledgers'],
             'user' => $data['user'],
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],

@@ -34,6 +34,26 @@
                                             value="{{ date('Y-m-d', strtotime($endDate)) }}" name="end_date">
                                     </div>
                                 </div>
+
+                                <!-- Input สำหรับ Start Code -->
+                                <div class="col-8">
+                                    <small class="text-light fw-semibold d-block mb-1">รหัสเริ่มต้น</small>
+                                    <div class="input-group">
+                                        <input class="form-control" type="text" id="startCode" name="start_code" 
+                                            value="{{ old('start_code', $startCode ?? '') }}" oninput="formatCode(this)">
+                                    </div>
+                                </div>
+
+                                <!-- Input สำหรับ End Code -->
+                                <div class="col-8">
+                                    <small class="text-light fw-semibold d-block mb-1">รหัสสิ้นสุด</small>
+                                    <div class="input-group">
+                                        <input class="form-control" type="text" id="endCode" name="end_code"
+                                            value="{{ old('end_code', $endCode ?? '') }}" oninput="formatCode(this)">
+                                    </div>
+                                </div>
+
+
                                 <input class="form-control" type="text" name="id" style="display: none"
                                     value="{{ $id }}">
                                 <div>
@@ -41,6 +61,7 @@
                                 </div>
                             </div>
                         </form>
+
                     </div>
                     @foreach ($date_query as $accountCode => $queries)
                         @php
@@ -339,5 +360,23 @@
                 behavior: 'smooth'
             });
         };
+
+
+        function formatCode(input) {
+            let value = input.value.replace(/\D/g, ""); // ลบอักขระที่ไม่ใช่ตัวเลขทั้งหมด
+            let formatted = "";
+
+            if (value.length > 0) {
+                formatted += value.substring(0, 2); // 2 ตัวแรก
+            }
+            if (value.length > 2) {
+                formatted += "-" + value.substring(2, 6); // 4 ตัวถัดไป
+            }
+            if (value.length > 6) {
+                formatted += "-" + value.substring(6, 8); // 2 ตัวสุดท้าย
+            }
+
+            input.value = formatted; // อัปเดตค่าใน input
+        }
     </script>
 @endsection
