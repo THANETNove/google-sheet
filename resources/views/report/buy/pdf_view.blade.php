@@ -81,7 +81,7 @@
                                                     <a href="{{ $que->gl_url }}" target="_blank" class="opan-message"
                                                         rel="noopener noreferrer">
                                                         {{ $que->gl_document }}
-                                                        <span class="id-message">หน้า {{ $que->gl_page }}</span>
+                                                        <span class="id-message"> {{ $que->gl_page }}</span>
                                                     </a>
                                                 @else
                                                     {{ $que->gl_document }}
