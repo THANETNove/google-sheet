@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\GeneralLedgerSub;
+
 
 class HomeController extends Controller
 {
@@ -95,5 +97,15 @@ class HomeController extends Controller
         // เช็คว่าทั้ง 3 ตารางเป็น true หรือไม่
 
         return response()->json(["queryAccount" => $queryAccount, "queryGeneral" =>  $queryGeneral, "queryGeneralSub" => $queryGeneralSub]);
+    }
+
+
+    public function showLedgerReport()
+    {
+        // ดึงข้อมูลจาก GeneralLedgerSub พร้อมดึง ledger ที่เกี่ยวข้องมาด้วย
+        $date_query = GeneralLedgerSub::with('ledger')->get();
+
+        // ส่งข้อมูลไปยัง view
+        return view('report.ledger.view', compact('date_query'));
     }
 }

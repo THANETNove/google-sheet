@@ -31,7 +31,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
+
 Auth::routes();
+
+Route::get('/ledger-report', [HomeController::class, 'showLedgerReport']);
+
 
 Route::middleware([AuthenticateUserStatusReport::class])->group(function () {
     // admin สุด

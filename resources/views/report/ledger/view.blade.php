@@ -160,18 +160,26 @@
                                                             <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}</td>
                                                         @endif
                                                         <td style="max-width: 80px;">
-                                                            @if ($query->gl_url)
-                                                                <a href="{{ $query->gl_url }}" target="_blank"
+                                                            @php
+
+                                                                $glUrl = \App\Http\Controllers\Report\LedgerController::getGlUrl(
+                                                                    $query->gls_gl_code,
+                                                                );
+
+                                                            @endphp
+
+                                                            @if ($glUrl->gl_url)
+                                                                <a href="{{ $glUrl->gl_url }}" target="_blank"
                                                                     class="opan-message" rel="noopener noreferrer">
-                                                                    {{ $query->gl_document }}
+                                                                    {{ $glUrl->gl_document }}
                                                                     <span class="id-message">หน้า
-                                                                        {{ $query->gl_page }}</span>
+                                                                        {{ $glUrl->gl_page }}</span>
                                                                 </a>
                                                             @else
-                                                                {{ $query->gl_document }}
+                                                                {{ $glUrl->gl_document }}
                                                             @endif
                                                         </td>
-                                                        <td>{{ $query->gl_description }} - {{ $query->gl_company }}</td>
+                                                        <td>{{ $glUrl->gl_description }} - {{ $glUrl->gl_company }}</td>
                                                         <td
                                                             class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
                                                             {{ $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '' }}

@@ -28,8 +28,8 @@ class GeneralLedgerSub extends Model
         'gls_credit',
     ];
 
-    public function ledger()
+    /*   public function ledger()
     {
         return $this->belongsTo(GeneralLedger::class, 'gls_gl_code', 'gl_code');
-    }
+    } */
 }
