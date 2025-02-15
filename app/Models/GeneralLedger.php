@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class GeneralLedger extends Model
 {
-    
+
+    protected $table = 'general_ledgers';
+    protected $primaryKey = 'gl_code';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     use HasFactory;
     protected $fillable = [
         'gl_code_company',
@@ -37,4 +42,9 @@ class GeneralLedger extends Model
         'gl_remark',
         'gl_email',
     ];
+
+    public function subs()
+    {
+        return $this->hasMany(GeneralLedgerSub::class, 'gls_gl_code', 'gl_code');
+    }
 }

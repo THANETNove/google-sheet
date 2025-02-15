@@ -9,6 +9,9 @@ class GeneralLedgerSub extends Model
 {
     use HasFactory;
     protected $table = 'general_ledger_subs';
+    protected $primaryKey = 'gls_gl_code';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
 
 
@@ -24,4 +27,9 @@ class GeneralLedgerSub extends Model
         'gls_debit',
         'gls_credit',
     ];
+
+    public function ledger()
+    {
+        return $this->belongsTo(GeneralLedger::class, 'gls_gl_code', 'gl_code');
+    }
 }
