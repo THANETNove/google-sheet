@@ -77,7 +77,8 @@ class LedgerController extends Controller
         }
 
         $before_date_query = $query->clone()
-            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            //->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '1%')
                     ->orWhere('gls_account_code', 'like', '2%')
@@ -98,7 +99,7 @@ class LedgerController extends Controller
             ")
             ->groupBy('gls_account_code')
             ->get();
-
+        /*  dd($before_date_query); */
         $before_date_query_2 = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
 
@@ -127,7 +128,7 @@ class LedgerController extends Controller
         $combined_result = $before_date_query->merge($before_date_query_2);
         $combined_result = $combined_result->sortBy('gls_account_code');
 
-
+        //dd($combined_result);
 
 
         $after_date_query = $query->clone()
@@ -204,7 +205,8 @@ class LedgerController extends Controller
 
         // กรอง gls_account_code ใน $date_query3 ที่ไม่มีใน $date_query1 และ $date_query2
         $date_query3 = $query->clone()
-            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            //->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->whereNotIn('gls_account_code', $existingAccountCodes2) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
             ->selectRaw("
             gls_gl_code,
@@ -218,7 +220,6 @@ class LedgerController extends Controller
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code');
-        // dd($date_query2, $date_query3);
 
         $date_query = $date_query1->merge($date_query2)->merge($date_query3);
 
