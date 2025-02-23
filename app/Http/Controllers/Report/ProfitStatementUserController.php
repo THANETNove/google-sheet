@@ -116,10 +116,19 @@ class ProfitStatementUserController extends Controller
         $carryForwardDate = $startDate->copy()->endOfDay()->subDay(); // Now you can call copy(), endOfDay(), and subDay() on it
 
 
+        // ตรวจสอบว่ามีค่า $startDate และ $endDate หรือไม่
+        $year = $startDate ? Carbon::parse($startDate)->year : Carbon::now()->year;
+
+        // กำหนดวันที่เริ่มต้นเป็น 1 มกราคมของปีที่ได้มา
+        $startDate45 = Carbon::createFromDate($year, $month, $day)->toDateString();
+
+        // กำหนด `$endDate45` เป็นวันสุดท้ายของเดือนที่แล้วของ `$startDate`
+        $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
+
         // ก่อน start date
         $before_date_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate45, $endDate45])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');

@@ -100,6 +100,7 @@ class LedgerController extends Controller
             ->groupBy('gls_account_code')
             ->get();
         /*  dd($before_date_query); */
+
         $before_date_query_2 = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
 
@@ -149,7 +150,7 @@ class LedgerController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
-
+        dd($after_date_query, $startDate->toDateString(), $endDate->toDateString());
 
 
         $after_date_query = $after_date_query->map(function ($beforeItem) use ($before_date_query_2) {
@@ -223,6 +224,7 @@ class LedgerController extends Controller
 
         $date_query = $date_query1->merge($date_query2)->merge($date_query3);
 
+
         $query = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startOfYearDate->toDateString(), $endOfYearDate->toDateString()])
             ->where(function ($q) {
@@ -238,6 +240,10 @@ class LedgerController extends Controller
             SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit
         ")
             ->get();
+
+
+
+
         // รวมผลลัพธ์
         $totalResult = $query->first()->acc_total_32 + ($query->first()->acc_total_4 - $query->first()->acc_total_5);
 
