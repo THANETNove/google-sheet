@@ -79,7 +79,8 @@ class TrialBalanceBeforeClosingController extends Controller
         // ก่อน start date
         $before_date_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate45, $endDate45])
+
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
@@ -100,7 +101,6 @@ class TrialBalanceBeforeClosingController extends Controller
         $startDateName =  "startDate45" . ' ' . $startDate45;
         $endDateName =  "endDate45" . ' ' . $endDate45;
         // Debug ค่า
-
 
         // ก่อน start date
         $before_date_query1_3 = DB::table('general_ledger_subs')
@@ -126,12 +126,14 @@ class TrialBalanceBeforeClosingController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
+        //  dd($before_date_query1_3, $carryForwardDate->toDateString());
 
 
         // หลัง start date
         $after_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate->toDateString(), $endDate->toDateString()])
+
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');

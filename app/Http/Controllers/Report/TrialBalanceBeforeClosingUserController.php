@@ -56,10 +56,26 @@ class TrialBalanceBeforeClosingUserController extends Controller
         $startOfYearDate = $startDate->copy()->subYear()->startOfYear()->startOfDay();
         $endOfYearDate = $endDate->copy()->subYear()->endOfYear()->endOfDay();
 
+
+        // ตรวจสอบว่ามีค่า $startDate และ $endDate หรือไม่
+        $year = $startDate ? Carbon::parse($startDate)->year : Carbon::now()->year;
+
+        // กำหนดวันที่เริ่มต้นเป็น 1 มกราคมของปีที่ได้มา
+        $startDate45 = Carbon::createFromDate($year, $month, $day)->toDateString();
+
+        // กำหนด `$endDate45` เป็นวันสุดท้ายของเดือนที่แล้วของ `$startDate`
+        $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
+
+
+        // Debug ค่า
+
+
+
         // ก่อน start date
         $before_date_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate45, $endDate45])
+
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
@@ -77,6 +93,9 @@ class TrialBalanceBeforeClosingUserController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
+        $startDateName =  "startDate45" . ' ' . $startDate45;
+        $endDateName =  "endDate45" . ' ' . $endDate45;
+        // Debug ค่า
 
         // ก่อน start date
         $before_date_query1_3 = DB::table('general_ledger_subs')
@@ -102,12 +121,14 @@ class TrialBalanceBeforeClosingUserController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
+        //  dd($before_date_query1_3, $carryForwardDate->toDateString());
 
 
         // หลัง start date
         $after_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate->toDateString(), $endDate->toDateString()])
+
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
