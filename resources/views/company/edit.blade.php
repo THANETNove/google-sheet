@@ -84,7 +84,7 @@
                                 <label class="form-label" for="accounting_period">รอบบัญชี</label>
                                 <input type="text" class="form-control @error('accounting_period') is-invalid @enderror"
                                     id="accounting_period" name="accounting_period" placeholder="รอบบัญชี"
-                                    value="{{ $query->accounting_period }}" required inputmode="numeric" maxlength="3"
+                                    value="{{ $query->accounting_period }}" required inputmode="numeric" maxlength="4"
                                     title="กรุณากรอกตัวเลขและเครื่องหมาย / เช่น 1/1">
                                 <div class="invalid-feedback">
                                     กรุณากรอกตัวเลขและเครื่องหมาย / ในรูปแบบที่ถูกต้อง เช่น 1/1
