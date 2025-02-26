@@ -549,9 +549,9 @@
                                         <td class="text-end color-yellow">
                                         </td>
                                         <td
-                                            class="text-end color-yellow text-bold {{ $entry->before_total_result + ($before_total_4 - $before_total_5) < 0 ? 'error-message' : '' }}">
+                                            class="text-end color-yellow text-bold {{ $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 < 0 ? 'error-message' : '' }}">
 
-                                            {{ $before_total_result_3 + ($before_total_4 - $before_total_5) != 0 ? number_format($before_total_result_3 + ($before_total_4 - $before_total_5), 2) : '' }}
+                                            {{ $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 != 0 ? number_format($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3, 2) : '' }}
                                         </td>
 
                                         <td class="text-end color-green">
@@ -566,7 +566,9 @@
 
                                             $totalProfitLoss =
                                                 $before_total_result_3 +
-                                                ($before_total_4 - $before_total_5) +
+                                                $before_total_1 -
+                                                $before_total_2 -
+                                                $before_total_3 +
                                                 $after_total_result_3 +
                                                 $total_4 -
                                                 $total_5;
