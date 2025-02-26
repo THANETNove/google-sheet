@@ -124,27 +124,7 @@ class TrialBalanceBeforeClosingUserController extends Controller
         //  dd($before_date_query1_3, $carryForwardDate->toDateString());
 
 
-        // หลัง start date
-        $after_query = DB::table('general_ledger_subs')
-            ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate->toDateString(), $endDate->toDateString()])
 
-            ->where(function ($q) {
-                $q->where('gls_account_code', 'like', '4%')
-                    ->orWhere('gls_account_code', 'like', '5%');
-            })
-            ->select(
-                'gls_account_code',
-                'gls_account_name',
-                'gls_gl_date',
-                DB::raw("CASE 
-                WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
-                WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
-                ELSE 0
-             END as after_total")
-            )
-            ->groupBy('gls_account_code')
-            ->get();
 
         // dd($startOfYearDate->toDateString(), $endOfYearDate->toDateString());
         $after_date_query1_3 = DB::table('general_ledger_subs')
@@ -171,23 +151,59 @@ class TrialBalanceBeforeClosingUserController extends Controller
             ->orderBy('gls_account_code', 'ASC')
             ->get();
 
+        // หลัง start date
+        $after_query = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate->toDateString(), $endDate->toDateString()])
 
+            ->where(function ($q) {
+                $q->where('gls_account_code', 'like', '4%')
+                    ->orWhere('gls_account_code', 'like', '5%');
+            })
+            ->select(
+                'gls_account_code',
+                'gls_account_name',
+                'gls_gl_date',
+                DB::raw("CASE 
+            WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
+            WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
+            ELSE 0
+         END as after_total")
+            )
+            ->groupBy('gls_account_code')
+            ->get();
+
+        // ก่อน start date ใน รอบปีนั้นนั้น
         $query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startOfYearDate->toDateString(), $endOfYearDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate45, $endDate45])
             ->where(function ($q) {
-                $q->where('gls_account_code', 'like', '32-1001-01')
+                $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->select(
-                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32"),
+                /*  DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32"), */
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as acc_total_4"),
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5")
             )
             ->get();
+
+        $query32 = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->whereDate('gls_gl_date', '<=', $startDate->toDateString())
+            ->where(function ($q) {
+                $q->where('gls_account_code', 'like', '32-1001-01');
+            })
+            ->select(
+                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32")
+            )
+            ->get();
+
+        //dd($query32, $query32);
+        // dd($startDate->toDateString(), $endDate->toDateString(), $startDate45, $endDate45);
         // รวมผลลัพธ์
-        $totalResult = $query->first()->acc_total_32 + ($query->first()->acc_total_4 - $query->first()->acc_total_5);
+        $totalResult = $query32->first()->acc_total_32;
 
         // 2. สร้าง $finalResult และตรวจสอบว่ามี total_result จริง
         $finalResult = collect([
