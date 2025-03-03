@@ -46,6 +46,7 @@ class TrialBalanceBeforeClosingController extends Controller
 
         $user = DB::table('users')->find($id);
 
+
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
@@ -71,8 +72,15 @@ class TrialBalanceBeforeClosingController extends Controller
         // กำหนด `$endDate45` เป็นวันสุดท้ายของเดือนที่แล้วของ `$startDate`
         $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
 
-
         // Debug ค่า
+        // Debug ค่า
+        if ((int)$day != 1 || (int)$month != 1) {
+            $startDate = $startPeriod2;
+            $endDate = Carbon::createFromDate($year, $month, $day);
+        }
+
+
+
 
 
 
@@ -262,8 +270,6 @@ class TrialBalanceBeforeClosingController extends Controller
 
 
 
-
-
         return [
             'date_query' => $combined_result,
             'user' => $user,
@@ -274,6 +280,7 @@ class TrialBalanceBeforeClosingController extends Controller
             'currentYear' => date('Y')
         ];
     }
+
 
 
     public function show(string $id)

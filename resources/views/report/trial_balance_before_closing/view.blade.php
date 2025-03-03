@@ -72,13 +72,16 @@
                                         urlencode($user->password),
                                 );
                         @endphp
+
+
+
                         <form action="{{ $route }}" method="POST" class="container-date">
                             @csrf
                             <div class="container-date">
                                 <div class="col-8">
                                     <small class="text-light fw-semibold d-block mb-1">วันที่</small>
                                     <div class="input-group input-group-merge speech-to-text">
-                                        <input class="form-control" type="date" id="start-date" {{-- value="{{ $startDate }}" --}}
+                                        <input class="form-control" type="date" id="start-date"
                                             value="{{ date('Y-m-d', strtotime($startDate)) }}" name="start_date">
                                     </div>
                                 </div>
