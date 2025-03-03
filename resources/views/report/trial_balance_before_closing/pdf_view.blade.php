@@ -451,8 +451,8 @@
                     <td class="text-end color-green">
                     </td>
                     <td
-                        class="text-end color-green text-bold  {{ $after_total_4 - $after_total_5 < 0 ? 'error-message' : '' }}">
-                        {{ $after_total_4 - $after_total_5 != 0 ? number_format($after_total_4 - $after_total_5, 2) : '' }}
+                        class="text-end color-green text-bold  {{ $after_total_result_3 + $total_4 - $total_5 < 0 ? 'error-message' : '' }}">
+                        {{ $after_total_result_3 + $total_4 - $total_5 != 0 ? number_format($after_total_result_3 + $total_4 - $total_5, 2) : '' }}
                     </td>
 
                     <td class="text-end color-blue"></td>
