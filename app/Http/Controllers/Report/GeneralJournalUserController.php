@@ -52,7 +52,13 @@ class GeneralJournalUserController extends Controller
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
         $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         $endDate = Carbon::parse($endDate)->endOfDay();
+        $startPeriod2 = Carbon::createFromDate(date('Y'), $month, $day)->subYear()->startOfDay(); // ย้อนหลัง 1 ปี
+        $year = $startDate ? Carbon::parse($startDate)->year : Carbon::now()->year;
 
+        if ((int)$day != 1 || (int)$month != 1) {
+            $startDate = $startPeriod2;
+            $endDate = Carbon::createFromDate($year, $month, $day);
+        }
 
         // Join the two tables (general_ledgers and general_ledger_subs) in one query
 

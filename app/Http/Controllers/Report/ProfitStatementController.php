@@ -118,6 +118,8 @@ class ProfitStatementController extends Controller
         list($day, $month) = explode('/', $accounting_period);
         $startDate = $startDate ?? Carbon::createFromDate(date('Y'), $month, $day);
         $startPeriod =  Carbon::createFromDate(date('Y'), $month, $day)->startOfDay();
+        $startPeriod2 = Carbon::createFromDate(date('Y'), $month, $day)->subYear()->startOfDay(); // ย้อนหลัง 1 ปี
+
         $endDate = $endDate ?? $startDate->copy()->addYear()->subDay();
         $endDate = Carbon::parse($endDate)->endOfDay();
 
@@ -131,6 +133,13 @@ class ProfitStatementController extends Controller
 
         // กำหนด `$endDate45` เป็นวันสุดท้ายของเดือนที่แล้วของ `$startDate`
         $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
+    
+        // Debug ค่า
+        // Debug ค่า
+        if ((int)$day != 1 || (int)$month != 1) {
+            $startDate = $startPeriod2;
+            $endDate = Carbon::createFromDate($year, $month, $day);
+        }
 
 
         // ก่อน start date
