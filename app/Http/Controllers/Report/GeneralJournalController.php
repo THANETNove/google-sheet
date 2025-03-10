@@ -50,7 +50,7 @@ class GeneralJournalController extends Controller
         ];
     }
 
-    private function getDataGlAndGls($id, $startDate = null, $endDate = null)
+    private function getDataGlAndGls($id, $startDate = null, $endDate = null, $search = 'no')
     {
         $user = DB::table('users')->find($id);
 
@@ -63,7 +63,7 @@ class GeneralJournalController extends Controller
         $startPeriod2 = Carbon::createFromDate(date('Y'), $month, $day)->subYear()->startOfDay(); // ย้อนหลัง 1 ปี
         $year = $startDate ? Carbon::parse($startDate)->year : Carbon::now()->year;
 
-        if ((int)$day != 1 || (int)$month != 1) {
+        if ($search == 'no' && ((int)$day != 1 || (int)$month != 1)) {
             $startDate = $startPeriod2;
             $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
         }
@@ -142,7 +142,8 @@ class GeneralJournalController extends Controller
 
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $data = $this->getDataGlAndGls($request->id, $startDate, $endDate);
+        $search = 'yes';
+        $data = $this->getDataGlAndGls($request->id, $startDate, $endDate, $search);
 
         return view('report.general_journal.view', [
             'query' => $data['query'],

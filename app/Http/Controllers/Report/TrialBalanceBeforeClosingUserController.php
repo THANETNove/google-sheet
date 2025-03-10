@@ -36,7 +36,7 @@ class TrialBalanceBeforeClosingUserController extends Controller
         ];
     }
 
-    private function getData($id, $startDate = null, $endDate = null)
+    private function getData($id, $startDate = null, $endDate = null, $search = 'no')
     {
 
         $user = DB::table('users')->find($id);
@@ -69,7 +69,7 @@ class TrialBalanceBeforeClosingUserController extends Controller
 
         // Debug ค่า
         // Debug ค่า
-        if ((int)$day != 1 || (int)$month != 1) {
+        if ($search == 'no' && ((int)$day != 1 || (int)$month != 1)) {
             $startDate = $startPeriod2;
             $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
         }
@@ -300,7 +300,8 @@ class TrialBalanceBeforeClosingUserController extends Controller
         $id = $request->user_id;
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $data = $this->getData($id, $startDate, $endDate);
+        $search = 'yes';
+        $data = $this->getData($id, $startDate, $endDate, $search);
 
         return view('report.trial_balance_before_closing.view', [
             'date_query' => $data['date_query'],

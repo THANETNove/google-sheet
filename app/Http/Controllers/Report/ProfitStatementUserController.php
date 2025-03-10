@@ -100,7 +100,7 @@ class ProfitStatementUserController extends Controller
         ];
     }
 
-    private function getData($id, $startDate = null, $endDate = null)
+    private function getData($id, $startDate = null, $endDate = null, $search = 'no')
     {
 
         $user = DB::table('users')->find($id);
@@ -126,7 +126,7 @@ class ProfitStatementUserController extends Controller
 
         // กำหนด `$endDate45` เป็นวันสุดท้ายของเดือนที่แล้วของ `$startDate`
         $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
-        if ((int)$day != 1 || (int)$month != 1) {
+        if ($search == 'no' && ((int)$day != 1 || (int)$month != 1)) {
             $startDate = $startPeriod2;
             $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
         }
@@ -238,7 +238,8 @@ class ProfitStatementUserController extends Controller
         $id = $request->user_id;
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $data = $this->getData($request->id, $startDate, $endDate);
+        $search = 'yes';
+        $data = $this->getData($request->id, $startDate, $endDate, $search);
 
         return view('report.profit_statement.view', [
             'date_query' => $data['date_query'],
