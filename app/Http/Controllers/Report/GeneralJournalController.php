@@ -65,7 +65,7 @@ class GeneralJournalController extends Controller
 
         if ((int)$day != 1 || (int)$month != 1) {
             $startDate = $startPeriod2;
-            $endDate = Carbon::createFromDate($year, $month, $day);
+            $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
         }
         // Join the two tables (general_ledgers and general_ledger_subs) in one query
 

@@ -128,7 +128,7 @@ class ProfitStatementUserController extends Controller
         $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
         if ((int)$day != 1 || (int)$month != 1) {
             $startDate = $startPeriod2;
-            $endDate = Carbon::createFromDate($year, $month, $day);
+            $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
         }
 
         // ก่อน start date
