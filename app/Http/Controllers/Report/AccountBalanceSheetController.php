@@ -77,6 +77,8 @@ class AccountBalanceSheetController extends Controller
         // Debug ค่า
         // Debug ค่า
         if ((int)$day != 1 || (int)$month != 1) {
+
+
             $startDate = $startPeriod2;
             $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
         }
