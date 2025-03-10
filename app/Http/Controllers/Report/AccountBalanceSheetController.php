@@ -191,20 +191,24 @@ class AccountBalanceSheetController extends Controller
             ->get();
 
         // ก่อน start date ใน รอบปีนั้นนั้น
-        $query = DB::table('general_ledger_subs')
+        $query4_5 = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate45, $endDate45])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate->toDateString(), $endDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
-                    ->orWhere('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->select(
-                /*  DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32"), */
+                'gls_account_code',
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as acc_total_4"),
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5")
             )
-            ->get();
+            ->first();
+
+        $sum_after_total_4 = $query4_5->acc_total_4 ?? 0;
+        $sum_after_total_5 = $query4_5->acc_total_5 ?? 0;
+
+
 
         $query32 = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
@@ -217,8 +221,6 @@ class AccountBalanceSheetController extends Controller
             )
             ->get();
 
-        //dd($query32, $query32);
-        // dd($startDate->toDateString(), $endDate->toDateString(), $startDate45, $endDate45);
         // รวมผลลัพธ์
         $totalResult = $query32->first()->acc_total_32;
 
@@ -233,6 +235,7 @@ class AccountBalanceSheetController extends Controller
                 'after_total' => 0,
                 'total' => 0,
                 'total_result' => $totalResult,
+
             ]
         ]);
 
@@ -250,7 +253,7 @@ class AccountBalanceSheetController extends Controller
         // จัดกลุ่มตาม gls_account_code และรวมยอด
         $combined_result = $combined_query
             ->groupBy('gls_account_code')
-            ->map(function ($items) {
+            ->map(function ($items) use ($sum_after_total_4, $sum_after_total_5) {
 
                 $firstItem = $items->first();
 
@@ -265,7 +268,8 @@ class AccountBalanceSheetController extends Controller
                     'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
                     'before_total_result' => $items->sum(fn($item) => $item->total_result ?? 0), // ตรวจสอบค่า total_result จาก $firstItem
-                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0), // ตรวจสอบค่า after_total_result จาก $firstItem
+                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0),
+                    'sum_after_4_5' => $sum_after_total_4 - $sum_after_total_5, // ตรวจสอบค่า after_total_result จาก $firstItem
                 ];
             })
             ->values()
