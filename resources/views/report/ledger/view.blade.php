@@ -155,14 +155,18 @@
                                             @foreach ($queries as $query)
                                                 @if ($query->gls_account_code != '32-1001-01')
                                                     @php
-                                                        $isInDateRange =
-                                                            $query->gls_gl_date >= $startDate->toDateString() &&
-                                                            $query->gls_gl_date <= $endDate->toDateString();
+                                                    $isInDateRange =
+                                                            $query->gls_gl_date > $startDate->copy()->subDay()->toDateString() &&
+                                                            $query->gls_gl_date < $endDate->copy()->addDay()->toDateString();
+
                                                         $isCategory234 = in_array(substr($accountCode, 0, 1), [
                                                             '2',
                                                             '3',
                                                             '4',
                                                         ]);
+                                                      
+
+                                                      //  dd( $query->gls_gl_date , $startDate->toDateString(), $endDate->toDateString());
 
                                                         if ($isFirst) {
                                                             if ($isInDateRange) {
