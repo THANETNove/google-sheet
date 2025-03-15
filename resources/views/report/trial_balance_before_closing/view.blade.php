@@ -339,7 +339,7 @@
                                                 <td
                                                     class="text-end color-green {{ number_format($entry->after_total) < 0 || number_format($entry->after_total_result) < 0 ? 'error-message' : '' }}">
                                                     @if ($entry->gls_account_code == '32-1001-01')
-                                                        {{ number_format($entry->after_total_result) != 0 ? number_format($entry->after_total_result + $before_total_1 - $before_total_2 - $before_total_3, 2) : '' }}
+                                                        {{ number_format($entry->after_total_result + $before_total_1 - $before_total_2 - $before_total_3) != 0 ? number_format($entry->after_total_result + $before_total_1 - $before_total_2 - $before_total_3, 2) : '' }}
                                                     @else
                                                         {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
                                                     @endif
@@ -348,15 +348,18 @@
 
                                                 </td>
 
+                                                @php
+                                                 $total_32 =   ( $entry->after_total_result + $before_total_1 - $before_total_2 - $before_total_3 )+ ($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3);
+                                                @endphp
                                                 <td class="text-end color-blue">
 
                                                 </td>
                                                 <td
-                                                    class="text-end color-blue {{ number_format($entry->total) < 0 || number_format($before_total_result_3) < 0 || number_format($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3) < 0 ? 'error-message' : '' }}">
+                                                    class="text-end color-blue {{ number_format($entry->total) < 0 || number_format($before_total_result_3) < 0 || number_format($total_32) < 0 ? 'error-message' : '' }}">
 
                                                     @if ($entry->gls_account_code == '32-1001-01')
                                                         {{-- แสดง before_total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
-                                                        {{ number_format($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3) != 0 ? number_format($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3, 2) : '' }}
+                                                        {{ number_format($total_32) != 0 ? number_format($total_32, 2) : '' }}
                                                     @else
                                                         {{-- แสดง before_total สำหรับบัญชีอื่น --}}
                                                         {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}

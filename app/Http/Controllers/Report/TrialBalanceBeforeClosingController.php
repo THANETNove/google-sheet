@@ -365,12 +365,12 @@ class TrialBalanceBeforeClosingController extends Controller
 
         $combined_result = $data['date_query']
             ->groupBy('gls_account_code')
-            ->map(function ($items) use ($before_total_1, $before_total_2, $before_total_3) {
+            ->map(function ($items) use ($before_total_result_3,$before_total_1, $before_total_2, $before_total_3) {
                 return (object) [
                     'gls_account_code' => $items->first()->gls_account_code,
                     'gls_account_name' => $items->first()->gls_account_name,
                     'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
-                    'before_total_result' =>  $before_total_1 - $before_total_3 - $before_total_2 ?? 0,
+                    'before_total_result' =>  $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 ?? 0,
                     'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
                     'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0),
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
@@ -379,7 +379,7 @@ class TrialBalanceBeforeClosingController extends Controller
             ->values();
 
         $mappedData = collect();
-
+      //  $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
         // Add sections and calculate totals for each account group
         $this->addGroupToExcel($mappedData, $combined_result, '1', 'สินทรัพย์');
         $this->addGroupToExcel($mappedData, $combined_result, '2', 'หนี้สิน');
@@ -389,6 +389,7 @@ class TrialBalanceBeforeClosingController extends Controller
 
         // Calculate overall totals for summary rows
 
+        $beforeTotalResult3 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('before_total_result');
         $before_total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('before_total');
         $before_total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('before_total');
 
@@ -404,6 +405,8 @@ class TrialBalanceBeforeClosingController extends Controller
         $total_3 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('total');
         $total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('total');
         $total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('total');
+
+       // $after_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
         // dd(number_format($after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4, 2));
         // Add "ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้" row
 
@@ -417,10 +420,10 @@ class TrialBalanceBeforeClosingController extends Controller
             '',
             number_format($total_4 - $total_5, 2) // Debit and Credit for 'ยอดสะสมยกไป'
         ]);
-
+       // $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
         // Calculate accumulated profit/loss "กำไร(ขาดทุน)สะสมยกไป"
-        $accumulated_profit_loss_before = ($before_total_4 - $before_total_5 + $before_total_result_3);
-        $accumulated_profit_loss_after = ($after_total_4 - $after_total_5 + $after_total_result_3);
+        $accumulated_profit_loss_before = ($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3);
+        $accumulated_profit_loss_after = ($after_total_4 - $after_total_5);
         $accumulated_total_profit_loss = $accumulated_profit_loss_before + $accumulated_profit_loss_after;
 
         // Add "กำไร(ขาดทุน)สะสมยกไป" row
@@ -466,27 +469,7 @@ class TrialBalanceBeforeClosingController extends Controller
 
         ]);
 
-        /*  $toatalSum_1 = $before_total_1 + $before_total_5;
-        $toatalSum_2 =
-            $before_total_2 +
-            $before_total_3 +
-            $before_total_1 -
-            $before_total_2 -
-            $before_total_3 +
-            $before_total_5;
-        $toatalSum_3 = $after_total_1 + $after_total_5;
-        $toatalSum_4 = $after_total_2 + $after_total_3 + $after_total_4 + $after_total_result_3;
-        $toatalSum_5 = $total_1 + $total_5;
-        $toatalSum_6_1 =
-            $total_2 +
-            $before_total_1 -
-            $before_total_2 -
-            $before_total_3 +
-            $total_3 +
-            $total_4 +
-            $after_total_result_3;
-        $toatalSum_6_2 = $before_total_4 - $before_total_5;
-        $toatalSum_6 = $toatalSum_6_1 - $toatalSum_6_2; */
+
         // Export to Excel
         $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
@@ -560,36 +543,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $displayed_after_total = 0;
         // Add rows for each entry in the group
 
-        /* foreach ($groupData as $entry) {
-
-            $displayed_before  = ($entry->gls_account_code == '32-1001-01') ? $before_total_result_3 : $entry->before_total;
-            $displayed_after  = ($entry->gls_account_code == '32-1001-01') ? $after_total_result_3 : $entry->after_total;
-            $displayed_before_total  += $displayed_before;
-            $displayed_after_total  += $displayed_after;
-
-            $mappedData->push([
-                $entry->gls_account_code,
-                $entry->gls_account_name,
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before, 2) : '', // Debit and Credit for 'ยอดสะสมต้นงวด'
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after, 2) : '', // Debit an
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before + $displayed_after, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before + $displayed_after, 2) : '',  // Debit and Credit for 'ยอดสะสมยกไป'
-            ]);
-        }
-
-        // Add subtotal row for each group
-        $mappedData->push([
-            '',
-            "รวม $title",
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before_total, 2) : '',
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total, 2) : '',
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '',
-        ]); */
+      
 
         if ($groupData->isNotEmpty()) {
             foreach ($groupData as $entry) {
