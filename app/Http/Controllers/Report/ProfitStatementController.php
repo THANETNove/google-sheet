@@ -266,7 +266,8 @@ class ProfitStatementController extends Controller
     public function exportPDF($id, $start_date, $end_date)
     {
 
-        $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
+        $search = "yes";
+        $data = $this->getData($id, $start_date, $end_date, $search); // รับค่ากลับมา
         $pdf = PDF::loadView('report.profit_statement.pdf_view', [
             'date_query' => $data['date_query'],
             'user' => $data['user'],
@@ -287,7 +288,8 @@ class ProfitStatementController extends Controller
     public function exportExcel($id, $start_date, $end_date)
     {
 
-        $data = $this->getData($id, $start_date, $end_date);
+        $search = "yes";
+        $data = $this->getData($id, $start_date, $end_date, $search); // รับค่ากลับมา
 
         // สร้างข้อมูลที่จัดกลุ่มและคำนวณค่า
         $combined_result = $data['date_query']

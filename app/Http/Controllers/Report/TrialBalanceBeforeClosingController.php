@@ -355,7 +355,8 @@ class TrialBalanceBeforeClosingController extends Controller
 
     public function exportExcel($id, $start_date, $end_date)
     {
-        $data = $this->getData($id, $start_date, $end_date);
+        $search = "yes";
+        $data = $this->getData($id, $start_date, $end_date, $search); // รับค่ากลับมา
 
         // Process and organize data based on gls_account_code prefix
         // Process and organize data based on gls_account_code prefix
