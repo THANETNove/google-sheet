@@ -48,7 +48,7 @@ class LedgerController extends Controller
         ];
     }
 
-    private function getData($id, $startDate = null, $endDate = null, $startCode = null, $endCode = null)
+    private function getData($id, $startDate = null, $endDate = null, $startCode = null, $endCode = null, $search = 'no')
     {
 
         $user = DB::table('users')->find($id);
@@ -68,6 +68,25 @@ class LedgerController extends Controller
         $startOfYearDate = $startDate->copy()->subYear()->startOfYear()->startOfDay();
         $endOfYearDate = $endDate->copy()->subYear()->endOfYear()->endOfDay();
 
+        // Debug ค่า
+        // Debug ค่า
+        $year = $startDate ? Carbon::parse($startDate)->year : Carbon::now()->year;
+
+        // กำหนดวันที่เริ่มต้นเป็น 1 มกราคมของปีที่ได้มา
+        $startDate45 = Carbon::createFromDate($year, $month, $day)->toDateString();
+
+        // กำหนด `$endDate45` เป็นวันสุดท้ายของเดือนที่แล้วของ `$startDate`
+        $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
+
+        // Debug ค่า
+        // Debug ค่า
+        if ($search == 'no' && ((int)$day != 1 || (int)$month != 1)) {
+
+
+            $startDate = $startPeriod2;
+            $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
+        }
+
 
         $query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id);
@@ -76,9 +95,10 @@ class LedgerController extends Controller
             $query->whereBetween('gls_account_code', [$startCode, $endCode]);
         }
 
+
         $before_date_query = $query->clone()
-            //->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            //->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '1%')
                     ->orWhere('gls_account_code', 'like', '2%')
@@ -150,7 +170,7 @@ class LedgerController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
-   
+
 
         $after_date_query = $after_date_query->map(function ($beforeItem) use ($before_date_query_2) {
             $matchingItem = $before_date_query_2->firstWhere('gls_account_code', $beforeItem->gls_account_code);
@@ -333,7 +353,10 @@ class LedgerController extends Controller
         $endDate = Carbon::parse($request->end_date);
         $startCode = $request->start_code;
         $endCode = $request->end_code;
-        $data = $this->getData($request->id, $startDate, $endDate, $startCode, $endCode);
+
+        $search = "yes";
+        $data = $this->getData($request->id, $startDate, $endDate, $startCode, $endCode, $search);
+
 
 
         return view('report.ledger.view', [
