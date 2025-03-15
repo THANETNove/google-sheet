@@ -153,7 +153,7 @@
                             $after_total_2 += $entry->after_total;
                             $total_2 += $entry->total;
                         @endphp
-                        @if (number_format($entry->before_total + $entry->after_total) != 0)
+                        @if ($entry->before_total && $entry->after_total != 0 || $entry->total != 0)
                             <tr>
                                 <td class="center">{{ $entry->gls_account_code }}</td>
                                 <td class="center">{{ $entry->gls_account_name }}</td>
@@ -340,7 +340,6 @@
                             $after_total_4 += $entry->after_total;
                             $total_4 += $entry->total;
                         @endphp
-                        @if (number_format($entry->before_total + $entry->after_total) != 0)
                             <tr>
                                 <td class="center">{{ $entry->gls_account_code }}</td>
                                 <td class="center">{{ $entry->gls_account_name }}</td>
@@ -365,7 +364,6 @@
                                     {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
                                 </td>
                             </tr>
-                        @endif
                     @endif
                 @endforeach
                 <tr>
@@ -402,7 +400,6 @@
                             $after_total_5 += $entry->after_total;
                             $total_5 += $entry->total;
                         @endphp
-                        @if (number_format($entry->before_total + $entry->after_total) != 0)
                             <tr>
                                 <td class="center">{{ $entry->gls_account_code }}</td>
                                 <td class="center">{{ $entry->gls_account_name }}</td>
@@ -426,7 +423,6 @@
                                 </td>
                                 <td class="text-end color-blue"></td>
                             </tr>
-                        @endif
                     @endif
                 @endforeach
 

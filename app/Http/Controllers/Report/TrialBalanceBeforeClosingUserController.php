@@ -320,7 +320,8 @@ class TrialBalanceBeforeClosingUserController extends Controller
 
 
 
-        $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
+        $search = "yes";
+        $data = $this->getData($id, $start_date, $end_date, $search); // รับค่ากลับมา
 
         $pdf = PDF::loadView('report.trial_balance_before_closing.pdf_view', [
             'date_query' => $data['date_query'],

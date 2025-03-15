@@ -59,6 +59,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $startDate = Carbon::parse($startDate); // Convert startDate to a Carbon instance
         $carryForwardDate = $startDate->copy()->endOfDay()->subDay(); // Now you can call copy(), endOfDay(), and subDay() on it
         //ปีก่อนหน้า
+
         $startOfYearDate = $startDate->copy()->subYear()->startOfYear()->startOfDay();
         $endOfYearDate = $endDate->copy()->subYear()->endOfYear()->endOfDay();
 
@@ -82,7 +83,7 @@ class TrialBalanceBeforeClosingController extends Controller
         }
 
 
-
+        // dd($startDate, $endDate);
 
 
 
@@ -113,6 +114,8 @@ class TrialBalanceBeforeClosingController extends Controller
         // Debug ค่า
 
         // ก่อน start date
+        // dd($carryForwardDate->toDateString());
+
         $before_date_query1_3 = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
             ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
@@ -135,7 +138,7 @@ class TrialBalanceBeforeClosingController extends Controller
             )
             ->groupBy('gls_account_code')
             ->get();
-
+        // dd($before_date_query1_3);
         //  dd($before_date_query1_3, $carryForwardDate->toDateString());
 
 
@@ -270,7 +273,7 @@ class TrialBalanceBeforeClosingController extends Controller
             ->sortBy('gls_account_code');
 
 
-
+        // dd($startDate, $endDate);
 
         return [
             'date_query' => $combined_result,
@@ -328,8 +331,8 @@ class TrialBalanceBeforeClosingController extends Controller
     {
 
 
-
-        $data = $this->getData($id, $start_date, $end_date); // รับค่ากลับมา
+        $search = "yes";
+        $data = $this->getData($id, $start_date, $end_date, $search); // รับค่ากลับมา
 
         $pdf = PDF::loadView('report.trial_balance_before_closing.pdf_view', [
             'date_query' => $data['date_query'],
