@@ -150,8 +150,7 @@ class LedgerController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
-        dd($after_date_query, $startDate->toDateString(), $endDate->toDateString());
-
+   
 
         $after_date_query = $after_date_query->map(function ($beforeItem) use ($before_date_query_2) {
             $matchingItem = $before_date_query_2->firstWhere('gls_account_code', $beforeItem->gls_account_code);

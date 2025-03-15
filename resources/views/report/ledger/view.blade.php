@@ -34,7 +34,8 @@
                                             value="{{ date('Y-m-d', strtotime($endDate)) }}" name="end_date">
                                     </div>
                                 </div>
-
+                            </div>
+                            <div class="container-date">
                                 <!-- Input สำหรับ Start Code -->
                                 <div class="col-8">
                                     <small class="text-light fw-semibold d-block mb-1">รหัสเริ่มต้น</small>
