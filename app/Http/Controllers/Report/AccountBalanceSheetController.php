@@ -365,18 +365,19 @@ class AccountBalanceSheetController extends Controller
 
         $before_total_3 = $data['date_query']->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('before_total');
         $before_total_result_3 =  $data['date_query']->filter(fn($item) => $item->gls_account_code == '32-1001-01')->sum('before_total_result');
+        $sum_after_4_5 =  $data['date_query']->filter(fn($item) => $item->gls_account_code == '32-1001-01')->sum('sum_after_4_5');
 
 
         $combined_result = $data['date_query']
             ->groupBy('gls_account_code')
-            ->map(function ($items)  use ($before_total_1, $before_total_2, $before_total_3) {
+            ->map(function ($items)  use ($sum_after_4_5, $before_total_result_3, $before_total_1, $before_total_2, $before_total_3) {
                 return (object) [
                     'gls_account_code' => $items->first()->gls_account_code,
                     'gls_account_name' => $items->first()->gls_account_name,
                     'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
-                    'before_total_result' => $before_total_1 - $before_total_3 - $before_total_2 ?? 0,
-                    'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
-                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0),
+                    'before_total_result' =>  $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 ?? 0,
+                    'after_total' =>   $items->sum(fn($item) => $item->after_total  ?? 0),
+                    'after_total_result' => $sum_after_4_5,
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
                 ];
             })
@@ -425,8 +426,8 @@ class AccountBalanceSheetController extends Controller
         ]);
 
         // Calculate accumulated profit/loss "กำไร(ขาดทุน)สะสมยกไป"
-        $accumulated_profit_loss_before = ($before_total_4 - $before_total_5 + $before_total_result_3);
-        $accumulated_profit_loss_after = ($after_total_4 - $after_total_5 + $after_total_result_3);
+        $accumulated_profit_loss_before = ($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3);
+        $accumulated_profit_loss_after = ($after_total_4 - $after_total_5);
         $accumulated_total_profit_loss = $accumulated_profit_loss_before + $accumulated_profit_loss_after;
 
         // Add "กำไร(ขาดทุน)สะสมยกไป" row
@@ -531,38 +532,7 @@ class AccountBalanceSheetController extends Controller
         // Add rows for each entry in the group
 
 
-        /*  foreach ($groupData as $entry) {
 
-            $displayed_before  = ($entry->gls_account_code == '32-1001-01') ? $before_total_result_3 : $entry->before_total;
-            $displayed_after  = ($entry->gls_account_code == '32-1001-01') ? $after_total_result_3 : $entry->after_total;
-            $displayed_before_total  += $displayed_before;
-            $displayed_after_total  += $displayed_after;
-
-            $mappedData->push([
-                $entry->gls_account_code,
-                $entry->gls_account_name,
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before, 2) : '', // Debit and Credit for 'ยอดสะสมต้นงวด'
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after, 2) : '', // Debit an
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before + $displayed_after, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before + $displayed_after, 2) : '',  // Debit and Credit for 'ยอดสะสมยกไป'
-            ]);
-        }
-
-        // Add subtotal row for each group
-
-
-        $mappedData->push([
-            '',
-            "รวม $title",
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before_total, 2) : '',
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total, 2) : '',
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '',
-        ]); */
 
 
         if ($groupData->isNotEmpty()) {

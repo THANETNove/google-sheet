@@ -36,10 +36,11 @@ class AccountBalanceSheetUserController extends Controller
         ];
     }
 
-    private function getData($id, $startDate = null, $endDate = null)
+    private function getData($id, $startDate = null, $endDate = null, $search = 'no')
     {
 
         $user = DB::table('users')->find($id);
+
 
         $accounting_period = $user->accounting_period;
         list($day, $month) = explode('/', $accounting_period);
@@ -56,6 +57,8 @@ class AccountBalanceSheetUserController extends Controller
         $startOfYearDate = $startDate->copy()->subYear()->startOfYear()->startOfDay();
         $endOfYearDate = $endDate->copy()->subYear()->endOfYear()->endOfDay();
 
+
+        // ตรวจสอบว่ามีค่า $startDate และ $endDate หรือไม่
         $year = $startDate ? Carbon::parse($startDate)->year : Carbon::now()->year;
 
         // กำหนดวันที่เริ่มต้นเป็น 1 มกราคมของปีที่ได้มา
@@ -66,15 +69,23 @@ class AccountBalanceSheetUserController extends Controller
 
         // Debug ค่า
         // Debug ค่า
-        if ((int)$day != 1 || (int)$month != 1) {
+        if ($search == 'no' && ((int)$day != 1 || (int)$month != 1)) {
+
+
             $startDate = $startPeriod2;
             $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
         }
 
+
+
+
+
+
         // ก่อน start date
         $before_date_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate45, $endDate45])
+
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
@@ -91,6 +102,10 @@ class AccountBalanceSheetUserController extends Controller
             )
             ->groupBy('gls_account_code')
             ->get();
+
+        $startDateName =  "startDate45" . ' ' . $startDate45;
+        $endDateName =  "endDate45" . ' ' . $endDate45;
+        // Debug ค่า
 
         // ก่อน start date
         $before_date_query1_3 = DB::table('general_ledger_subs')
@@ -116,35 +131,10 @@ class AccountBalanceSheetUserController extends Controller
             ->groupBy('gls_account_code')
             ->get();
 
+        //  dd($before_date_query1_3, $carryForwardDate->toDateString());
 
 
 
-
-
-
-
-
-
-        // หลัง start date
-        $after_query = DB::table('general_ledger_subs')
-            ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
-            ->where(function ($q) {
-                $q->where('gls_account_code', 'like', '4%')
-                    ->orWhere('gls_account_code', 'like', '5%');
-            })
-            ->select(
-                'gls_account_code',
-                'gls_account_name',
-                'gls_gl_date',
-                DB::raw("CASE 
-                WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
-                WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
-                ELSE 0
-             END as after_total")
-            )
-            ->groupBy('gls_account_code')
-            ->get();
 
         // dd($startOfYearDate->toDateString(), $endOfYearDate->toDateString());
         $after_date_query1_3 = DB::table('general_ledger_subs')
@@ -171,48 +161,62 @@ class AccountBalanceSheetUserController extends Controller
             ->orderBy('gls_account_code', 'ASC')
             ->get();
 
-
-
-
-
-
-        $query = DB::table('general_ledger_subs')
+        // หลัง start date
+        $after_query = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
-            ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startOfYearDate->toDateString(), $endOfYearDate->toDateString()])
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate->toDateString(), $endDate->toDateString()])
+
             ->where(function ($q) {
-                $q->where('gls_account_code', 'like', '32-1001-01')
-                    ->orWhere('gls_account_code', 'like', '4%')
+                $q->where('gls_account_code', 'like', '4%')
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->select(
-                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32"),
+                'gls_account_code',
+                'gls_account_name',
+                'gls_gl_date',
+                DB::raw("CASE 
+            WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
+            WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
+            ELSE 0
+         END as after_total")
+            )
+            ->groupBy('gls_account_code')
+            ->get();
+
+        // ก่อน start date ใน รอบปีนั้นนั้น
+        $query4_5 = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startDate->toDateString(), $endDate->toDateString()])
+            ->where(function ($q) {
+                $q->where('gls_account_code', 'like', '4%')
+                    ->orWhere('gls_account_code', 'like', '5%');
+            })
+            ->select(
+                'gls_account_code',
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as acc_total_4"),
                 DB::raw("SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5")
             )
+            ->first();
+
+        $sum_after_total_4 = $query4_5->acc_total_4 ?? 0;
+        $sum_after_total_5 = $query4_5->acc_total_5 ?? 0;
+
+
+
+        $query32 = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->whereDate('gls_gl_date', '<=', $startDate->toDateString())
+            ->where(function ($q) {
+                $q->where('gls_account_code', 'like', '32-1001-01');
+            })
+            ->select(
+                DB::raw("SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32")
+            )
             ->get();
 
-        $sum_after_total_4 = $after_query
-            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))
-            ->sum('after_total');
-        $sum_after_total_5 = $after_query
-            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))
-            ->sum('after_total');
-        // dd($sum_after_total_4 - $sum_after_total_5);
-
-
-        $sum_before_total_4 = $before_date_query
-            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))
-            ->sum('before_total');
-        $sum_before_total_5 = $before_date_query
-            ->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))
-            ->sum('before_total');
-        $totalResult = $query->first()->acc_total_32 + ($query->first()->acc_total_4 - $query->first()->acc_total_5);
-        $totalResult = ($sum_before_total_4 - $sum_before_total_5) + $totalResult;
-        $afterTotalResult = $sum_after_total_4 - $sum_after_total_5;
-
         // รวมผลลัพธ์
+        $totalResult = $query32->first()->acc_total_32;
 
-        //dd(number_format($query->first()->acc_total_4, 2), $query->first()->acc_total_5);
         // 2. สร้าง $finalResult และตรวจสอบว่ามี total_result จริง
         $finalResult = collect([
             (object) [
@@ -224,7 +228,7 @@ class AccountBalanceSheetUserController extends Controller
                 'after_total' => 0,
                 'total' => 0,
                 'total_result' => $totalResult,
-                'after_total_result' =>  $afterTotalResult,
+
             ]
         ]);
 
@@ -242,7 +246,7 @@ class AccountBalanceSheetUserController extends Controller
         // จัดกลุ่มตาม gls_account_code และรวมยอด
         $combined_result = $combined_query
             ->groupBy('gls_account_code')
-            ->map(function ($items) {
+            ->map(function ($items) use ($sum_after_total_4, $sum_after_total_5) {
 
                 $firstItem = $items->first();
 
@@ -257,13 +261,12 @@ class AccountBalanceSheetUserController extends Controller
                     'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
                     'before_total_result' => $items->sum(fn($item) => $item->total_result ?? 0), // ตรวจสอบค่า total_result จาก $firstItem
-                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0), // ตรวจสอบค่า after_total_result จาก $firstItem
+                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0),
+                    'sum_after_4_5' => $sum_after_total_4 - $sum_after_total_5, // ตรวจสอบค่า after_total_result จาก $firstItem
                 ];
             })
             ->values()
             ->sortBy('gls_account_code');
-
-
 
 
 
@@ -356,18 +359,19 @@ class AccountBalanceSheetUserController extends Controller
 
         $before_total_3 = $data['date_query']->filter(fn($item) => Str::startsWith($item->gls_account_code, '3'))->sum('before_total');
         $before_total_result_3 =  $data['date_query']->filter(fn($item) => $item->gls_account_code == '32-1001-01')->sum('before_total_result');
+        $sum_after_4_5 =  $data['date_query']->filter(fn($item) => $item->gls_account_code == '32-1001-01')->sum('sum_after_4_5');
 
 
         $combined_result = $data['date_query']
             ->groupBy('gls_account_code')
-            ->map(function ($items)  use ($before_total_1, $before_total_2, $before_total_3) {
+            ->map(function ($items)  use ($sum_after_4_5, $before_total_result_3, $before_total_1, $before_total_2, $before_total_3) {
                 return (object) [
                     'gls_account_code' => $items->first()->gls_account_code,
                     'gls_account_name' => $items->first()->gls_account_name,
                     'before_total' => $items->sum(fn($item) => $item->before_total ?? 0),
-                    'before_total_result' => $before_total_1 - $before_total_3 - $before_total_2 ?? 0,
-                    'after_total' => $items->sum(fn($item) => $item->after_total ?? 0),
-                    'after_total_result' => $items->sum(fn($item) => $item->after_total_result ?? 0),
+                    'before_total_result' =>  $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 ?? 0,
+                    'after_total' =>   $items->sum(fn($item) => $item->after_total  ?? 0),
+                    'after_total_result' => $sum_after_4_5,
                     'total' => $items->sum(fn($item) => ($item->before_total ?? 0) + ($item->after_total ?? 0)),
                 ];
             })
@@ -384,6 +388,11 @@ class AccountBalanceSheetUserController extends Controller
         $this->addGroupToExcel($mappedData, $combined_result, '5', 'ค่าใช้จ่ายในการขายและบริหาร');
 
         // Calculate overall totals for summary rows
+
+
+
+
+
 
         $before_total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('before_total');
         $before_total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('before_total');
@@ -411,8 +420,8 @@ class AccountBalanceSheetUserController extends Controller
         ]);
 
         // Calculate accumulated profit/loss "กำไร(ขาดทุน)สะสมยกไป"
-        $accumulated_profit_loss_before = ($before_total_4 - $before_total_5 + $before_total_result_3);
-        $accumulated_profit_loss_after = ($after_total_4 - $after_total_5 + $after_total_result_3);
+        $accumulated_profit_loss_before = ($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3);
+        $accumulated_profit_loss_after = ($after_total_4 - $after_total_5);
         $accumulated_total_profit_loss = $accumulated_profit_loss_before + $accumulated_profit_loss_after;
 
         // Add "กำไร(ขาดทุน)สะสมยกไป" row
@@ -442,6 +451,7 @@ class AccountBalanceSheetUserController extends Controller
             number_format($cumulativeTotal, 2),
 
         ]);
+
         // Export to Excel
         $export = new class($mappedData) implements FromArray, WithHeadings, WithColumnWidths, WithStyles {
             protected $data;
@@ -516,38 +526,7 @@ class AccountBalanceSheetUserController extends Controller
         // Add rows for each entry in the group
 
 
-        /*  foreach ($groupData as $entry) {
 
-            $displayed_before  = ($entry->gls_account_code == '32-1001-01') ? $before_total_result_3 : $entry->before_total;
-            $displayed_after  = ($entry->gls_account_code == '32-1001-01') ? $after_total_result_3 : $entry->after_total;
-            $displayed_before_total  += $displayed_before;
-            $displayed_after_total  += $displayed_after;
-
-            $mappedData->push([
-                $entry->gls_account_code,
-                $entry->gls_account_name,
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before, 2) : '', // Debit and Credit for 'ยอดสะสมต้นงวด'
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after, 2) : '', // Debit an
-                (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before + $displayed_after, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-                (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before + $displayed_after, 2) : '',  // Debit and Credit for 'ยอดสะสมยกไป'
-            ]);
-        }
-
-        // Add subtotal row for each group
-
-
-        $mappedData->push([
-            '',
-            "รวม $title",
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_before_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_before_total, 2) : '',
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total, 2) : '',
-            (Str::startsWith($entry->gls_account_code, '1') || Str::startsWith($entry->gls_account_code, '5')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '', // แสดงเฉพาะเมื่อขึ้นต้นด้วย 1 หรือ 5
-            (Str::startsWith($entry->gls_account_code, '2') || Str::startsWith($entry->gls_account_code, '3') || Str::startsWith($entry->gls_account_code, '4')) ? number_format($displayed_after_total + $displayed_before_total, 2) : '',
-        ]); */
 
 
         if ($groupData->isNotEmpty()) {
