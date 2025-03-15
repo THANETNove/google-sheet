@@ -258,15 +258,27 @@
 
                             </td>
 
+                            @php                         
+                            $total32_blue =0;
+                                if ($entry->gls_account_code == '32-1001-01') {
+                                    if ($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 == 0) {
+                                        $total32_blue = $entry->after_total_result + $before_total_1 - $before_total_2 - $before_total_3;
+                                        # code...
+                                    }else {
+                                        $total32_blue = $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 ;
+                                    }
+                                
+                                } 
+                            @endphp
                             <td class="text-end color-blue">
-
                             </td>
                             <td
-                                class="text-end color-blue {{ number_format($entry->total) < 0 || number_format($before_total_result_3) < 0 || number_format($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3) < 0 ? 'error-message' : '' }}">
+                                class="text-end color-blue {{ number_format($entry->total) < 0 || number_format($before_total_result_3) < 0 || number_format( $total32_blue) < 0 ? 'error-message' : '' }}">
 
                                 @if ($entry->gls_account_code == '32-1001-01')
+                                
                                     {{-- แสดง before_total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
-                                    {{ number_format($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3) != 0 ? number_format($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3, 2) : '' }}
+                                    {{ number_format($total32_blue) != 0 ? number_format( $total32_blue, 2) : '' }}
                                 @else
                                     {{-- แสดง before_total สำหรับบัญชีอื่น --}}
                                     {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}

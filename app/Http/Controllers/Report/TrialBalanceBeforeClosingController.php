@@ -365,7 +365,7 @@ class TrialBalanceBeforeClosingController extends Controller
 
         $combined_result = $data['date_query']
             ->groupBy('gls_account_code')
-            ->map(function ($items) use ($before_total_result_3,$before_total_1, $before_total_2, $before_total_3) {
+            ->map(function ($items) use ($before_total_result_3, $before_total_1, $before_total_2, $before_total_3) {
                 return (object) [
                     'gls_account_code' => $items->first()->gls_account_code,
                     'gls_account_name' => $items->first()->gls_account_name,
@@ -379,7 +379,7 @@ class TrialBalanceBeforeClosingController extends Controller
             ->values();
 
         $mappedData = collect();
-      //  $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
+        //  $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
         // Add sections and calculate totals for each account group
         $this->addGroupToExcel($mappedData, $combined_result, '1', 'สินทรัพย์');
         $this->addGroupToExcel($mappedData, $combined_result, '2', 'หนี้สิน');
@@ -406,7 +406,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $total_4 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '4'))->sum('total');
         $total_5 = $combined_result->filter(fn($item) => Str::startsWith($item->gls_account_code, '5'))->sum('total');
 
-       // $after_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
+        // $after_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
         // dd(number_format($after_total_2 + $after_total_3 + $after_total_4 + $before_total_2 + $before_total_3 + $before_total_4, 2));
         // Add "ยอดรวมกำไร(ขาดทุน)สุทธิของงวดนี้" row
 
@@ -420,7 +420,7 @@ class TrialBalanceBeforeClosingController extends Controller
             '',
             number_format($total_4 - $total_5, 2) // Debit and Credit for 'ยอดสะสมยกไป'
         ]);
-       // $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
+        // $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3
         // Calculate accumulated profit/loss "กำไร(ขาดทุน)สะสมยกไป"
         $accumulated_profit_loss_before = ($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3);
         $accumulated_profit_loss_after = ($after_total_4 - $after_total_5);
@@ -543,7 +543,7 @@ class TrialBalanceBeforeClosingController extends Controller
         $displayed_after_total = 0;
         // Add rows for each entry in the group
 
-      
+
 
         if ($groupData->isNotEmpty()) {
             foreach ($groupData as $entry) {
