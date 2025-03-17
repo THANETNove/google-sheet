@@ -39,8 +39,7 @@ class LedgerUserController extends Controller
             '12' => 'ธันวาคม',
         ];
     }
-
-    private function getData($id, $startDate = null, $endDate = null)
+    private function getData($id, $startDate = null, $endDate = null, $startCode = null, $endCode = null, $search = 'no')
     {
 
         $user = DB::table('users')->find($id);
@@ -60,37 +59,58 @@ class LedgerUserController extends Controller
         $startOfYearDate = $startDate->copy()->subYear()->startOfYear()->startOfDay();
         $endOfYearDate = $endDate->copy()->subYear()->endOfYear()->endOfDay();
 
+        // Debug ค่า
+        // Debug ค่า
+        $year = $startDate ? Carbon::parse($startDate)->year : Carbon::now()->year;
+
+        // กำหนดวันที่เริ่มต้นเป็น 1 มกราคมของปีที่ได้มา
+        $startDate45 = Carbon::createFromDate($year, $month, $day)->toDateString();
+
+        // กำหนด `$endDate45` เป็นวันสุดท้ายของเดือนที่แล้วของ `$startDate`
+        $endDate45 = $startDate->copy()->subMonth()->endOfMonth()->toDateString();
+
+        // Debug ค่า
+        // Debug ค่า
+        if ($search == 'no' && ((int)$day != 1 || (int)$month != 1)) {
+
+
+            $startDate = $startPeriod2;
+            $endDate = Carbon::createFromDate($year, $month - 1, 1)->endOfMonth();
+        }
+
 
         $query = DB::table('general_ledger_subs')
-            ->leftJoin('general_ledgers', 'general_ledger_subs.gls_gl_code', '=', 'general_ledgers.gl_code')
             ->where('gls_code_company', $id);
+
+        if ($startCode && $endCode) {
+            $query->whereBetween('gls_account_code', [$startCode, $endCode]);
+        }
+
 
         $before_date_query = $query->clone()
             ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            //->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->where(function ($q) {
                 $q->where('gls_account_code', 'like', '1%')
                     ->orWhere('gls_account_code', 'like', '2%')
                     ->orWhere('gls_account_code', 'like', '3%');
             })
             ->selectRaw("
-        general_ledgers.gl_company,
-        general_ledgers.gl_description,
-        general_ledgers.gl_url,
-        general_ledgers.gl_page,
-        general_ledgers.gl_document,
-        gls_account_code,
-        gls_account_name,
-        gls_gl_date,
-        CASE 
-            WHEN gls_account_code LIKE '1%' THEN SUM(gls_debit - gls_credit)
-            WHEN gls_account_code LIKE '2%' THEN SUM(gls_credit - gls_debit)
-            WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
-            ELSE 0
-        END as before_total,
-        SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as before_total_result
-    ")
+                gls_gl_code,
+                gls_account_code,
+                gls_account_name,
+                gls_gl_date,
+                CASE 
+                    WHEN gls_account_code LIKE '1%' THEN SUM(gls_debit - gls_credit)
+                    WHEN gls_account_code LIKE '2%' THEN SUM(gls_credit - gls_debit)
+                    WHEN gls_account_code LIKE '3%' THEN SUM(gls_credit - gls_debit)
+                    ELSE 0
+                END as before_total,
+                SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as before_total_result
+            ")
             ->groupBy('gls_account_code')
             ->get();
+        // dd($before_date_query);
 
         $before_date_query_2 = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
@@ -100,31 +120,27 @@ class LedgerUserController extends Controller
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->selectRaw("
-                general_ledgers.gl_company,
-                general_ledgers.gl_description,
-                general_ledgers.gl_url,
-                general_ledgers.gl_page,
-                general_ledgers.gl_document,
-                gls_account_code,
-                gls_account_name,
-                gls_gl_date,
-                CASE 
-                    WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
-                    WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
-                    ELSE 0
-                END as before_total,
-                SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit,
-                SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit
-            ")
+            gls_gl_code,
+            gls_account_code,
+            gls_account_name,
+            gls_gl_date,
+            CASE 
+                WHEN gls_account_code LIKE '4%' THEN SUM(gls_credit - gls_debit)
+                WHEN gls_account_code LIKE '5%' THEN SUM(gls_debit - gls_credit)
+                ELSE 0
+            END as before_total,
+            SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit,
+            SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit
+        ")
             ->groupBy('gls_account_code')
             ->get();
-
 
 
         $combined_result = $before_date_query->merge($before_date_query_2);
         $combined_result = $combined_result->sortBy('gls_account_code');
 
 
+        //dd($combined_result);
 
 
         $after_date_query = $query->clone()
@@ -134,21 +150,16 @@ class LedgerUserController extends Controller
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->selectRaw("
-                general_ledgers.gl_company,
-                general_ledgers.gl_description,
-                general_ledgers.gl_url,
-                general_ledgers.gl_page,
-                general_ledgers.gl_document,
-                gls_gl_document,
-                gls_account_code,
-                gls_account_name,
-                gls_gl_date,
-                SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit,
-                SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit
-            ")
+            gls_gl_code,
+            gls_gl_document,
+            gls_account_code,
+            gls_account_name,
+            gls_gl_date,
+            SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit,
+            SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit
+        ")
             ->groupBy('gls_account_code')
             ->get();
-
 
 
 
@@ -156,14 +167,10 @@ class LedgerUserController extends Controller
             $matchingItem = $before_date_query_2->firstWhere('gls_account_code', $beforeItem->gls_account_code);
 
             return (object) [
+                'gls_gl_code' => $beforeItem->gls_gl_code,
                 'gls_account_code' => $beforeItem->gls_account_code,
-                'gl_description' => $beforeItem->gl_description,
-                'gl_url' => $beforeItem->gl_url,
-                'gl_page' => $beforeItem->gl_page,
-                'gl_document' => $beforeItem->gl_document,
                 'gls_account_name' => $beforeItem->gls_account_name,
                 'gls_gl_date' => $beforeItem->gls_gl_date,
-                'gl_company' => $beforeItem->gl_company,
                 'gls_credit' => $matchingItem ? $matchingItem->gls_credit - ($beforeItem->gls_credit ?? 0) : ($beforeItem->gls_credit ?? 0),
                 'gls_debit' => $matchingItem ? $matchingItem->gls_debit - ($beforeItem->gls_debit ?? 0) : ($beforeItem->gls_debit ?? 0),
             ];
@@ -174,18 +181,14 @@ class LedgerUserController extends Controller
         $date_query1 = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startDate->toDateString(), $endDate->toDateString()])
             ->selectRaw("
-                general_ledgers.gl_company,
-                general_ledgers.gl_description,
-                general_ledgers.gl_url,
-                general_ledgers.gl_page,
-                general_ledgers.gl_document,
-                gls_gl_date,
-                gls_account_code,
-                gls_gl_document,
-                gls_account_name,
-                gls_debit,
-                gls_credit
-            ")
+            gls_gl_code,
+            gls_gl_date,
+            gls_account_code,
+            gls_gl_document,
+            gls_account_name,
+            gls_debit,
+            gls_credit
+        ")
 
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
@@ -197,34 +200,44 @@ class LedgerUserController extends Controller
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->whereNotIn('gls_account_code', $existingAccountCodes1)
             ->selectRaw("
-                general_ledgers.gl_company,
-                general_ledgers.gl_description,
-                general_ledgers.gl_url,
-                general_ledgers.gl_page,
-                general_ledgers.gl_document,
-                gls_gl_date,
-                gls_account_code,
-                gls_gl_document,
-                gls_account_name,
-                gls_debit,
-                gls_credit
-            ")
+            gls_gl_code,
+            gls_gl_date,
+            gls_account_code,
+            gls_gl_document,
+            gls_account_name,
+            gls_debit,
+            gls_credit
+        ")
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
 
-        $existingAccountCodes2 = $date_query1->keys()->merge($date_query2->keys())->unique();
+        $existingAccountCodes2 = $date_query2->keys()->merge($date_query2->keys())->unique();
 
         // กรอง gls_account_code ใน $date_query3 ที่ไม่มีใน $date_query1 และ $date_query2
         $date_query3 = $query->clone()
-            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            //->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
+            ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
             ->whereNotIn('gls_account_code', $existingAccountCodes2) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
             ->selectRaw("
-                general_ledgers.gl_company,
-                general_ledgers.gl_description,
-                general_ledgers.gl_url,
-                general_ledgers.gl_page,
-                general_ledgers.gl_document,
+            gls_gl_code,
+            gls_gl_date,
+            gls_account_code,
+            gls_gl_document,
+            gls_account_name,
+            gls_debit,
+            gls_credit
+        ")
+            ->orderBy('gls_gl_date', 'ASC')
+            ->get()
+            ->groupBy('gls_account_code');
+
+        $existingAccountCodes3 = $date_query1->keys()->merge($date_query2->keys())->merge($date_query3->keys())->unique();
+
+        $date_query_code = $query->clone() // เอาเเค่หัว
+            ->whereNotIn('gls_account_code', $existingAccountCodes3) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
+            ->selectRaw("
+                gls_gl_code,
                 gls_gl_date,
                 gls_account_code,
                 gls_gl_document,
@@ -235,9 +248,9 @@ class LedgerUserController extends Controller
             ->orderBy('gls_gl_date', 'ASC')
             ->get()
             ->groupBy('gls_account_code');
-        // dd($date_query2, $date_query3);
 
-        $date_query = $date_query1->merge($date_query2)->merge($date_query3);
+        $date_query = $date_query1->merge($date_query2)->merge($date_query3)->merge($date_query_code);
+
 
         $query = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startOfYearDate->toDateString(), $endOfYearDate->toDateString()])
@@ -247,13 +260,17 @@ class LedgerUserController extends Controller
                     ->orWhere('gls_account_code', 'like', '5%');
             })
             ->selectRaw("
-                SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32,
-                SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as acc_total_4,
-                SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5,
-                SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit,
-                SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit
-            ")
+            SUM(CASE WHEN gls_account_code = '32-1001-01' THEN gls_credit ELSE 0 END) as acc_total_32,
+            SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as acc_total_4,
+            SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as acc_total_5,
+            SUM(CASE WHEN gls_account_code LIKE '4%' THEN (gls_credit - gls_debit) ELSE 0 END) as gls_credit,
+            SUM(CASE WHEN gls_account_code LIKE '5%' THEN (gls_debit - gls_credit) ELSE 0 END) as gls_debit
+        ")
             ->get();
+
+
+
+
         // รวมผลลัพธ์
         $totalResult = $query->first()->acc_total_32 + ($query->first()->acc_total_4 - $query->first()->acc_total_5);
 
@@ -267,8 +284,6 @@ class LedgerUserController extends Controller
                     'gls_gl_date' =>  null,
                     'gls_account_code' => '32-1001-01',
                     'gls_gl_document' => null,
-                    'gl_description' => null,
-                    'gl_company' => null,
                     'gls_account_name' => 'กำไร(ขาดทุน)สะสม',
                     'gls_debit' => 0,
                     'gls_credit' => 0,
@@ -280,65 +295,10 @@ class LedgerUserController extends Controller
 
         $date_query['32-1001-01'] = $date_query['32-1001-01']->merge($after_date_query);
 
-
-        /* $date_query2 = $query->clone()
-    ->whereBetween(DB::raw('DATE(gls_gl_date)'), [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
-    ->selectRaw("
-        gls_account_name,
-        gls_account_code
-    ")
-    ->orderBy('gls_gl_date', 'ASC')
-    ->get()
-    ->map(function ($item) {
-        return (object)[
-            'general_ledgers.gl_company' => null,
-            'general_ledgers.gl_description' => null,
-            'general_ledgers.gl_url' => null,
-            'general_ledgers.gl_page' => null,
-            'general_ledgers.gl_document' => null,
-            'gls_gl_date' => null,
-            'gls_account_code' => $item->gls_account_code,
-            'gls_gl_document' => null,
-            'gls_account_name' => $item->gls_account_name,
-            'gls_debit' => null,
-            'gls_credit' => null,
-        ];
-    })
-    ->groupBy('gls_account_code');
-
-$date_query3 = $query->clone()
-    ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
-    ->whereNotIn('gls_account_code', $existingAccountCodes) 
-    ->selectRaw("
-        gls_account_name,
-        gls_account_code
-    ")
-    ->orderBy('gls_gl_date', 'ASC')
-    ->get()
-    ->map(function ($item) {
-        return (object)[
-            'general_ledgers.gl_company' => null,
-            'general_ledgers.gl_description' => null,
-            'general_ledgers.gl_url' => null,
-            'general_ledgers.gl_page' => null,
-            'general_ledgers.gl_document' => null,
-            'gls_gl_date' => null,
-            'gls_account_code' => $item->gls_account_code,
-            'gls_gl_document' => null,
-            'gls_account_name' => $item->gls_account_name,
-            'gls_debit' => null,
-            'gls_credit' => null,
-        ];
-    })
-    ->groupBy('gls_account_code');
-
-// Merge all queries into one
-$date_query = $date_query1->merge($date_query2)->merge($date_query3);
- */
-
         // เพิ่ม before_total ให้กับแต่ละรายการของ account code
         foreach ($date_query as $accountCode => $transactions) {
             foreach ($transactions as $transaction) {
+                $transaction->gls_gl_code = $transaction->gls_gl_code ?? null;
                 // ตั้งค่า before_total สำหรับ 32-1001-01
                 if ($accountCode === '32-1001-01') {
                     $transaction->before_total = $totalResult;
@@ -349,11 +309,26 @@ $date_query = $date_query1->merge($date_query2)->merge($date_query3);
             }
         }
         $dateQueries = $date_query->sortKeys();
+        // ดึง gls_gl_code ทั้งหมดที่ต้องใช้
 
 
+        $glCodes = DB::table('general_ledger_subs')
+            ->where('gls_code_company', $id)
+            ->pluck('gls_gl_code')
+            ->toArray();
+
+
+        // ดึงข้อมูล Ledger ทั้งหมดในคำสั่งเดียว
+        $ledgers = DB::table('general_ledgers')
+            ->whereIn('gl_code', $glCodes)
+            ->select('gl_code', 'gl_url', 'gl_page', 'gl_document', 'gl_description', 'gl_company')
+            ->get()
+            ->keyBy('gl_code'); // แปลงเป็น array เพื่อเรียกใช้เร็วขึ้น
+        //7abc0f67
 
         return [
             'date_query' => $dateQueries,
+            'ledgers' => $ledgers,
             'user' => $user,
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -362,6 +337,7 @@ $date_query = $date_query1->merge($date_query2)->merge($date_query3);
             'currentYear' => date('Y')
         ];
     }
+
 
     public function show(Request $request)
     {
@@ -372,6 +348,7 @@ $date_query = $date_query1->merge($date_query2)->merge($date_query3);
         return view('report.ledger.view', [
             'date_query' => $data['date_query'],
             'user' => $request,
+            'ledgers' => $data['ledgers'],
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
             'day' => $data['day'],
@@ -386,17 +363,42 @@ $date_query = $date_query1->merge($date_query2)->merge($date_query3);
         $id = $request->user_id;
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $data = $this->getData($id, $startDate, $endDate);
+        $startCode = $request->start_code;
+        $endCode = $request->end_code;
+        $search = "yes";
+        $data = $this->getData($id, $startDate, $endDate, $startCode, $endCode, $search);
+
 
         return view('report.ledger.view', [
+            'startCode' => $startCode,
+            'endCode' => $endCode,
             'date_query' => $data['date_query'],
+            'ledgers' => $data['ledgers'],
             'user' => $request,
             'startDate' => $data['startDate'],
             'endDate' => $data['endDate'],
             'day' => $data['day'],
             'monthThai' => $data['monthThai'],
             'currentYear' => $data['currentYear'],
-            'id' => $id
+            'id' => $request->id
         ]);
+    }
+
+    public static function getGlUrl($query)
+    {
+
+
+        // ดึงรหัส gl_code ทั้งหมดจาก query
+        $glCodes = $query->pluck('gls_gl_code')->toArray();
+
+        // ดึงข้อมูล Ledger ทั้งหมดที่เกี่ยวข้องในครั้งเดียว
+        $ledger = DB::table('general_ledgers')
+            ->whereIn('gl_code', $glCodes) // ดึงข้อมูลที่เกี่ยวข้องทั้งหมด
+            ->select('gl_code', 'gl_url', 'gl_page', 'gl_document', 'gl_description', 'gl_company')
+            ->get()
+            ->keyBy('gl_code'); // แปลงเป็น associative array ตาม gl_code
+
+
+        return $ledger;
     }
 }

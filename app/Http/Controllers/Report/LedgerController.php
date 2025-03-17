@@ -119,7 +119,7 @@ class LedgerController extends Controller
             ")
             ->groupBy('gls_account_code')
             ->get();
-        /*  dd($before_date_query); */
+        // dd($before_date_query);
 
         $before_date_query_2 = $query->clone()
             ->whereBetween(DB::raw('DATE(gls_gl_date)'),  [$startPeriod->toDateString(), $carryForwardDate->toDateString()])
@@ -145,9 +145,9 @@ class LedgerController extends Controller
             ->get();
 
 
-
         $combined_result = $before_date_query->merge($before_date_query_2);
         $combined_result = $combined_result->sortBy('gls_account_code');
+
 
         //dd($combined_result);
 
@@ -221,7 +221,7 @@ class LedgerController extends Controller
             ->get()
             ->groupBy('gls_account_code'); // Group results by account code for easy access in Blade
 
-        $existingAccountCodes2 = $date_query1->keys()->merge($date_query2->keys())->unique();
+        $existingAccountCodes2 = $date_query2->keys()->merge($date_query2->keys())->unique();
 
         // กรอง gls_account_code ใน $date_query3 ที่ไม่มีใน $date_query1 และ $date_query2
         $date_query3 = $query->clone()
@@ -241,7 +241,24 @@ class LedgerController extends Controller
             ->get()
             ->groupBy('gls_account_code');
 
-        $date_query = $date_query1->merge($date_query2)->merge($date_query3);
+        $existingAccountCodes3 = $date_query1->keys()->merge($date_query2->keys())->merge($date_query3->keys())->unique();
+
+        $date_query_code = $query->clone() // เอาเเค่หัว
+            ->whereNotIn('gls_account_code', $existingAccountCodes3) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
+            ->selectRaw("
+                gls_gl_code,
+                gls_gl_date,
+                gls_account_code,
+                gls_gl_document,
+                gls_account_name,
+                gls_debit,
+                gls_credit
+            ")
+            ->orderBy('gls_gl_date', 'ASC')
+            ->get()
+            ->groupBy('gls_account_code');
+
+        $date_query = $date_query1->merge($date_query2)->merge($date_query3)->merge($date_query_code);
 
 
         $query = $query->clone()
@@ -302,10 +319,13 @@ class LedgerController extends Controller
         }
         $dateQueries = $date_query->sortKeys();
         // ดึง gls_gl_code ทั้งหมดที่ต้องใช้
+
+
         $glCodes = DB::table('general_ledger_subs')
             ->where('gls_code_company', $id)
             ->pluck('gls_gl_code')
             ->toArray();
+
 
         // ดึงข้อมูล Ledger ทั้งหมดในคำสั่งเดียว
         $ledgers = DB::table('general_ledgers')

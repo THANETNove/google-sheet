@@ -40,7 +40,7 @@
                                 <div class="col-8">
                                     <small class="text-light fw-semibold d-block mb-1">รหัสเริ่มต้น</small>
                                     <div class="input-group">
-                                        <input class="form-control" type="text" id="startCode" name="start_code" 
+                                        <input class="form-control" type="text" id="startCode" name="start_code"
                                             value="{{ old('start_code', $startCode ?? '') }}" oninput="formatCode(this)">
                                     </div>
                                 </div>
@@ -155,18 +155,22 @@
                                             @foreach ($queries as $query)
                                                 @if ($query->gls_account_code != '32-1001-01')
                                                     @php
-                                                    $isInDateRange =
-                                                            $query->gls_gl_date > $startDate->copy()->subDay()->toDateString() &&
-                                                            $query->gls_gl_date < $endDate->copy()->addDay()->toDateString();
+                                                        /* $isInDateRange =
+                                                            $query->gls_gl_date >
+                                                                $startDate->copy()->subDay()->toDateString() &&
+                                                            $query->gls_gl_date <
+                                                                $endDate->copy()->addDay()->toDateString(); */
+                                                        $isInDateRange =
+                                                            $query->gls_gl_date >= $startDate->copy()->startOfDay() &&
+                                                            $query->gls_gl_date <= $endDate->copy()->endOfDay();
 
                                                         $isCategory234 = in_array(substr($accountCode, 0, 1), [
                                                             '2',
                                                             '3',
                                                             '4',
                                                         ]);
-                                                      
 
-                                                      //  dd( $query->gls_gl_date , $startDate->toDateString(), $endDate->toDateString());
+                                                        //  dd( $query->gls_gl_date , $startDate->toDateString(), $endDate->toDateString());
 
                                                         if ($isFirst) {
                                                             if ($isInDateRange) {
@@ -194,7 +198,7 @@
                                                         }
                                                     @endphp
 
-                                                    @if (true /* $isInDateRange */)
+                                                    @if ($isInDateRange)
                                                         <tr>
                                                             @if ($accountCode != '32-1001-01')
                                                                 <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}
@@ -218,7 +222,8 @@
                                                                     {{ $glUrl->gl_document }}
                                                                 @endif
                                                             </td>
-                                                            <td>{{ $glUrl->gl_description }} - {{ $glUrl->gl_company }}
+                                                            <td>{{ $glUrl->gl_description }} -
+                                                                {{ $glUrl->gl_company }}
                                                             </td>
                                                             <td
                                                                 class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
