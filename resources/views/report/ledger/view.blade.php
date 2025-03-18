@@ -70,9 +70,25 @@
                             $totalDebit = $queries->sum('gls_debit');
                             $totalCredit = $queries->sum('gls_credit');
                             $totalAmount = $beforeTotal + $totalDebit + $totalCredit;
+                            $hasTransactionsInDateRange = $queries
+                                ->filter(function ($query) use ($startDate, $endDate) {
+                                    return $query->gls_gl_date &&
+                                        $query->gls_gl_date >= $startDate->copy()->startOfDay() &&
+                                        $query->gls_gl_date <= $endDate->copy()->endOfDay();
+                                })
+                                ->isNotEmpty();
+
+                            // ✅ ถ้าไม่มีรายการ ให้เช็คยอดยกมาต้นงวด หรือยอดรวมบัญชี
+                            /*   if (!$hasTransactionsInDateRange) {
+                                $hasTransactionsInDateRange =
+                                    $beforeTotal != 0 || $totalDebit != 0 || $totalCredit != 0;
+                            } */
+
+                            // 53-1001-09  53-1001-10 ,53-1001-12 53-1001-13 53-1001-15  54-1000-01 54-5001-02 54-5001-11 58-1000-01 58-1002-01
+                            //41-1001-01 42-1001-01 51-1001-01 53-1001-07 53-1001-11 ,53-1001-16 54-5001-04 54-5001-05  54-5001-15 59-2001-01 59-2001-02
 
                         @endphp
-                        @if ($totalAmount != 0 && $beforeTotal != 0)
+                        @if (($totalAmount != 0 && $hasTransactionsInDateRange) || $beforeTotal != 0)
                             <div class="card2" style="margin-bottom: 32px;">
                                 <div class="container-company">
                                     <div class="company">
