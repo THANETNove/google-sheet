@@ -91,6 +91,15 @@
                                 </div>
                             </div>
 
+                            <input type="name" class="form-control @error('name') is-invalid @enderror"
+                                id="basic-default-company" name="name" placeholder="name" value="{{ $query->name }}"
+                                required>
+                            @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+
 
                             <button type="submit" class="btn btn-primary mt-3">บันทัก</button>
                             <a type="button" href="{{ url('home') }}" class="btn btn-warning mt-3"

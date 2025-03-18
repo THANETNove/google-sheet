@@ -504,6 +504,7 @@ class CompanyController extends Controller
         $request->validate([
             'code_company' => ['required', 'string', 'max:255'],
             'company' => ['required', 'string', 'max:255',],
+            'name' => ['required', 'string', 'max:255',],
             'branch' => ['required', 'string', 'max:255'],
             'tax_id' => ['required', 'string', 'max:255'],
             'id_sheet' => ['required', 'string', 'max:255'],
@@ -519,6 +520,7 @@ class CompanyController extends Controller
         $data->tax_id = $request['tax_id'];
         $data->id_sheet = $request['id_sheet'];
         $data->id_apps_script = $request['id_apps_script'];
+        $data->name = $request['name'];
         $data->accounting_period = $request['accounting_period'];
 
 

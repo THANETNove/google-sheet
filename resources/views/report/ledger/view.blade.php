@@ -72,7 +72,7 @@
                             $totalAmount = $beforeTotal + $totalDebit + $totalCredit;
 
                         @endphp
-                        @if ($totalAmount != 0)
+                        @if ($totalAmount != 0 && $beforeTotal != 0)
                             <div class="card2" style="margin-bottom: 32px;">
                                 <div class="container-company">
                                     <div class="company">
@@ -155,11 +155,6 @@
                                             @foreach ($queries as $query)
                                                 @if ($query->gls_account_code != '32-1001-01')
                                                     @php
-                                                        /* $isInDateRange =
-                                                            $query->gls_gl_date >
-                                                                $startDate->copy()->subDay()->toDateString() &&
-                                                            $query->gls_gl_date <
-                                                                $endDate->copy()->addDay()->toDateString(); */
                                                         $isInDateRange =
                                                             $query->gls_gl_date >= $startDate->copy()->startOfDay() &&
                                                             $query->gls_gl_date <= $endDate->copy()->endOfDay();
@@ -196,6 +191,7 @@
                                                             $accumulatedTotal += $delta;
                                                             $beginning_accumulation += $delta;
                                                         }
+
                                                     @endphp
 
                                                     @if ($isInDateRange)

@@ -244,6 +244,7 @@ class LedgerController extends Controller
         $existingAccountCodes3 = $date_query1->keys()->merge($date_query2->keys())->merge($date_query3->keys())->unique();
 
         $date_query_code = $query->clone() // เอาเเค่หัว
+            ->whereDate('gls_gl_date', '<=', $carryForwardDate->toDateString())
             ->whereNotIn('gls_account_code', $existingAccountCodes3) // ตรวจสอบว่ารหัสนี้ไม่มีใน $date_query1 และ $date_query2
             ->selectRaw("
                 gls_gl_code,
