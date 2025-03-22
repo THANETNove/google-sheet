@@ -2,7 +2,7 @@
 <html lang="th">
 
 <head>
-    <title>บัญชีแยกประเภท</title>
+    <title>สมุดรายวันทั่วไป</title>
     @include('layouts.head_pdf')
 
 </head>
