@@ -2,7 +2,7 @@
 <html lang="th">
 
 <head>
-    <title>สมุดรายวันทั่วไป</title>
+    <title>งบดุลบัญชี</title>
 
     @include('layouts.head_pdf')
 
@@ -91,7 +91,7 @@
                                                 $after_total_1 += $entry->after_total;
                                                 $total_1 += $entry->total;
                                             @endphp
-                                            @if ($entry->before_total && $entry->after_total != 0 || $entry->total != 0)
+                                            @if (($entry->before_total && $entry->after_total != 0) || $entry->total != 0)
                                                 <tr>
 
                                                     <td class="center">{{ $entry->gls_account_code }}</td>
@@ -166,7 +166,7 @@
                                                 $after_total_2 += $entry->after_total;
                                                 $total_2 += $entry->total;
                                             @endphp
-                                            @if ($entry->before_total && $entry->after_total != 0 || $entry->total != 0)
+                                            @if (($entry->before_total && $entry->after_total != 0) || $entry->total != 0)
                                                 <tr>
                                                     <td class="center">{{ $entry->gls_account_code }}</td>
                                                     <td class="center">{{ $entry->gls_account_name }}</td>
@@ -292,7 +292,8 @@
                                         @endif
                                     @endforeach
                                     <tr>
-                                        <td colspan="2" class="text-end text-bold">รวมส่วนของผู้ถือหุ้น/ผู้เป็นหุ้นส่วน
+                                        <td colspan="2" class="text-end text-bold">
+                                            รวมส่วนของผู้ถือหุ้น/ผู้เป็นหุ้นส่วน
                                         </td>
                                         <td class="text-end color-yellow">
                                         </td>
@@ -347,30 +348,30 @@
                                                 $after_total_4 += $entry->after_total;
                                                 $total_4 += $entry->total;
                                             @endphp
-                                                <tr>
-                                                    <td class="center">{{ $entry->gls_account_code }}</td>
-                                                    <td class="center">{{ $entry->gls_account_name }}</td>
-                                                    <td class="text-end color-yellow">
-                                                    </td>
-                                                    <td
-                                                        class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
-                                                        {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
-                                                    </td>
-                                                    <td class="text-end color-green">
-                                                    </td>
-                                                    <td
-                                                        class="text-end color-green {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
+                                            <tr>
+                                                <td class="center">{{ $entry->gls_account_code }}</td>
+                                                <td class="center">{{ $entry->gls_account_name }}</td>
+                                                <td class="text-end color-yellow">
+                                                </td>
+                                                <td
+                                                    class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
+                                                </td>
+                                                <td class="text-end color-green">
+                                                </td>
+                                                <td
+                                                    class="text-end color-green {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
 
 
-                                                        {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
+                                                    {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
 
-                                                    </td>
-                                                    <td class="text-end color-blue"></td>
-                                                    <td
-                                                        class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
-                                                        {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
-                                                    </td>
-                                                </tr>
+                                                </td>
+                                                <td class="text-end color-blue"></td>
+                                                <td
+                                                    class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
+                                                </td>
+                                            </tr>
                                         @endif
                                     @endforeach
                                     <tr>
@@ -408,34 +409,35 @@
                                                 $after_total_5 += $entry->after_total;
                                                 $total_5 += $entry->total;
                                             @endphp
-                                                <tr>
-                                                    <td class="center">{{ $entry->gls_account_code }}</td>
-                                                    <td class="center">{{ $entry->gls_account_name }}</td>
+                                            <tr>
+                                                <td class="center">{{ $entry->gls_account_code }}</td>
+                                                <td class="center">{{ $entry->gls_account_name }}</td>
 
-                                                    <td
-                                                        class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
-                                                        {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
-                                                    </td>
-                                                    <td class="text-end color-yellow">
-                                                    </td>
+                                                <td
+                                                    class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
+                                                </td>
+                                                <td class="text-end color-yellow">
+                                                </td>
 
-                                                    <td
-                                                        class="text-end color-green  {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
-                                                        {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
-                                                    </td>
-                                                    <td class="text-end color-green">
-                                                    </td>
-                                                    <td
-                                                        class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
-                                                        {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
-                                                    </td>
-                                                    <td class="text-end color-blue"></td>
-                                                </tr>
+                                                <td
+                                                    class="text-end color-green  {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
+                                                </td>
+                                                <td class="text-end color-green">
+                                                </td>
+                                                <td
+                                                    class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
+                                                    {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
+                                                </td>
+                                                <td class="text-end color-blue"></td>
+                                            </tr>
                                         @endif
                                     @endforeach
 
                                     <tr>
-                                        <td colspan="2" class="text-end text-bold">รวมค่าใช้จ่ายในการขายและบริหาร</td>
+                                        <td colspan="2" class="text-end text-bold">รวมค่าใช้จ่ายในการขายและบริหาร
+                                        </td>
 
                                         <td
                                             class="text-end color-yellow text-bold {{ number_format($before_total_5) < 0 ? 'error-message' : '' }}">

@@ -2,7 +2,7 @@
 <html lang="th">
 
 <head>
-    <title>สมุดรายวันทั่วไป</title>
+    <title>งบทดลองก่อนปิดบัญชี</title>
     @include('layouts.head_pdf')
 
 </head>

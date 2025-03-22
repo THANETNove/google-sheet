@@ -2,7 +2,7 @@
 <html lang="th">
 
 <head>
-    <title>สมุดรายวันทั่วไป</title>
+    <title>งบกำไร(ขาดทุน)</title>
 
     @include('layouts.head_pdf')
 
