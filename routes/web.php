@@ -97,6 +97,7 @@ Route::middleware([AuthenticateUserStatusReport::class])->group(function () {
     //บัญชีเเยกประเภท
     Route::get('report/ledger/{id}', [LedgerController::class, 'show'])->name('report/ledger');
     Route::post('report/search-ledger', [LedgerController::class, 'search'])->name('report/search-ledger');
+    Route::get('ledger-pdf/{id}/{month}/{year}', [LedgerController::class, 'exportPDF'])->name('ledger-pdf');
 });
 //user report
 
@@ -144,6 +145,7 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
     //บัญชีเเยกประเภท
     Route::get('user-report/ledger', [LedgerUserController::class, 'show'])->name('user-report/ledger');
     Route::post('user-report/search-ledger', [LedgerUserController::class, 'search'])->name('user-report/search-ledger');
+    Route::get('user-ledger-pdf/{id}/{month}/{year}', [LedgerUserController::class, 'exportPDF'])->name('user-ledger-pdf');
 });
 
 

@@ -336,6 +336,18 @@ class LedgerController extends Controller
             ->keyBy('gl_code'); // แปลงเป็น array เพื่อเรียกใช้เร็วขึ้น
 
 
+        session(['ledger' => [
+            'date_query' => $dateQueries,
+            'ledgers' => $ledgers,
+            'user' => $user,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'day' => $day,
+            'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
+            'currentYear' => $startDate->year
+        ]]);
+
+
         return [
             'date_query' => $dateQueries,
             'ledgers' => $ledgers,
@@ -412,5 +424,37 @@ class LedgerController extends Controller
 
 
         return $ledger;
+    }
+
+    public function exportPDF($id, $start_date, $end_date)
+    {
+
+
+        ini_set('memory_limit', '4096M');
+
+
+
+        $data = session()->get('ledger');
+
+        $chunks = collect($data['date_query'])->chunk(50); // แบ่งข้อมูลเป็นชุดละ 100 รายการ
+
+
+        $pdf = PDF::loadView('report.ledger.pdf_view', [
+            'date_query' => $chunks[0],
+            'ledgers' => $data['ledgers'],
+            'user' => $data['user'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate'],
+            'day' => $data['day'],
+            'monthThai' => $data['monthThai'],
+            'currentYear' => $data['currentYear'],
+            'id' => $id
+        ]);
+        $pdf->setPaper('a4', 'landscape') // ขนาดกระดาษ A4
+            ->setOption('margin-top', 15)
+            ->setOption('margin-bottom', 15)
+            ->setOption('margin-left', 10)
+            ->setOption('margin-right', 10);
+        return $pdf->stream('exportPDF.pdf');
     }
 }

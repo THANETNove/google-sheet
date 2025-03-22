@@ -71,16 +71,9 @@
                                     'password' => $user->password,
                                 ]);
                             $url_export_pdf = Auth::check()
-                                ? url(
-                                    '/trial-balance-before-closing-pdf/' .
-                                        $id .
-                                        '/' .
-                                        urlencode($startDate) .
-                                        '/' .
-                                        urlencode($endDate),
-                                )
+                                ? url('/ledger-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
                                 : url(
-                                        '/user-trial-balance-before-closing-pdf/' .
+                                        '/user-ledger-pdf/' .
                                             $id .
                                             '/' .
                                             urlencode($startDate) .
