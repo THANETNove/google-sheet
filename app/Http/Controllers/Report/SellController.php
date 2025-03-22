@@ -107,7 +107,7 @@ class SellController extends Controller
             'endDate' => $endDate,
             'day' => $day,
             'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
-            'currentYear' => date('Y')
+            'currentYear' => $startDate->year
         ];
     }
 

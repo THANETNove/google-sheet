@@ -84,7 +84,7 @@ class GeneralJournalUserController extends Controller
             'endDate' => $endDate,
             'day' => $day,
             'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
-            'currentYear' => date('Y')
+            'currentYear' => $startDate->year
         ]]);
         // Group by document
 
@@ -96,7 +96,7 @@ class GeneralJournalUserController extends Controller
             'endDate' => $endDate,
             'day' => $day,
             'monthThai' => $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง',
-            'currentYear' => date('Y')
+            'currentYear' => $startDate->year
         ];
     }
     public function index(Request $request)

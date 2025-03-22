@@ -7,7 +7,7 @@
 
                 <div id="printableArea">
 
-                    <div class="card2" style="margin-bottom: 32px;">
+                    <div class="card2" style="margin-bottom: 32px;padding-top: 20px;">
                         @php
 
                             $route = Auth::check()
@@ -62,6 +62,67 @@
                                 </div>
                             </div>
                         </form>
+                        @php
+
+                            $route = Auth::check()
+                                ? route('report/search-trial-balance-before-closing')
+                                : route('user-report/search-trial-balance-before-closing', [
+                                    'username' => $user->username,
+                                    'password' => $user->password,
+                                ]);
+                            $url_export_pdf = Auth::check()
+                                ? url(
+                                    '/trial-balance-before-closing-pdf/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate),
+                                )
+                                : url(
+                                        '/user-trial-balance-before-closing-pdf/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate),
+                                    ) .
+                                    '?username=' .
+                                    urlencode($user->username) .
+                                    '&password=' .
+                                    urlencode($user->password);
+                            $url_export_excel = Auth::check()
+                                ? url(
+                                    '/trial-balance-before-closing-excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate),
+                                )
+                                : url(
+                                    '/user-trial-balance-before-closing-excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password),
+                                );
+                        @endphp
+
+                        <div class="date">
+                            <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
+                            <a href="{{ $url_export_pdf }}" target="_blank" class="btn btn-primary">
+                                <i class='bx bxs-file-pdf'></i>&nbsp; PDF
+                            </a>
+                            <a href="{{ $url_export_excel }}" class="btn btn-primary">
+                                <i class='bx bxs-file'></i>&nbsp; Excel
+                            </a>
+                        </div>
 
                     </div>
                     @foreach ($date_query as $accountCode => $queries)
