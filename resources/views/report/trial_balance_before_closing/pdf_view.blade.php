@@ -2,7 +2,7 @@
 <html lang="th">
 
 <head>
-    <title>สมุดรายวันทั่วไป</title>
+    <title>บัญชีแยกประเภท</title>
     @include('layouts.head_pdf')
 
 </head>
@@ -153,7 +153,7 @@
                             $after_total_2 += $entry->after_total;
                             $total_2 += $entry->total;
                         @endphp
-                        @if ($entry->before_total && $entry->after_total != 0 || $entry->total != 0)
+                        @if (($entry->before_total && $entry->after_total != 0) || $entry->total != 0)
                             <tr>
                                 <td class="center">{{ $entry->gls_account_code }}</td>
                                 <td class="center">{{ $entry->gls_account_name }}</td>
@@ -258,27 +258,36 @@
 
                             </td>
 
-                            @php                         
-                            $total32_blue =0;
+                            @php
+                                $total32_blue = 0;
                                 if ($entry->gls_account_code == '32-1001-01') {
-                                    if ($before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 == 0) {
-                                        $total32_blue = $entry->after_total_result + $before_total_1 - $before_total_2 - $before_total_3;
+                                    if (
+                                        $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 ==
+                                        0
+                                    ) {
+                                        $total32_blue =
+                                            $entry->after_total_result +
+                                            $before_total_1 -
+                                            $before_total_2 -
+                                            $before_total_3;
                                         # code...
-                                    }else {
-                                        $total32_blue = $before_total_result_3 + $before_total_1 - $before_total_2 - $before_total_3 ;
+                                    } else {
+                                        $total32_blue =
+                                            $before_total_result_3 +
+                                            $before_total_1 -
+                                            $before_total_2 -
+                                            $before_total_3;
                                     }
-                                
-                                } 
+                                }
                             @endphp
                             <td class="text-end color-blue">
                             </td>
                             <td
-                                class="text-end color-blue {{ number_format($entry->total) < 0 || number_format($before_total_result_3) < 0 || number_format( $total32_blue) < 0 ? 'error-message' : '' }}">
+                                class="text-end color-blue {{ number_format($entry->total) < 0 || number_format($before_total_result_3) < 0 || number_format($total32_blue) < 0 ? 'error-message' : '' }}">
 
                                 @if ($entry->gls_account_code == '32-1001-01')
-                                
                                     {{-- แสดง before_total_result เฉพาะเมื่อ gls_account_code เป็น 32-1001-01 --}}
-                                    {{ number_format($total32_blue) != 0 ? number_format( $total32_blue, 2) : '' }}
+                                    {{ number_format($total32_blue) != 0 ? number_format($total32_blue, 2) : '' }}
                                 @else
                                     {{-- แสดง before_total สำหรับบัญชีอื่น --}}
                                     {{ $entry->total != 0 ? number_format($entry->total, 2) : '' }}
@@ -340,30 +349,30 @@
                             $after_total_4 += $entry->after_total;
                             $total_4 += $entry->total;
                         @endphp
-                            <tr>
-                                <td class="center">{{ $entry->gls_account_code }}</td>
-                                <td class="center">{{ $entry->gls_account_name }}</td>
-                                <td class="text-end color-yellow">
-                                </td>
-                                <td
-                                    class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
-                                    {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
-                                </td>
-                                <td class="text-end color-green">
-                                </td>
-                                <td
-                                    class="text-end color-green {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
+                        <tr>
+                            <td class="center">{{ $entry->gls_account_code }}</td>
+                            <td class="center">{{ $entry->gls_account_name }}</td>
+                            <td class="text-end color-yellow">
+                            </td>
+                            <td
+                                class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
+                                {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
+                            </td>
+                            <td class="text-end color-green">
+                            </td>
+                            <td
+                                class="text-end color-green {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
 
 
-                                    {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
+                                {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
 
-                                </td>
-                                <td class="text-end color-blue"></td>
-                                <td
-                                    class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
-                                    {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
-                                </td>
-                            </tr>
+                            </td>
+                            <td class="text-end color-blue"></td>
+                            <td
+                                class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
+                                {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
+                            </td>
+                        </tr>
                     @endif
                 @endforeach
                 <tr>
@@ -400,29 +409,29 @@
                             $after_total_5 += $entry->after_total;
                             $total_5 += $entry->total;
                         @endphp
-                            <tr>
-                                <td class="center">{{ $entry->gls_account_code }}</td>
-                                <td class="center">{{ $entry->gls_account_name }}</td>
+                        <tr>
+                            <td class="center">{{ $entry->gls_account_code }}</td>
+                            <td class="center">{{ $entry->gls_account_name }}</td>
 
-                                <td
-                                    class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
-                                    {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
-                                </td>
-                                <td class="text-end color-yellow">
-                                </td>
+                            <td
+                                class="text-end color-yellow {{ number_format($entry->before_total) < 0 ? 'error-message' : '' }}">
+                                {{ number_format($entry->before_total) != 0 ? number_format($entry->before_total, 2) : '' }}
+                            </td>
+                            <td class="text-end color-yellow">
+                            </td>
 
-                                <td
-                                    class="text-end color-green  {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
-                                    {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
-                                </td>
-                                <td class="text-end color-green">
-                                </td>
-                                <td
-                                    class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
-                                    {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
-                                </td>
-                                <td class="text-end color-blue"></td>
-                            </tr>
+                            <td
+                                class="text-end color-green  {{ number_format($entry->after_total) < 0 ? 'error-message' : '' }}">
+                                {{ number_format($entry->after_total) != 0 ? number_format($entry->after_total, 2) : '' }}
+                            </td>
+                            <td class="text-end color-green">
+                            </td>
+                            <td
+                                class="text-end color-blue {{ number_format($entry->total) < 0 ? 'error-message' : '' }}">
+                                {{ number_format($entry->total) != 0 ? number_format($entry->total, 2) : '' }}
+                            </td>
+                            <td class="text-end color-blue"></td>
+                        </tr>
                     @endif
                 @endforeach
 

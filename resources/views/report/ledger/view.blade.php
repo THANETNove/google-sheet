@@ -11,6 +11,52 @@
                         @php
 
                             $route = Auth::check()
+                                ? route('report/search-trial-balance-before-closing')
+                                : route('user-report/search-trial-balance-before-closing', [
+                                    'username' => $user->username,
+                                    'password' => $user->password,
+                                ]);
+                            $url_export_pdf = Auth::check()
+                                ? url('/ledger-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
+                                : url(
+                                        '/user-ledger-pdf/' .
+                                            $id .
+                                            '/' .
+                                            urlencode($startDate) .
+                                            '/' .
+                                            urlencode($endDate),
+                                    ) .
+                                    '?username=' .
+                                    urlencode($user->username) .
+                                    '&password=' .
+                                    urlencode($user->password);
+                            $url_export_excel = Auth::check()
+                                ? url('/ledger-Excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
+                                : url(
+                                    '/user-ledger-Excel/' .
+                                        $id .
+                                        '/' .
+                                        urlencode($startDate) .
+                                        '/' .
+                                        urlencode($endDate) .
+                                        '?username=' .
+                                        urlencode($user->username) .
+                                        '&password=' .
+                                        urlencode($user->password),
+                                );
+                        @endphp
+                        <div style="text-align: right; margin-right: 20px;">
+                            <p>วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
+                            <a href="{{ $url_export_pdf }}" target="_blank" class="btn btn-primary">
+                                <i class='bx bxs-file-pdf'></i>&nbsp; PDF
+                            </a>
+                            <a href="{{ $url_export_excel }}" class="btn btn-primary">
+                                <i class='bx bxs-file'></i>&nbsp; Excel
+                            </a>
+                        </div>
+                        @php
+
+                            $route = Auth::check()
                                 ? route('report/search-ledger')
                                 : route('user-report/search-ledger', [
                                     'username' => $user->username,
@@ -62,55 +108,13 @@
                                 </div>
                             </div>
                         </form>
-                        @php
 
-                            $route = Auth::check()
-                                ? route('report/search-trial-balance-before-closing')
-                                : route('user-report/search-trial-balance-before-closing', [
-                                    'username' => $user->username,
-                                    'password' => $user->password,
-                                ]);
-                            $url_export_pdf = Auth::check()
-                                ? url('/ledger-pdf/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
-                                : url(
-                                        '/user-ledger-pdf/' .
-                                            $id .
-                                            '/' .
-                                            urlencode($startDate) .
-                                            '/' .
-                                            urlencode($endDate),
-                                    ) .
-                                    '?username=' .
-                                    urlencode($user->username) .
-                                    '&password=' .
-                                    urlencode($user->password);
-                            $url_export_excel = Auth::check()
-                                ? url('/ledger-Excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
-                                : url(
-                                    '/user-ledger-Excel/' .
-                                        $id .
-                                        '/' .
-                                        urlencode($startDate) .
-                                        '/' .
-                                        urlencode($endDate) .
-                                        '?username=' .
-                                        urlencode($user->username) .
-                                        '&password=' .
-                                        urlencode($user->password),
-                                );
-                        @endphp
 
-                        <div class="date">
-                            <p> วันเริ่มรอบบัญชี {{ $day }} {{ $monthThai }} {{ $currentYear }}</p>
-                            <a href="{{ $url_export_pdf }}" target="_blank" class="btn btn-primary">
-                                <i class='bx bxs-file-pdf'></i>&nbsp; PDF
-                            </a>
-                            <a href="{{ $url_export_excel }}" class="btn btn-primary">
-                                <i class='bx bxs-file'></i>&nbsp; Excel
-                            </a>
-                        </div>
+
+
 
                     </div>
+
                     @foreach ($date_query as $accountCode => $queries)
                         @php
                             $beforeTotal = !empty($queries->first()) ? $queries->first()->before_total : 0;
