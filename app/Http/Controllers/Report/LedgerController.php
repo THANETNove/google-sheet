@@ -16,9 +16,15 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use App\Models\DataGeneralLedgerSubModel;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithEvents;
+
+
 
 use App\Models\GeneralLedgerSub;
 use App\Models\GeneralLedger;
+
+
 
 class LedgerController extends Controller
 {
@@ -456,5 +462,204 @@ class LedgerController extends Controller
             ->setOption('margin-left', 10)
             ->setOption('margin-right', 10);
         return $pdf->stream('exportPDF.pdf');
+    }
+
+
+
+
+
+    public function exportExcel($id, $start_date, $end_date)
+    {
+        $data = session()->get('ledger');
+        $date_query = $data['date_query'];
+        $user = $data['user'];
+        $ledgers = $data['ledgers'];
+
+        $startDate = \Carbon\Carbon::parse($start_date);
+        $endDate = \Carbon\Carbon::parse($end_date);
+        $day = $startDate->format('d');
+        $month = $startDate->format('m');
+        $monthThai = $this->getMonths()[$month] ?? 'เดือนไม่ถูกต้อง';
+        $currentYear = $startDate->year;
+
+        $exportData = collect();
+        $isFirst = true;
+
+        foreach ($date_query as $accountCode => $queries) {
+            $beforeTotal = !empty($queries->first()) ? $queries->first()->before_total : 0;
+            $totalDebit = $queries->sum('gls_debit');
+            $totalCredit = $queries->sum('gls_credit');
+            $totalAmount = $beforeTotal + $totalDebit + $totalCredit;
+
+            $hasTransactionsInDateRange = $queries->filter(function ($query) use ($startDate, $endDate) {
+                return $query->gls_gl_date &&
+                    $query->gls_gl_date >= $startDate->copy()->startOfDay() &&
+                    $query->gls_gl_date <= $endDate->copy()->endOfDay();
+            })->isNotEmpty();
+
+            if (($totalAmount != 0 && $hasTransactionsInDateRange) || $beforeTotal != 0) {
+                if (!$isFirst) {
+                    $exportData->push(['']);
+                }
+                $isFirst = false;
+
+                $exportData->push(['บัญชีแยกประเภท ' . $accountCode . ' : ' . $queries[0]->gls_account_name]);
+                $exportData->push(['บริษัท: ' . session('company_name')]);
+                $exportData->push(['เลขผู้เสียภาษี: ' . $user->tax_id]);
+                $exportData->push(['ช่วงวันที่: ' . $startDate->format('d-m-Y') . ' ถึง ' . $endDate->format('d-m-Y')]);
+                $exportData->push(['วันเริ่มรอบบัญชี: ' . $day . ' ' . $monthThai . ' ' . $currentYear]);
+                $exportData->push([]);
+
+                $exportData->push(['วันที่', 'เลขที่เอกสาร', 'คำอธิบาย', 'เดบิต', 'เครดิต', 'สะสมงวดนี้', 'สะสมต้นงวด']);
+
+                $accumulatedTotal = 0;
+                $beginning_accumulation = 0;
+                $gls_credit_sum = 0;
+                $gls_debit_sum = 0;
+                $firstRow = true;
+
+                $exportData->push([
+                    '',
+                    '',
+                    'ยอดยกมาต้นงวด',
+                    in_array(substr($accountCode, 0, 1), ['1', '5']) ? number_format($beforeTotal, 2) : '',
+                    in_array(substr($accountCode, 0, 1), ['2', '3', '4']) ? number_format($beforeTotal, 2) : '',
+                    '',
+                    number_format($beforeTotal, 2)
+                ]);
+
+                foreach ($queries as $query) {
+                    if ($query->gls_account_code !== '32-1001-01') {
+                        $isInDateRange =
+                            $query->gls_gl_date >= $startDate->copy()->startOfDay() &&
+                            $query->gls_gl_date <= $endDate->copy()->endOfDay();
+
+                        $isCategory234 = in_array(substr($accountCode, 0, 1), ['2', '3', '4']);
+
+                        if ($firstRow) {
+                            if ($isInDateRange) {
+                                $delta = $isCategory234
+                                    ? $query->gls_credit - $query->gls_debit
+                                    : $query->gls_debit - $query->gls_credit;
+                                $gls_credit_sum += $query->gls_credit;
+                                $gls_debit_sum += $query->gls_debit;
+                                $accumulatedTotal += $delta;
+                                $beginning_accumulation += $beforeTotal + $delta;
+                            } else {
+                                $beginning_accumulation += $beforeTotal;
+                            }
+                            $firstRow = false;
+                        } elseif ($isInDateRange) {
+                            $delta = $isCategory234
+                                ? $query->gls_credit - $query->gls_debit
+                                : $query->gls_debit - $query->gls_credit;
+                            $gls_credit_sum += $query->gls_credit;
+                            $gls_debit_sum += $query->gls_debit;
+                            $accumulatedTotal += $delta;
+                            $beginning_accumulation += $delta;
+                        }
+
+                        if ($isInDateRange) {
+                            $glUrl = $ledgers[$query->gls_gl_code] ?? null;
+                            $description = $glUrl?->gl_description . ' - ' . $glUrl?->gl_company;
+
+                            $exportData->push([
+                                date('d-m-Y', strtotime($query->gls_gl_date)),
+                                $glUrl?->gl_document,
+                                $description,
+                                $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '',
+                                $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '',
+                                number_format($accumulatedTotal, 2),
+                                number_format($beginning_accumulation, 2),
+                            ]);
+                        }
+                    }
+                }
+
+                $exportData->push([
+                    '',
+                    '',
+                    in_array(substr($accountCode, 0, 1), ['4', '5']) ? 'โอนเข้าบัญชีกำไรขาดทุนสะสม' : 'ยอดสะสมยกไป',
+                    in_array(substr($accountCode, 0, 1), ['2', '3', '4']) ? number_format($beginning_accumulation, 2) : '',
+                    in_array(substr($accountCode, 0, 1), ['1', '5']) ? number_format($beginning_accumulation, 2) : '',
+                    '',
+                    ''
+                ]);
+
+                $exportData->push([
+                    '',
+                    '',
+                    'ยอดรวม',
+                    in_array(substr($accountCode, 0, 1), ['1', '5'])
+                        ? number_format($gls_debit_sum + $beforeTotal, 2)
+                        : number_format($gls_debit_sum + $beginning_accumulation, 2),
+                    in_array(substr($accountCode, 0, 1), ['1', '5'])
+                        ? number_format($gls_credit_sum + $beginning_accumulation, 2)
+                        : number_format($gls_credit_sum + $beforeTotal, 2),
+                    '',
+                    ''
+                ]);
+
+                $exportData->push([]);
+            }
+        }
+
+        $export = new class($exportData) implements FromArray, WithHeadings, WithColumnWidths, WithEvents {
+            protected $data;
+
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+
+            public function array(): array
+            {
+                return $this->data->toArray();
+            }
+
+            public function headings(): array
+            {
+                return [];
+            }
+
+            public function columnWidths(): array
+            {
+                return [
+                    'A' => 15,
+                    'B' => 20,
+                    'C' => 50,
+                    'D' => 18,
+                    'E' => 18,
+                    'F' => 20,
+                    'G' => 20,
+                ];
+            }
+
+            public function registerEvents(): array
+            {
+                return [
+                    AfterSheet::class => function (AfterSheet $event) {
+                        $sheet = $event->sheet->getDelegate();
+                        $highestRow = $sheet->getHighestRow();
+
+                        for ($row = 1; $row <= $highestRow; $row++) {
+                            $value = $sheet->getCell("A{$row}")->getValue();
+                            if (Str::startsWith($value, 'บัญชีแยกประเภท')) {
+                                foreach (range(0, 4) as $i) {
+                                    $r = $row + $i;
+                                    $sheet->mergeCells("A{$r}:G{$r}");
+                                    $sheet->getStyle("A{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                                }
+                            }
+                        }
+
+                        $sheet->getStyle('A:G')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                        $sheet->getStyle('D:G')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                    }
+                ];
+            }
+        };
+
+        return Excel::download($export, 'ledgerDetailExport.xlsx');
     }
 }

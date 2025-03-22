@@ -10,18 +10,7 @@
 <body>
     <div id="printableArea">
 
-        <div class="card2" style="margin-bottom: 32px;padding-top: 20px;">
-            @php
 
-                $route = Auth::check()
-                    ? route('report/search-ledger')
-                    : route('user-report/search-ledger', [
-                        'username' => $user->username,
-                        'password' => $user->password,
-                    ]);
-            @endphp
-
-        </div>
         @foreach ($date_query as $accountCode => $queries)
             @php
                 $beforeTotal = !empty($queries->first()) ? $queries->first()->before_total : 0;

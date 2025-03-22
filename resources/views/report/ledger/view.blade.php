@@ -85,16 +85,9 @@
                                     '&password=' .
                                     urlencode($user->password);
                             $url_export_excel = Auth::check()
-                                ? url(
-                                    '/trial-balance-before-closing-excel/' .
-                                        $id .
-                                        '/' .
-                                        urlencode($startDate) .
-                                        '/' .
-                                        urlencode($endDate),
-                                )
+                                ? url('/ledger-Excel/' . $id . '/' . urlencode($startDate) . '/' . urlencode($endDate))
                                 : url(
-                                    '/user-trial-balance-before-closing-excel/' .
+                                    '/user-ledger-Excel/' .
                                         $id .
                                         '/' .
                                         urlencode($startDate) .

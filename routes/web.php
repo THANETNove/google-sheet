@@ -98,6 +98,7 @@ Route::middleware([AuthenticateUserStatusReport::class])->group(function () {
     Route::get('report/ledger/{id}', [LedgerController::class, 'show'])->name('report/ledger');
     Route::post('report/search-ledger', [LedgerController::class, 'search'])->name('report/search-ledger');
     Route::get('ledger-pdf/{id}/{month}/{year}', [LedgerController::class, 'exportPDF'])->name('ledger-pdf');
+    Route::get('ledger-Excel/{id}/{month}/{year}', [LedgerController::class, 'exportExcel'])->name('ledger-Excel');
 });
 //user report
 
@@ -146,6 +147,7 @@ Route::middleware([AuthenticateUserReport::class])->group(function () {
     Route::get('user-report/ledger', [LedgerUserController::class, 'show'])->name('user-report/ledger');
     Route::post('user-report/search-ledger', [LedgerUserController::class, 'search'])->name('user-report/search-ledger');
     Route::get('user-ledger-pdf/{id}/{month}/{year}', [LedgerUserController::class, 'exportPDF'])->name('user-ledger-pdf');
+    Route::get('user-ledger-Excel/{id}/{month}/{year}', [LedgerUserController::class, 'exportExcel'])->name('user-ledger-Excel');
 });
 
 
