@@ -178,11 +178,13 @@
                                                 @if ($accountCode == '32-1001-01')
                                                     <td>{{ $query->gls_account_code }}
                                                     </td>
+                                                    <td>{{ $query->gls_account_name }}
+                                                    </td>
+                                                @else
+                                                    <td>{{ $glUrl->gl_description }} -
+                                                        {{ $glUrl->gl_company }}
+                                                    </td>
                                                 @endif
-
-                                                <td>{{ $glUrl->gl_description }} -
-                                                    {{ $glUrl->gl_company }}
-                                                </td>
                                                 <td
                                                     class="text-end {{ $query->gls_debit < 0 ? 'error-message' : '' }}">
                                                     {{ $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '' }}
