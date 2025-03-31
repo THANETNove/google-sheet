@@ -509,24 +509,38 @@ class LedgerController extends Controller
                 $exportData->push(['ช่วงวันที่: ' . $startDate->format('d-m-Y') . ' ถึง ' . $endDate->format('d-m-Y')]);
                 $exportData->push(['วันเริ่มรอบบัญชี: ' . $day . ' ' . $monthThai . ' ' . $currentYear]);
                 $exportData->push([]);
-
-                $exportData->push(['วันที่', 'เลขที่เอกสาร', 'คำอธิบาย', 'เดบิต', 'เครดิต', 'สะสมงวดนี้', 'สะสมต้นงวด']);
+                if ($accountCode == "32-1001-01") {
+                    $exportData->push(['รหัสบัญชี', 'คำอธิบาย', 'เดบิต', 'เครดิต', 'สะสมงวดนี้', 'สะสมต้นงวด']);
+                } else {
+                    $exportData->push(['วันที่', 'เลขที่เอกสาร', 'คำอธิบาย', 'เดบิต', 'เครดิต', 'สะสมงวดนี้', 'สะสมต้นงวด']);
+                }
 
                 $accumulatedTotal = 0;
                 $beginning_accumulation = 0;
                 $gls_credit_sum = 0;
                 $gls_debit_sum = 0;
                 $firstRow = true;
+                if ($accountCode == "32-1001-01") {
+                    $exportData->push([
+                        '',
+                        'ยอดยกมาต้นงวด',
+                        in_array(substr($accountCode, 0, 1), ['1', '5']) ? number_format($beforeTotal, 2) : '',
+                        in_array(substr($accountCode, 0, 1), ['2', '3', '4']) ? number_format($beforeTotal, 2) : '',
+                        '',
+                        number_format($beforeTotal, 2)
+                    ]);
+                } else {
+                    $exportData->push([
+                        '',
+                        '',
+                        'ยอดยกมาต้นงวด',
+                        in_array(substr($accountCode, 0, 1), ['1', '5']) ? number_format($beforeTotal, 2) : '',
+                        in_array(substr($accountCode, 0, 1), ['2', '3', '4']) ? number_format($beforeTotal, 2) : '',
+                        '',
+                        number_format($beforeTotal, 2)
+                    ]);
+                }
 
-                $exportData->push([
-                    '',
-                    '',
-                    'ยอดยกมาต้นงวด',
-                    in_array(substr($accountCode, 0, 1), ['1', '5']) ? number_format($beforeTotal, 2) : '',
-                    in_array(substr($accountCode, 0, 1), ['2', '3', '4']) ? number_format($beforeTotal, 2) : '',
-                    '',
-                    number_format($beforeTotal, 2)
-                ]);
 
                 foreach ($queries as $query) {
                     if ($query->gls_account_code !== '32-1001-01') {
@@ -561,17 +575,38 @@ class LedgerController extends Controller
 
                         if ($isInDateRange) {
                             $glUrl = $ledgers[$query->gls_gl_code] ?? null;
-                            $description = $glUrl?->gl_description . ' - ' . $glUrl?->gl_company;
-
-                            $exportData->push([
-                                date('d-m-Y', strtotime($query->gls_gl_date)),
-                                $glUrl?->gl_document,
+                            $description =  $accountCode  == "32-1001-01" ? $query->gls_account_code : $glUrl?->gl_description . ' - ' . $glUrl?->gl_company;
+                            /*   $exportData->push([
+                                $accountCode  != "32-1001-01" &&  date('d-m-Y', strtotime($query->gls_gl_date)),
                                 $description,
+                                $accountCode  == "32-1001-01" ? $query->gls_account_name :  $glUrl?->gl_document,
                                 $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '',
                                 $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '',
                                 number_format($accumulatedTotal, 2),
                                 number_format($beginning_accumulation, 2),
-                            ]);
+                            ]); */
+                            if ($accountCode == "32-1001-01") {
+                                // กรณีพิเศษ แสดงรหัสบัญชี + ชื่อบัญชี
+                                $exportData->push([
+                                    $query->gls_account_code, // รหัสบัญชี
+                                    $query->gls_account_name, // ชื่อบัญชี
+                                    $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '',
+                                    $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '',
+                                    number_format($accumulatedTotal, 2),
+                                    number_format($beginning_accumulation, 2),
+                                ]);
+                            } else {
+                                // ปกติ แสดงวันที่ + รายละเอียดเอกสาร
+                                $exportData->push([
+                                    date('d-m-Y', strtotime($query->gls_gl_date)),
+                                    $glUrl?->gl_document,
+                                    $glUrl?->gl_description . ' - ' . $glUrl?->gl_company,
+                                    $query->gls_debit != 0 ? number_format($query->gls_debit, 2) : '',
+                                    $query->gls_credit != 0 ? number_format($query->gls_credit, 2) : '',
+                                    number_format($accumulatedTotal, 2),
+                                    number_format($beginning_accumulation, 2),
+                                ]);
+                            }
                         }
                     }
                 }
@@ -606,6 +641,7 @@ class LedgerController extends Controller
 
         $export = new class($exportData) implements FromArray, WithHeadings, WithColumnWidths, WithEvents {
             protected $data;
+
 
             public function __construct($data)
             {

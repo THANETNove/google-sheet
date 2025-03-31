@@ -62,9 +62,11 @@
                                 <tr class="table-secondary">
                                     @if ($accountCode != '32-1001-01')
                                         <th class="child-2">วันที่</th>
-                                    @endif
 
-                                    <th>เลขที่เอกสาร</th>
+                                        <th>เลขที่เอกสาร</th>
+                                    @else
+                                        <th class="child-2">รหัสบัญชี</th>
+                                    @endif
                                     <th>คำอธิบาย</th>
                                     <th>เดบิต</th>
                                     <th>เครดิต</th>
