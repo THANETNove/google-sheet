@@ -156,25 +156,30 @@
                                                 @if ($accountCode != '32-1001-01')
                                                     <td>{{ date('d-m-Y', strtotime($query->gls_gl_date)) }}
                                                     </td>
-                                                @endif
-                                                <td style="max-width: 80px;">
-                                                    @php
+                                                    <td style="max-width: 80px;">
+                                                        @php
 
-                                                        $glUrl = $ledgers[$query->gls_gl_code] ?? null;
+                                                            $glUrl = $ledgers[$query->gls_gl_code] ?? null;
 
-                                                    @endphp
+                                                        @endphp
 
-                                                    @if ($glUrl->gl_url)
-                                                        <a href="{{ $glUrl->gl_url }}" target="_blank"
-                                                            class="opan-message" rel="noopener noreferrer">
+                                                        @if ($glUrl->gl_url)
+                                                            <a href="{{ $glUrl->gl_url }}" target="_blank"
+                                                                class="opan-message" rel="noopener noreferrer">
+                                                                {{ $glUrl->gl_document }}
+                                                                <span class="id-message">หน้า
+                                                                    {{ $glUrl->gl_page }}</span>
+                                                            </a>
+                                                        @else
                                                             {{ $glUrl->gl_document }}
-                                                            <span class="id-message">หน้า
-                                                                {{ $glUrl->gl_page }}</span>
-                                                        </a>
-                                                    @else
-                                                        {{ $glUrl->gl_document }}
-                                                    @endif
-                                                </td>
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                                @if ($accountCode == '32-1001-01')
+                                                    <td>{{ $query->gls_account_code }}
+                                                    </td>
+                                                @endif
+
                                                 <td>{{ $glUrl->gl_description }} -
                                                     {{ $glUrl->gl_company }}
                                                 </td>
